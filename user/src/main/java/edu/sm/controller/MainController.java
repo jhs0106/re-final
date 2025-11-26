@@ -26,4 +26,9 @@ public class MainController {
         model.addAttribute("center", "register");
         return "index";
     }
+    @RequestMapping("/health-check")
+    public String health(Model model) {
+        model.addAttribute("center", "health-check");
+        return "index";
+    }
 }
