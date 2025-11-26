@@ -18,20 +18,26 @@ public class HealthCheckController {
     private final AiImageService aiImageService;
 
     @PostMapping("/analyze")
-    public String analyze(@RequestParam("image") MultipartFile image,
-            @RequestParam("category") String category) {
-        log.info("Analyzing image for category: {}", category);
+    public String analyze(@RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "text", required = false) String text) {
+        log.info("Analyzing health check request. Image present: {}, Text present: {}",
+                image != null && !image.isEmpty(), text != null && !text.isBlank());
+
         try {
-            if (image == null || image.isEmpty()) {
-                throw new IllegalArgumentException("Image file is required");
+            if ((image == null || image.isEmpty()) && (text == null || text.isBlank())) {
+                throw new IllegalArgumentException("At least one of image or text must be provided");
             }
-            return aiImageService.analyzeImage(category, image.getContentType(), image.getBytes());
+
+            String contentType = (image != null) ? image.getContentType() : "image/jpeg"; // Default or actual
+            byte[] bytes = (image != null) ? image.getBytes() : null;
+
+            return aiImageService.analyzeImage(text, contentType, bytes);
         } catch (IOException e) {
             log.error("Error processing image", e);
             return "{\"error\": \"Failed to process image\"}";
         } catch (Exception e) {
-            log.error("Error analyzing image", e);
-            return "{\"error\": \"AI analysis failed\"}";
+            log.error("Error analyzing request", e);
+            return "{\"error\": \"AI analysis failed: " + e.getMessage() + "\"}";
         }
     }
 
