@@ -2,12 +2,40 @@
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
         <link rel="stylesheet" href="<c:url value='/css/health-check.css'/>">
+        <style>
+            .symptom-input-section {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            .symptom-textarea {
+                width: 100%;
+                min-height: 100px;
+                padding: 15px;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                resize: vertical;
+                font-size: 1rem;
+                transition: border-color 0.3s;
+            }
+
+            .symptom-textarea:focus {
+                border-color: var(--primary-color);
+                outline: none;
+            }
+
+            .input-label {
+                font-weight: 600;
+                margin-bottom: 10px;
+                display: block;
+                color: #333;
+            }
+        </style>
 
         <script>
             (function () {
                 const mapUrl = '<c:url value="/map"/>';
                 let selectedFile = null;
-                let selectedCategory = null;
                 let cameraStream = null;
 
                 function isMobile() {
@@ -103,7 +131,6 @@
 
                 function resetUpload() {
                     selectedFile = null;
-                    selectedCategory = null;
 
                     document.getElementById('imageInput').value = '';
                     document.getElementById('previewImage').src = '';
@@ -111,29 +138,35 @@
                     document.getElementById('uploadSection').style.display = 'block';
                     document.getElementById('resultsSection').classList.remove('active');
 
-                    document.querySelectorAll('.category-option').forEach(opt => {
-                        opt.classList.remove('selected');
-                        opt.querySelector('input').checked = false;
-                    });
-
                     updateAnalyzeButton();
                 }
 
                 function updateAnalyzeButton() {
                     const btn = document.getElementById('analyzeBtn');
+                    const textInput = document.getElementById('symptomText');
+                    const textValue = textInput ? textInput.value.trim() : '';
+
                     if (btn) {
-                        btn.disabled = !(selectedFile && selectedCategory);
+                        // Enable if either file is selected OR text is entered
+                        btn.disabled = !(selectedFile || textValue.length > 0);
                     }
                 }
 
                 function performAnalysis() {
-                    if (!selectedFile || !selectedCategory) return;
+                    const textInput = document.getElementById('symptomText');
+                    const textValue = textInput ? textInput.value.trim() : '';
+
+                    if (!selectedFile && !textValue) return;
 
                     document.getElementById('loadingOverlay').classList.add('active');
 
                     const formData = new FormData();
-                    formData.append('image', selectedFile);
-                    formData.append('category', selectedCategory);
+                    if (selectedFile) {
+                        formData.append('image', selectedFile);
+                    }
+                    if (textValue) {
+                        formData.append('text', textValue);
+                    }
 
                     fetch('<c:url value="/api/health-check/analyze"/>', {
                         method: 'POST',
@@ -201,7 +234,6 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            category: selectedCategory,
                             level: data.level,
                             findings: data.findings,
                             recommendations: data.recommendations,
@@ -249,20 +281,10 @@
                         resetUpload();
                     });
 
-                    document.querySelectorAll('.category-option').forEach(option => {
-                        option.addEventListener('click', function () {
-                            document.querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
-                            this.classList.add('selected');
-                            this.querySelector('input').checked = true;
-                            selectedCategory = this.querySelector('input').value;
-                            updateAnalyzeButton();
-                        });
-                    });
+                    document.getElementById('symptomText').addEventListener('input', updateAnalyzeButton);
 
                     document.getElementById('analyzeBtn').addEventListener('click', function () {
-                        if (selectedFile && selectedCategory) {
-                            performAnalysis();
-                        }
+                        performAnalysis();
                     });
 
                     document.getElementById('findHospitalBtn').addEventListener('click', function () {
@@ -278,7 +300,7 @@
                     <h1><i class="fas fa-heartbeat" style="color: var(--primary-color);"></i> AI 가상 진단</h1>
                     <p class="subtitle">
                         반려동물의 건강 상태를 AI가 빠르게 예비 진단합니다<br>
-                        눈, 피부, 치아, 상처 부위를 촬영하여 업로드해주세요
+                        사진을 업로드하거나 증상을 입력해주세요
                     </p>
                 </div>
 
@@ -294,8 +316,8 @@
                 <div class="upload-section">
                     <div id="uploadSection">
                         <div class="upload-method-header">
-                            <h3><i class="fas fa-images"></i> 이미지 선택 방법</h3>
-                            <p>아래 두 가지 방법 중 하나를 선택하세요</p>
+                            <h3><i class="fas fa-images"></i> 이미지 선택 (선택사항)</h3>
+                            <p>사진이 있으면 더 정확한 분석이 가능합니다</p>
                         </div>
 
                         <div class="upload-actions">
@@ -341,40 +363,20 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-
-                        <div class="category-selection">
-                            <h5 style="text-align: center; margin-bottom: var(--space-4);">
-                                <i class="fas fa-clipboard-list"></i> 진단 부위 선택
-                            </h5>
-                            <div class="category-grid">
-                                <label class="category-option">
-                                    <input type="radio" name="category" value="eyes">
-                                    <div class="category-icon">👁️</div>
-                                    <div class="category-label">눈</div>
-                                </label>
-                                <label class="category-option">
-                                    <input type="radio" name="category" value="skin">
-                                    <div class="category-icon">🐾</div>
-                                    <div class="category-label">피부</div>
-                                </label>
-                                <label class="category-option">
-                                    <input type="radio" name="category" value="teeth">
-                                    <div class="category-icon">🦷</div>
-                                    <div class="category-label">치아</div>
-                                </label>
-                                <label class="category-option">
-                                    <input type="radio" name="category" value="wound">
-                                    <div class="category-icon">🩹</div>
-                                    <div class="category-label">상처</div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <button class="analyze-btn" id="analyzeBtn" disabled>
-                            <i class="fas fa-search-plus mr-2"></i>
-                            AI 분석 시작하기
-                        </button>
                     </div>
+
+                    <div class="symptom-input-section">
+                        <label for="symptomText" class="input-label">
+                            <i class="fas fa-comment-medical"></i> 증상 설명 (선택사항)
+                        </label>
+                        <textarea id="symptomText" class="symptom-textarea"
+                            placeholder="반려동물의 증상을 자세히 적어주세요. (예: 3일 전부터 밥을 안 먹고 기운이 없어요)"></textarea>
+                    </div>
+
+                    <button class="analyze-btn" id="analyzeBtn" disabled>
+                        <i class="fas fa-search-plus mr-2"></i>
+                        AI 분석 시작하기
+                    </button>
                 </div>
 
                 <div class="results-section" id="resultsSection">
@@ -466,6 +468,6 @@
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-content">
                 <div class="loading-spinner"></div>
-                <div class="loading-text">AI가 이미지를 분석하고 있습니다...</div>
+                <div class="loading-text">AI가 증상과 이미지를 분석하고 있습니다...</div>
             </div>
         </div>
