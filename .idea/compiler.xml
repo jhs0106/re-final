@@ -18,6 +18,9 @@
       <module name="admin" options="-parameters" />
       <module name="admin.main" options="-parameters" />
       <module name="admin.test" options="-parameters" />
+      <module name="cctv" options="-parameters" />
+      <module name="cctv.main" options="-parameters" />
+      <module name="cctv.test" options="-parameters" />
       <module name="user" options="-parameters" />
       <module name="user.main" options="-parameters" />
       <module name="user.test" options="-parameters" />
