@@ -27,6 +27,7 @@
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<c:url value='/css/variables.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/common.css'/>">
@@ -41,6 +42,15 @@
     </c:if>
     <c:if test="${center == 'mypage'}">
         <link rel="stylesheet" href="<c:url value='/css/mypage.css'/>">
+    </c:if>
+    <c:if test="${center == 'walktogether/petWalkBoardList'}">
+        <link rel="stylesheet" href="<c:url value='/css/petWalkBoardList.css'/>">
+    </c:if>
+    <c:if test="${center == 'walktogether/petWalkBoardDetail'}">
+        <link rel="stylesheet" href="<c:url value='/css/petWalkBoardDetail.css'/>">
+    </c:if>
+    <c:if test="${center == 'walktogether/petWalkBoardWrite'}">
+        <link rel="stylesheet" href="<c:url value='/css/petWalkBoardWrite.css'/>">
     </c:if>
 </head>
 <body>
