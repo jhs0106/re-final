@@ -11,7 +11,7 @@ public class MainController {
 
     @RequestMapping("/")
     public String main(Model model) {
-        model.addAttribute("center","center");
+        model.addAttribute("center", "center");
         return "index";
     }
 
@@ -26,14 +26,17 @@ public class MainController {
         model.addAttribute("center", "register");
         return "index";
     }
+
     @RequestMapping("/health-check")
     public String health(Model model) {
         model.addAttribute("center", "health-check");
         return "index";
     }
+
     @RequestMapping("/homecam")
     public String homecam(Model model) {
         model.addAttribute("center", "homecam");
         return "index";
     }
+
 }
