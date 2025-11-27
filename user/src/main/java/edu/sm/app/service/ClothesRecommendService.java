@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,8 @@ public class ClothesRecommendService {
             String virtualFittingUrl = createVirtualFitting(imageBytes, animalType, clothingType, recommendedSize, palette);
             if (StringUtils.hasText(virtualFittingUrl)) {
                 fittingImageUrl = virtualFittingUrl;
-                fittingImageDesc = "업로드한 사진에 추천 의상을 합성한 AI 가상 피팅 미리보기입니다.";
+                // [수정]: 이미지가 성공적으로 생성되면, 설명 텍스트를 "ai이미지"로 변경합니다.
+                fittingImageDesc = "ai이미지";
             }
 
             return ClothesRecommendResult.builder()
@@ -148,7 +150,6 @@ public class ClothesRecommendService {
         }
 
         if ("fittingImageUrl".equals(key) && "PLACEHOLDER".equalsIgnoreCase(text)) {
-            // [오류 수정] PLACEHPLDER_IMAGE -> PLACEHOLDER_IMAGE
             return PLACEHOLDER_IMAGE;
         }
 
@@ -177,7 +178,7 @@ public class ClothesRecommendService {
         String paletteText = (palette == null || palette.isEmpty()) ? "부드러운 중성 컬러" : String.join(", ", palette);
         String safeClothing = StringUtils.hasText(clothingType) && !"N/A".equalsIgnoreCase(clothingType)
                 ? clothingType
-                : "트렌디한 의류"; // Fallback 기본 의상을 '트렌디한 의류'로 변경
+                : "편안한 펫 의류"; // Fallback을 "편안한 펫 의류"로 변경
 
         String safeSize = StringUtils.hasText(recommendedSize) && !"N/A".equalsIgnoreCase(recommendedSize)
                 ? recommendedSize
@@ -188,8 +189,8 @@ public class ClothesRecommendService {
                 ? animalType
                 : "반려동물";
 
-        // [핵심 수정 1]: 옷의 스타일을 구체적으로 요청하는 지침 추가
-        String styleInstruction = "옷은 단순한 단색 디자인 대신, 패턴, 로고, 레이어링, 액세서리(모자, 스카프 등)가 포함된 트렌디하고 화려한 스타일로 연출해 주세요.";
+        // [핵심 수정 1]: 옷의 스타일을 클래식하고 기능적으로 변경
+        String styleInstruction = "옷은 반려동물의 편안함과 기능성에 초점을 맞춘 **클래식하고 깔끔한 디자인**으로 연출해 주세요. **과도한 레이어링, 사람 옷 같은 복잡한 디테일, 불필요한 장식(모자, 스카프, 과장된 액세서리)** 등은 피하고, 실제 펫 의류처럼 보이게 합니다.";
 
         // [핵심 수정 2]: 배경 제거/단색 배경을 강력하게 요청
         String backgroundInstruction = "배경은 불필요한 요소 없이 순수한 흰색 스튜디오 배경으로 처리하여 동물이 돋보이게 합니다. 배경을 투명하게 하거나, 피팅룸이나 복잡한 환경은 절대 넣지 마세요.";
@@ -197,16 +198,28 @@ public class ClothesRecommendService {
         // [핵심 수정 3]: 종/색상 유지를 강력하게 강제하는 프롬프트 (가장 강력한 지시)
         String identityInstruction = "업로드된 반려동물 사진을 픽셀 단위로 분석하십시오. 당신은 이 동물이 **'" + safeAnimal + "'** 임을 완벽하게 이해해야 합니다. 해당 동물의 **특정 종, 털의 색상 및 패턴, 얼굴 표정, 체형**을 어떤 오차도 없이 **100% 동일하게** 구현하십시오. 다른 종이나 색깔로 변형하는 것은 **절대 금지**입니다. 이 지시를 최우선으로 지키세요.";
 
-        // [새로운 핵심 수정]: 동물이 옷을 입는 행위를 명확히 지시하고, 옷 위에 동물을 프린트하는 것을 금지
+        // [핵심 수정 4]: 동물이 옷을 입는 행위를 명확히 지시하고, 옷 위에 동물을 프린트하는 것을 금지
         String fittingActionInstruction = "반드시 '" + safeAnimal + "'이(가) 이 옷을 **실제로 입고 있는 모습**을 렌더링해야 합니다. 옷에 " + safeAnimal + "의 이미지를 **프린팅하는 방식으로 만들지 마십시오**. 마치 실제로 입혀 놓은 것처럼 자연스럽게 표현해야 합니다.";
+
+        // [핵심 수정 5]: 이미지에 텍스트를 포함하지 않도록 명시적으로 지시 (극단적 강화)
+        String noTextInImageInstruction = "**경고: 이미지 생성 결과물에는 절대로(NEVER) 글자, 텍스트, 라벨, 워터마크, 제목, 한국어 문자, 어떠한 설명 문구도 시각적으로 포함하지 마십시오. 특히 '업로드한 사진에 추천 의상을 합성한 AI 가상 피팅 미리보기'와 같은 주석은 절대 금지합니다.**";
+
+        // [핵심 수정 6]: 불필요한 UI/데이터 시각화 요소 제거 (컬러 블록, 측정값 방지)
+        String noUiElementsInstruction = "이미지 내에 **컬러 팔레트, 색상 블록, 측정값, 치수, UI 인터페이스 요소, 프레임, 캔버스 배경**을 넣지 마십시오. 오직 반려동물의 가상 피팅 결과만 중앙에 위치해야 합니다.";
+
+        // [최종 수정]: 전신 구도 확보
+        String fullBodyInstruction = "이미지 구도는 반려동물의 **전신**이 머리부터 꼬리(발)까지 명확하게 보이도록 **풀샷(Full Shot)**으로 구성하십시오. 상체만 보이거나 잘린 부분이 없어야 합니다.";
 
 
         return identityInstruction + " "
-               + safeAnimal + "에게 " + safeClothing + "를 " + safeSize + " 사이즈로 자연스럽게 입힌 가상 피팅 이미지를 실사 톤으로 렌더링하세요. "
-               + fittingActionInstruction + " " // 새 지시 추가
-               + styleInstruction
-               + backgroundInstruction
-               + " 의류 색상은 추천 팔레트(" + paletteText + ") 중 잘 어울리는 조합을 사용합니다.";
+                + safeAnimal + "에게 " + safeClothing + "를 " + safeSize + " 사이즈로 자연스럽게 입힌 가상 피팅 이미지를 실사 톤으로 렌더링하세요. "
+                + fittingActionInstruction + " "
+                + styleInstruction + " "
+                + backgroundInstruction + " "
+                + noTextInImageInstruction + " "
+                + noUiElementsInstruction + " "
+                + fullBodyInstruction // <-- 전신 구도 지침 추가
+                + " 의류 색상은 추천 팔레트(" + paletteText + ") 중 잘 어울리는 조합을 사용합니다.";
     }
 
     private String tryGenerateVirtualFittingWithAi(String prompt) {
