@@ -60,5 +60,5 @@ app:
 map:
   osm-file: ./map/asan.osm.pbf
   graph-cache: ./map/graph-cache
-  center-lat: 36.7835
-  center-lon: 127.0045
+  center-lat: 36.778379
+  center-lon: 127.006767
