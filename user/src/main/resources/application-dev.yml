@@ -51,3 +51,9 @@ app:
   key:
     algo: PBEWithMD5AndDES
     skey: ${MY_KEY}
+
+map:
+  osm-file: ./map/asan.osm.pbf
+  graph-cache: ./map/graph-cache
+  center-lat: 36.7835
+  center-lon: 127.0045

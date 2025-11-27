@@ -105,7 +105,7 @@
             </div>
 
             <!-- 2. AI 산책 기능 -->
-            <div class="service-card" onclick="location.href='<c:url value='/ai-walk'/>'">
+            <div class="service-card" onclick="location.href='<c:url value='/aiwalk'/>'">
                 <div class="service-icon">
                     <i class="fas fa-route"></i>
                 </div>
