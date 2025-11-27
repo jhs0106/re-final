@@ -264,7 +264,7 @@
             </div>
 
             <!-- 3. 산책 알바 -->
-            <div class="service-card" onclick="location.href='<c:url value='/walk-helper'/>'">
+            <div class="service-card" onclick="location.href='<c:url value='/walkpt'/>'">
                 <div class="service-icon">
                     <i class="fas fa-people-carry"></i>
                 </div>
