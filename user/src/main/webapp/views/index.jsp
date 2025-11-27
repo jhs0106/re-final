@@ -101,6 +101,9 @@
                             <a class="dropdown-item" href="<c:url value='/walk-matching'/>">
                                 <i class="fas fa-handshake"></i> 산책 매칭
                             </a>
+                            <a class="dropdown-item" href="<c:url value='/walkpt'/>">
+                                <i class="fas fa-handshake"></i> 산책 알바
+                            </a>
                         </div>
                     </li>
 
