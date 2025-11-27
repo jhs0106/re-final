@@ -5,16 +5,13 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>하트 모양 산책 코스</title>
+    <title>모양별 산책 코스</title>
 
     <!-- Leaflet -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
-
-    <!-- 필요하다면 기존 공통 CSS -->
-    <%-- <link rel="stylesheet" href="<c:url value='/css/base.css'/>"> --%>
 
     <style>
         :root {
@@ -225,7 +222,7 @@
             font-size: 0.9rem;
             color: var(--primary-dark);
         }
-        /* 목표 거리 레이블 정렬 */
+
         .distance-label {
             display: inline-flex;
             align-items: center;
@@ -238,7 +235,6 @@
             font-weight: 500;
         }
 
-        /* 목표 거리 인풋 pill 스타일 */
         .control-box input[type="number"] {
             width: 72px;
             padding: 6px 10px;
@@ -250,7 +246,6 @@
             text-align: center;
         }
 
-        /* 포커스 시 파란 테두리 */
         .control-box input[type="number"]:focus {
             outline: none;
             border-color: #1a73e8;
@@ -259,16 +254,15 @@
                     inset 0 1px 2px rgba(15, 23, 42, 0.08);
         }
 
-        /* 숫자 인풋 화살표 제거 (크롬/파폭) */
         .control-box input[type="number"]::-webkit-outer-spin-button,
         .control-box input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
+
         .control-box input[type="number"] {
             -moz-appearance: textfield;
         }
-
 
         .toolbar-right {
             display: flex;
@@ -360,7 +354,6 @@
             line-height: 1.6;
         }
 
-        /* ===== 버튼 대충 스타일 (프로젝트 공통 btn 있으면 이거 제거해도 됨) ===== */
         .btn {
             border-radius: 999px;
             border: 1px solid #e5e7eb;
@@ -405,7 +398,6 @@
             cursor: default;
         }
 
-        /* 상단 컨트롤 버튼을 pill 스타일로 통일 */
         .control-box {
             display: flex;
             flex-wrap: wrap;
@@ -414,7 +406,6 @@
             font-size: 14px;
         }
 
-        /* 공통 pill 버튼 */
         .control-pill {
             border-radius: 999px;
             padding: 8px 16px;
@@ -428,7 +419,6 @@
             box-shadow 0.15s ease, transform 0.05s ease;
         }
 
-        /* 호버 / 포커스 시 살짝 강조 */
         .control-pill:hover,
         .control-pill:focus {
             border-color: #1a73e8;
@@ -437,13 +427,11 @@
             box-shadow: 0 0 0 1px rgba(26,115,232,0.15);
         }
 
-        /* 눌렀을 때 살짝 들어가는 느낌 */
         .control-pill:active {
             transform: translateY(1px);
             box-shadow: none;
         }
 
-        /* 채워진 파란 버튼 (네비게이션 시작) */
         .control-pill.primary {
             background: #1a73e8;
             border-color: #1a73e8;
@@ -457,22 +445,20 @@
             border-color: #1557b0;
         }
 
-        /* 토글형(음성 녹음 중) 활성 상태 */
         .control-pill.is-active {
             background: #1a73e8;
             border-color: #1a73e8;
             color: #fff;
         }
 
-        /* ===== 반려동물 추천 박스 (기존 스타일 살짝 재구성) ===== */
         .pet-box {
             background: #ffffff;
             border-radius: 18px;
             padding: 14px 18px;
             margin-bottom: 12px;
-            border: 1px solid rgba(15,23,42,0.08);   /* 연한 그레이 테두리 */
+            border: 1px solid rgba(15,23,42,0.08);
             font-size: 14px;
-            box-shadow: 0 10px 24px rgba(15,23,42,0.12);  /* 살짝 떠있는 카드 느낌 */
+            box-shadow: 0 10px 24px rgba(15,23,42,0.12);
         }
 
         .pet-box-title {
@@ -496,16 +482,11 @@
         .pet-box button {
             margin-top: 8px;
         }
+
         #voiceRouteAudio {
-            display: none;          /* 통째로 숨김 */
-            /* 혹시나 레이아웃 영향도 완전히 제거하고 싶으면 아래처럼 써도 됨
-            width: 0;
-            height: 0;
-            opacity: 0;
-            pointer-events: none;
-            */
+            display: none;
         }
-        /* ===== 모달 (코스 완수 + 저장된 코스 선택 공통) ===== */
+
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -542,7 +523,6 @@
             gap: 10px;
         }
 
-        /* 반응형 */
         @media (max-width: 960px) {
             .map-layout {
                 grid-template-columns: 1fr;
@@ -576,21 +556,19 @@
 </head>
 <body>
 
-<!-- ===== HERO ===== -->
 <section class="map-hero">
     <div class="map-hero__content">
         <p class="map-hero__eyebrow">Pet Walking Experience</p>
-        <h1 class="map-hero__title">내 주변 하트 모양 산책 코스</h1>
+        <h1 class="map-hero__title">내 주변 모양별 산책 코스</h1>
         <p class="map-hero__desc">
-            현재 위치를 기준으로 예쁜 하트 모양 산책 코스를 자동으로 만들어줘요.
+            현재 위치를 기준으로 예쁜 도형 모양 산책 코스를 자동으로 만들어줘요.
             반려동물 정보 기반 AI 제시 거리, 음성으로 코스 요청, 저장된 코스 네비게이션까지
             한 화면에서 이용해 보세요.
         </p>
         <div class="map-hero__actions">
             <button type="button" class="btn btn-primary btn-lg" id="mockMapClick">
-                내 주변 하트 코스 보기
+                내 주변 도형 코스 보기
             </button>
-
         </div>
     </div>
     <div class="map-hero__illustration">
@@ -606,26 +584,22 @@
     </div>
 </section>
 
-<!-- ===== 메인 레이아웃 (코스 설정 / 네비 모드 공통) ===== -->
 <section class="map-layout" id="mapLayout">
-    <!-- 메인 패널 (지도 + 상단 컨트롤) -->
     <div class="map-panel">
-        <!-- 코스 설정 헤더 -->
         <div id="setupHeader" class="map-panel__header">
             <div>
                 <p class="map-panel__eyebrow">AI Assisted Walk</p>
-                <h2>하트 모양 산책 코스 설정</h2>
-                <p class="map-panel__sub">목표 거리를 정하고, 내 위치 기준으로 하트 코스를 생성해 보세요.</p>
+                <h2>모양별 산책 코스 설정</h2>
+                <p class="map-panel__sub">목표 거리를 정하고, 내 위치 기준으로 도형 코스를 생성해 보세요.<br>
+                도로가 많은 위치에서 목표거리를 5~10km로 설정 후 도형 생성시 제일 예쁜 모양이 나와요.</p>
             </div>
-
         </div>
 
-        <!-- 네비게이션 헤더 -->
         <div id="navHeader" class="map-panel__header" style="display:none;">
             <div>
                 <p class="map-panel__eyebrow">Live Navigation</p>
                 <h2>실시간 산책 네비게이션</h2>
-                <p class="map-panel__sub">현재 위치를 따라가며 하트 코스를 얼마나 채웠는지 확인할 수 있어요.</p>
+                <p class="map-panel__sub">현재 위치를 따라가며 도형 코스를 얼마나 채웠는지 확인할 수 있어요.</p>
             </div>
             <div class="map-panel__header-actions">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="enterSetupMode()">
@@ -637,33 +611,56 @@
             </div>
         </div>
 
-        <!-- 코스 설정 툴바 -->
         <div id="setupToolbar" class="map-panel__toolbar">
             <div class="control-box">
                 <label>
                     목표 거리(km):
-                    <input id="targetKmInput" type="number" step="0.1" value="4.0">
+                    <input id="targetKmInput" type="number" step="0.1" value="8.0">
                 </label>
 
-                <!-- ⬇ 새 클래스: control-pill -->
-                <button type="button" class="control-pill"
+                <!-- 모양 선택 -->
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button type="button"
+                            class="control-pill shape-pill is-active"
+                            data-shape="heart"
+                            onclick="setShapeType('heart')">
+                        하트
+                    </button>
+                    <button type="button"
+                            class="control-pill shape-pill"
+                            data-shape="circle"
+                            onclick="setShapeType('circle')">
+                        원
+                    </button>
+                    <button type="button"
+                            class="control-pill shape-pill"
+                            data-shape="square"
+                            onclick="setShapeType('square')">
+                        네모
+                    </button>
+                    <button type="button"
+                            class="control-pill shape-pill"
+                            data-shape="triangle"
+                            onclick="setShapeType('triangle')">
+                        세모
+                    </button>
+                </div>
+
+                <button type="button" class="control-pill primary"
                         onclick="reloadRoute()">코스 다시 생성</button>
 
                 <button type="button" class="control-pill"
                         onclick="openSavedCourseModal()">저장된 코스 불러오기</button>
 
-                <!-- 음성용 -->
                 <button type="button" class="control-pill"
-                        id="voiceBtn">음성으로 요청(미완)</button>
+                        id="voiceBtn">음성으로 요청</button>
                 <span id="voiceSpinner" style="visibility:hidden;">녹음/처리중...</span>
 
-                <!-- 네비게이션 시작은 채워진 파란 버튼으로 유지 -->
                 <button type="button" class="control-pill primary"
                         onclick="goNavigation()">네비게이션 시작</button>
             </div>
         </div>
 
-        <!-- 네비게이션 툴바 -->
         <div id="navToolbar" class="map-panel__toolbar" style="display:none;">
             <div class="toolbar-left">
                 <div>
@@ -686,20 +683,18 @@
             </div>
         </div>
 
-        <!-- 지도 -->
         <div class="map-panel__body">
             <div class="map-canvas">
                 <div id="map" aria-label="산책 지도"></div>
                 <div class="map-canvas__badge" id="mapSelectionBadge">
-                    내 위치 기준 하트 코스 준비 중...
+                    내 위치 기준 도형 코스 준비 중...
                 </div>
-                <div class="map-canvas__legend">
-                    <span>●</span> 코스 전체 &nbsp;|&nbsp; <span>●</span> 진행한 구간(초록색)
-                </div>
+<%--                <div class="map-canvas__legend">--%>
+<%--                    <span>●</span> 코스 전체 &nbsp;|&nbsp; <span>●</span> 진행한 구간(초록색)--%>
+<%--                </div>--%>
             </div>
         </div>
 
-        <!-- 코스 요약 (코스 설정 모드) -->
         <div id="setupFooter" class="map-panel__footer">
             <div class="map-stats" id="summarySection">
                 <div>
@@ -713,7 +708,6 @@
             </div>
         </div>
 
-        <!-- 네비 요약 (네비 모드) -->
         <div id="navFooter" class="map-panel__footer" style="display:none;">
             <div class="map-stats">
                 <div>
@@ -732,9 +726,7 @@
         </div>
     </div>
 
-    <!-- 우측 패널 (펫 추천 / 네비 요약 카드) -->
     <div class="side-panel">
-        <!-- 코스 설정 모드용 사이드 패널 -->
         <div id="setupSidePanels">
             <article class="panel-card">
                 <header>
@@ -746,7 +738,6 @@
                     </p>
                 </header>
 
-                <!-- 기존 pet-box 그대로 사용 -->
                 <div id="petBox" class="pet-box">
                     <div class="pet-box-title">내 반려동물 정보 기반 AI 산책 거리 제시</div>
                     <div id="petLoadingText">반려동물 정보를 불러오는 중입니다...</div>
@@ -772,14 +763,13 @@
             </article>
         </div>
 
-        <!-- 네비게이션 모드용 사이드 패널 -->
         <div id="navSidePanels" style="display:none;">
             <article class="panel-card">
                 <header>
                     <p class="panel-card__eyebrow">Walk Status</p>
                     <h3>오늘 산책 진행 현황</h3>
                     <p class="panel-card__desc">
-                        하트 코스를 얼마나 채웠는지, 얼마나 걸었는지 실시간으로 확인할 수 있어요.
+                        도형 코스를 얼마나 채웠는지, 얼마나 걸었는지 실시간으로 확인할 수 있어요.
                     </p>
                 </header>
                 <div style="margin-top:12px;">
@@ -799,11 +789,8 @@
     </div>
 </section>
 
-<!-- ===== 음성 안내 오디오 ===== -->
 <audio id="voiceRouteAudio"></audio>
 
-
-<!-- 저장된 코스 선택 모달 -->
 <div id="savedCourseModal" class="modal-overlay">
     <div class="modal-content">
         <h3>저장된 코스 불러오기</h3>
@@ -816,7 +803,6 @@
     </div>
 </div>
 
-<!-- 코스 완수 모달 -->
 <div id="finishModal" class="modal-overlay">
     <div class="modal-content">
         <h3>오늘 산책 완료!</h3>
@@ -829,15 +815,13 @@
     </div>
 </div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 
 <script>
-    // ===== 공통 상태 =====
-    const DEFAULT_CENTER_LAT = 36.7835;
-    const DEFAULT_CENTER_LON = 127.0045;
+    const DEFAULT_CENTER_LAT = 36.777381;
+    const DEFAULT_CENTER_LON = 127.001764;
 
     let centerLat = DEFAULT_CENTER_LAT;
     let centerLon = DEFAULT_CENTER_LON;
@@ -849,26 +833,26 @@
 
     let lastDistanceKm = null;
     let lastEstimatedMinutes = null;
-    let lastRouteData = null;          // 마지막으로 받은 코스 데이터 (points, distanceKm, estimatedMinutes 등)
+    let lastRouteData = null;
 
-    let selectedSavedLogId = null;     // 저장된 코스 선택 ID
+    let selectedSavedLogId = null;
 
-    // 네비게이션용 상태
+    // heart / circle / square / triangle
+    let currentShapeType = 'heart';
+
     let routeLatLngs = [];
     let cumulativeMeters = [];
     let totalMeters = 0;
     let walkingStartedAt = null;
     let walkedMeters = 0;
 
-    // 펫 마커 아이콘
     const userIcon = L.icon({
-        iconUrl: '<c:url value="/images/pet.png"/>',
+        iconUrl: '<c:url value="/images/pno.png"/>',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
     });
 
-    // ===== 화면 모드 토글 =====
     function enterSetupMode() {
         document.getElementById('setupHeader').style.display = '';
         document.getElementById('setupToolbar').style.display = '';
@@ -880,12 +864,7 @@
         document.getElementById('navFooter').style.display = 'none';
         document.getElementById('navSidePanels').style.display = 'none';
 
-        document.getElementById('mapSelectionBadge').textContent = '내 위치 기준 하트 코스 준비 중...';
-
-        // // 히어로 카드 업데이트
-        // if (lastDistanceKm != null) {
-        //     document.getElementById('heroPlannedKm').textContent = lastDistanceKm.toFixed(2) + ' km';
-        // }
+        document.getElementById('mapSelectionBadge').textContent = '내 위치 기준 코스 준비 중...';
     }
 
     function enterNavMode() {
@@ -899,10 +878,9 @@
         document.getElementById('navFooter').style.display = '';
         document.getElementById('navSidePanels').style.display = '';
 
-        document.getElementById('mapSelectionBadge').textContent = '하트 코스를 따라가며 산책 중...';
+        document.getElementById('mapSelectionBadge').textContent = '코스를 따라가며 산책 중...';
     }
 
-    // ===== 지도 초기화 & 현재 위치 =====
     function initMap() {
         map = L.map('map').setView([centerLat, centerLon], 14);
 
@@ -931,7 +909,6 @@
                     icon: userIcon
                 }).addTo(map);
 
-                // 위치 변화에 따라 마커 업데이트 (코스 설정 모드용)
                 navigator.geolocation.watchPosition(
                     (p) => {
                         const lat = p.coords.latitude;
@@ -986,8 +963,6 @@
             lastDistanceKm = data.distanceKm;
             document.getElementById('distanceLabel').textContent =
                 data.distanceKm.toFixed(2) + ' km';
-            // document.getElementById('heroPlannedKm').textContent =
-            //     data.distanceKm.toFixed(2) + ' km';
         }
         if (typeof data.estimatedMinutes === 'number') {
             lastEstimatedMinutes = data.estimatedMinutes;
@@ -996,15 +971,28 @@
         }
     }
 
-    // ===== 새 코스 생성 =====
+    function setShapeType(type) {
+        currentShapeType = type;
+
+        document.querySelectorAll('.shape-pill').forEach(btn => {
+            if (btn.dataset.shape === type) {
+                btn.classList.add('is-active');
+            } else {
+                btn.classList.remove('is-active');
+            }
+        });
+
+        reloadRoute();
+    }
+
     function reloadRoute() {
-        selectedSavedLogId = null; // 새 코스 생성이므로 저장된 코스 선택 해제
+        selectedSavedLogId = null;
 
         const input = document.getElementById('targetKmInput');
-        const targetKm = parseFloat(input.value) || 4.0;
+        const targetKm = parseFloat(input.value) || 8.0;
 
         const url =
-            '/api/map/shape-route?type=heart' +
+            '/api/map/shape-route?type=' + encodeURIComponent(currentShapeType) +
             '&centerLat=' + centerLat +
             '&centerLon=' + centerLon +
             '&targetKm=' + targetKm;
@@ -1015,7 +1003,6 @@
             .catch(err => console.error('경로 로딩 실패', err));
     }
 
-    // ===== 네비게이션 관련 =====
     function distanceMeters(lat1, lon1, lat2, lon2) {
         const R = 6371000;
         const toRad = Math.PI / 180;
@@ -1045,7 +1032,6 @@
             cumulativeMeters.push(totalMeters);
         }
 
-        // 지도 상 폴리라인 다시 그림
         if (currentPolyline) {
             map.removeLayer(currentPolyline);
         }
@@ -1057,13 +1043,12 @@
         currentPolyline = L.polyline(routeLatLngs, {weight: 6, color: '#e91e63'}).addTo(map);
         map.fitBounds(currentPolyline.getBounds());
 
-        // 네비용 정보
         const distKm = totalMeters / 1000;
         document.getElementById('navTotalDist').textContent = distKm.toFixed(2) + ' km';
 
         const baseMinutes = typeof data.estimatedMinutes === 'number'
             ? data.estimatedMinutes
-            : (distKm * 15); // 대략 1km 15분 가정
+            : (distKm * 15);
         document.getElementById('navTotalTime').textContent = baseMinutes.toFixed(0) + ' 분';
     }
 
@@ -1082,7 +1067,7 @@
             }
         }
 
-        const onRoute = bestDist < 25; // 25m 이내면 코스 위
+        const onRoute = bestDist < 25;
 
         const progress = (totalMeters > 0)
             ? (cumulativeMeters[bestIdx] / totalMeters)
@@ -1101,7 +1086,6 @@
         document.getElementById('navStatus').textContent = statusText;
         document.getElementById('sideNavStatus').textContent = statusText;
 
-        // 지나온 구간은 초록색
         if (progressPolyline) {
             map.removeLayer(progressPolyline);
         }
@@ -1112,7 +1096,6 @@
 
         map.setView([lat, lon], 16);
 
-        // 네비 footer 쪽 거리/시간
         const walkedKm = walkedMeters / 1000;
         document.getElementById('navWalkedKm').textContent = walkedKm.toFixed(2) + ' km';
 
@@ -1170,27 +1153,22 @@
         );
     }
 
-    // ===== 네비게이션 시작 버튼 =====
     async function goNavigation() {
-        // 우선 화면 모드 전환
         enterNavMode();
 
         try {
             let data = null;
 
             if (selectedSavedLogId) {
-                // 저장된 코스 기반 네비
                 const res = await fetch(`/api/walk/logs/${selectedSavedLogId}`);
                 if (!res.ok) throw new Error('saved route load error');
                 data = await res.json();
             } else if (lastRouteData) {
-                // 이미 설정 화면에서 받은 코스 재사용
                 data = lastRouteData;
             } else {
-                // 예외적으로, 아직 코스가 없다면 한 번 더 요청
-                const targetKm = parseFloat(document.getElementById('targetKmInput').value) || 4.0;
+                const targetKm = parseFloat(document.getElementById('targetKmInput').value) || 8.0;
                 const url =
-                    '/api/map/shape-route?type=heart' +
+                    '/api/map/shape-route?type=' + encodeURIComponent(currentShapeType) +
                     '&centerLat=' + centerLat +
                     '&centerLon=' + centerLon +
                     '&targetKm=' + targetKm;
@@ -1207,7 +1185,6 @@
         }
     }
 
-    // ===== HERO 버튼 스크롤 =====
     document.addEventListener('DOMContentLoaded', () => {
         const mapLayout = document.getElementById('mapLayout');
         const summarySection = document.getElementById('summarySection');
@@ -1227,7 +1204,6 @@
     });
 </script>
 
-<!-- ===== 음성 녹음 + /api/map/voice-route 호출 ===== -->
 <script>
     const voiceBtn = document.getElementById('voiceBtn');
     const voiceSpinner = document.getElementById('voiceSpinner');
@@ -1239,7 +1215,6 @@
 
     voiceBtn.addEventListener('click', async () => {
         if (!recording) {
-            // 녹음 시작
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({audio: true});
                 mediaRecorder = new MediaRecorder(stream);
@@ -1266,7 +1241,6 @@
                 alert('마이크 권한이 필요합니다.');
             }
         } else {
-            // 녹음 종료
             mediaRecorder.stop();
             recording = false;
             voiceBtn.textContent = '음성으로 요청';
@@ -1277,8 +1251,6 @@
         try {
             const formData = new FormData();
             formData.append('speech', blob, 'speech.webm');
-
-            // 현재 중심좌표(코스 시작점) 전달
             formData.append('centerLat', centerLat);
             formData.append('centerLon', centerLon);
 
@@ -1290,7 +1262,6 @@
             const data = await res.json();
             console.log('voice-route 응답', data);
 
-            // 음성으로 생성된 코스는 "새 코스"
             selectedSavedLogId = null;
 
             applyRouteData(data);
@@ -1302,7 +1273,7 @@
 
             if (data.ttsAudio) {
                 audioPlayer.src = 'data:audio/mp3;base64,' + data.ttsAudio;
-                audioPlayer.play(); // 숨겨진 상태로 재생만
+                audioPlayer.play();
             }
         } catch (e) {
             console.error(e);
@@ -1313,7 +1284,6 @@
     }
 </script>
 
-<!-- ===== 저장된 코스 불러오기 모달 ===== -->
 <script>
     async function openSavedCourseModal() {
         const modal = document.getElementById('savedCourseModal');
@@ -1325,7 +1295,7 @@
             if (!res.ok) {
                 throw new Error('list error');
             }
-            const logs = await res.json();  // [{id, distanceKm, startDate, minutes}, ...]
+            const logs = await res.json();
 
             if (!logs || logs.length === 0) {
                 listDiv.innerHTML = '<p>저장된 코스가 없습니다.</p>';
@@ -1374,7 +1344,7 @@
             const data = await res.json();
             applyRouteData(data);
 
-            selectedSavedLogId = id;   // 네비게이션용
+            selectedSavedLogId = id;
 
             closeSavedCourseModal();
             alert('저장된 코스를 선택했습니다. "네비게이션 시작"을 누르면 이 코스로 안내합니다.');
@@ -1384,7 +1354,6 @@
         }
     }
 
-    // 모달 바깥 클릭 시 닫기
     document.getElementById('savedCourseModal').addEventListener('click', (e) => {
         if (e.target.id === 'savedCourseModal') {
             closeSavedCourseModal();
@@ -1392,7 +1361,6 @@
     });
 </script>
 
-<!-- ===== 반려동물 정보 기반 AI 추천 ===== -->
 <script>
     async function loadPetWalkRecommendation() {
         const loadingText      = document.getElementById('petLoadingText');
@@ -1415,8 +1383,6 @@
             }
 
             const data = await res.json();
-            // 기대 형태:
-            // { pet: {...}, recommendedKm: 2.5, reason: "..." }
 
             const pet = data.pet || {};
 
@@ -1446,14 +1412,11 @@
             reasonText.textContent =
                 data.reason || 'AI가 반려동물의 상태를 바탕으로 산책 거리를 추천했습니다.';
 
-            // ✅ 같이 추가
             const heroPlannedKmEl = document.getElementById('heroPlannedKm');
             if (heroPlannedKmEl) {
-                // 소수 몇 자리로 할지는 취향껏 (1자리 or 2자리)
                 heroPlannedKmEl.textContent = km.toFixed(2) + ' km';
             }
 
-            // 버튼에 추천 거리 값을 저장
             applyBtn.dataset.recommendKm = km;
             applyBtn.disabled = false;
 
@@ -1466,7 +1429,6 @@
         }
     }
 
-    // "추천 거리로 코스 생성" 버튼 클릭 → targetKmInput 에 값 넣고 reloadRoute()
     document.addEventListener('DOMContentLoaded', () => {
         const applyBtn = document.getElementById('petApplyBtn');
         applyBtn.addEventListener('click', () => {
@@ -1481,7 +1443,6 @@
     });
 </script>
 
-<!-- ===== 코스 완수 모달 + 저장 ===== -->
 <script>
     function openFinishModal() {
         const modal = document.getElementById('finishModal');
@@ -1555,7 +1516,6 @@
         }
     }
 
-    // 코스 완수 모달 바깥 클릭시 닫기
     document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('finishModal');
         if (modal) {
@@ -1568,11 +1528,11 @@
     });
 </script>
 
-<!-- ===== 페이지 로드 시 초기화 ===== -->
 <script>
     window.addEventListener('load', () => {
         initMap();
-        initUserLocation();
+        // initUserLocation();      // 실제 geolocation으로 하는ㄱ
+        reloadRoute();              // test용
         loadPetWalkRecommendation();
         enterSetupMode();
     });
