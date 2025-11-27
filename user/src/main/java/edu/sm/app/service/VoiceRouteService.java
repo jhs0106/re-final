@@ -58,11 +58,24 @@ public class VoiceRouteService {
 
         String lower = text.toLowerCase();
 
-        // 2) 모양 파싱: 기본은 하트
-        String shape = "heart";
-        if (lower.contains("원") || lower.contains("동그라미")) {
-            shape = "circle";
+        // 2) 모양 파싱  ★★★ 하트 / 원 / 세모 / 네모
+        String shape = "heart";   // MapRouteService에서 쓰는 내부 코드
+        String shapeKo = "하트";   // 안내 멘트용 한글 이름
+
+        if (containsAny(lower, "세모", "삼각형", "삼각", "triangle")) {
+            shape = "triangle";   // MapRouteService: "triangle"/"semo"
+            shapeKo = "세모";
+        } else if (containsAny(lower, "네모", "사각형", "사각", "정사각형")) {
+            shape = "square";     // MapRouteService: "square"/"nemo"
+            shapeKo = "네모";
+        } else if (containsAny(lower, "원형", "동그라미", "원 모양", "원으로", "원")) {
+            shape = "circle";     // MapRouteService: "circle"/"round"
+            shapeKo = "원형";
+        } else if (containsAny(lower, "하트", "heart")) {
+            shape = "heart";
+            shapeKo = "하트";
         }
+        // 그 외에는 기본값 heart 유지
 
         // 3) 거리 파싱 (km)
         double targetKm = extractTargetKm(lower);
@@ -70,16 +83,15 @@ public class VoiceRouteService {
             targetKm = 4.0;
         }
 
-        // ★ 3-1) centerLat/centerLon 선택: 요청값 우선, 없으면 기본값(@Value)
+        // 3-1) centerLat/centerLon 선택: 요청값 우선, 없으면 기본값(@Value)
         double usedCenterLat = (reqCenterLat != null ? reqCenterLat : this.centerLat);
         double usedCenterLon = (reqCenterLon != null ? reqCenterLon : this.centerLon);
 
-        // 4) GraphHopper 로 코스 생성 (이제 내 위치 기준)
+        // 4) GraphHopper 로 코스 생성
         MapRouteService.ShapeRouteResponse route =
                 mapRouteService.getShapeRouteByTargetKm(shape, usedCenterLat, usedCenterLon, targetKm);
 
-        // 5) TTS 안내 멘트
-        String shapeKo = "heart".equals(shape) ? "하트" : "원형";
+        // 5) TTS 안내 멘트  ★ shapeKo 사용
         String reply = String.format(
                 "요청하신 %s 모양 약 %.1f 킬로미터 산책 코스를 만들어 드렸습니다. " +
                         "실제 거리는 약 %.2f 킬로미터이고, 예상 소요 시간은 약 %.0f분입니다.",
@@ -94,7 +106,7 @@ public class VoiceRouteService {
 
         return new VoiceRouteResponse(
                 text,
-                shape,
+                shape,                      // 내부 코드는 heart / circle / square / triangle
                 targetKm,
                 route.getPoints(),
                 route.getDistanceKm(),
@@ -154,5 +166,16 @@ public class VoiceRouteService {
         }
 
         return 0;
+    }
+
+    // ★★★ 여러 키워드 중 하나라도 포함되어 있는지 체크하는 헬퍼
+    private boolean containsAny(String text, String... keywords) {
+        if (text == null) return false;
+        for (String k : keywords) {
+            if (k != null && !k.isEmpty() && text.contains(k)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

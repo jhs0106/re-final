@@ -21,39 +21,50 @@ public class MapRouteService {
     public MapRouteService(GraphHopper hopper) {
         this.hopper = hopper;
     }
-    private List<GeoPoint> alignStartToCenter(List<GeoPoint> points,
-                                              double centerLat,
-                                              double centerLon) {
+
+    /* =========================================================
+     *  공통: "모양의 맨 아래 점"이 centerLat/centerLon 이 되도록 정렬
+     *  - 가장 위가 아니라 가장 남쪽(lat 최소) 점을 찾는다
+     *  - 그 점이 실제 centerLat/centerLon 에 오도록 전체 모양을 평행이동
+     *  - 그 점이 0번 인덱스가 되도록 시계방향으로 회전
+     *  => 더 이상 모양 중심을 억지로 지나가지 않음
+     * ========================================================= */
+    private List<GeoPoint> alignBottomToUser(List<GeoPoint> points,
+                                             double centerLat,
+                                             double centerLon) {
         if (points == null || points.isEmpty()) return points;
 
-        int bestIdx = 0;
-        double bestDist = Double.MAX_VALUE;
-
-        // center 에 가장 가까운 포인트 찾기
+        // 1) 가장 남쪽(위도 최소)인 점 찾기 = 모양의 "맨 아래" 점
+        int bottomIdx = 0;
+        double minLat = Double.MAX_VALUE;
         for (int i = 0; i < points.size(); i++) {
             GeoPoint p = points.get(i);
-            double dLat = p.lat - centerLat;
-            double dLon = p.lon - centerLon;
-            double dist2 = dLat * dLat + dLon * dLon;
-            if (dist2 < bestDist) {
-                bestDist = dist2;
-                bestIdx = i;
+            if (p.lat < minLat) {
+                minLat = p.lat;
+                bottomIdx = i;
             }
         }
 
-        // 그 포인트가 0번이 되도록 시계 방향 회전
-        List<GeoPoint> rotated = new ArrayList<>();
-        for (int i = 0; i < points.size(); i++) {
-            rotated.add(points.get((bestIdx + i) % points.size()));
+        // 2) 그 점이 정확히 centerLat/centerLon 에 오도록 전체 평행이동
+        GeoPoint bottom = points.get(bottomIdx);
+        double dLat = centerLat - bottom.lat;
+        double dLon = centerLon - bottom.lon;
+
+        List<GeoPoint> shifted = new ArrayList<>();
+        for (GeoPoint p : points) {
+            shifted.add(new GeoPoint(p.lat + dLat, p.lon + dLon));
         }
 
-        // 시작 포인트를 "정확히" center 로 맞추기
-        rotated.set(0, new GeoPoint(centerLat, centerLon));
+        // 3) 시작 인덱스를 bottomIdx 로 회전 (0번이 모양 맨 아래)
+        List<GeoPoint> rotated = new ArrayList<>();
+        for (int i = 0; i < shifted.size(); i++) {
+            rotated.add(shifted.get((bottomIdx + i) % shifted.size()));
+        }
+
         return rotated;
     }
-    /**
-     * 기본: 도형 크기(sizeKm)를 직접 넣어서 경로 생성
-     */
+
+    // ===== 공개 API: sizeKm 기준 도형 생성 =====
     public ShapeRouteResponse getShapeRoute(String type,
                                             double centerLat,
                                             double centerLon,
@@ -61,20 +72,36 @@ public class MapRouteService {
 
         if (sizeKm <= 0) sizeKm = 1.2;
 
+        String shape = (type == null ? "heart" : type.toLowerCase());
+
         List<GeoPoint> basePoints;
-        if ("heart".equalsIgnoreCase(type)) {
-            basePoints = generateHeartPoints(centerLat, centerLon, sizeKm);
-        } else {
-            basePoints = generateCirclePoints(centerLat, centerLon, sizeKm);
+        switch (shape) {
+            case "heart":
+                basePoints = generateHeartPoints(centerLat, centerLon, sizeKm);
+                break;
+            case "circle":
+            case "round":
+                basePoints = generateCirclePoints(centerLat, centerLon, sizeKm);
+                break;
+            case "square":    // 백엔드 직접 호출용
+            case "nemo":      // JSP 쪽에서 보낼 문자열
+                basePoints = generatePolygonPoints(centerLat, centerLon, sizeKm,
+                        4, Math.toRadians(45));   // ♦ 모양(45도 회전)
+                break;
+            case "triangle":
+            case "semo":
+                basePoints = generatePolygonPoints(centerLat, centerLon, sizeKm,
+                        3, Math.toRadians(-90));  // 꼭짓점이 위로 향하는 정삼각형
+                break;
+            default:
+                basePoints = generateCirclePoints(centerLat, centerLon, sizeKm);
+                break;
         }
 
         return buildRouteFromBasePoints(basePoints);
     }
 
-    /**
-     * ✅ 목표 거리(km)를 기준으로 sizeKm를 자동으로 튜닝해서
-     *    목표에 최대한 가까운 코스를 찾아줌
-     */
+    // ===== 공개 API: targetKm 기준 자동 튜닝 =====
     public ShapeRouteResponse getShapeRouteByTargetKm(String type,
                                                       double centerLat,
                                                       double centerLon,
@@ -83,11 +110,10 @@ public class MapRouteService {
             targetKm = 4.0;
         }
 
-        double sizeKm = targetKm;  // 처음엔 목표 거리 정도로 시작
+        double sizeKm = targetKm;  // 처음엔 목표 거리로 시작
         ShapeRouteResponse best = null;
         double bestDiff = Double.MAX_VALUE;
 
-        // 간단한 반복 튜닝 (5~6번)
         for (int i = 0; i < 6; i++) {
             ShapeRouteResponse res = getShapeRoute(type, centerLat, centerLon, sizeKm);
             if (res.getDistanceKm() <= 0) break;
@@ -105,9 +131,7 @@ public class MapRouteService {
         return best;
     }
 
-    /**
-     * ✅ 사용자 위치 주변에 후보 중심 좌표 여러 개 생성 (동/서/남/북 + 대각선 등)
-     */
+    // (현재는 안 쓰지만 남겨둔 후보 중심 생성)
     private List<LatLon> buildCandidateCenters(double userLat,
                                                double userLon,
                                                double targetKm,
@@ -115,12 +139,10 @@ public class MapRouteService {
 
         List<LatLon> list = new ArrayList<>();
 
-        // 반경: 목표거리의 1/3 정도를 중심 이동량으로 사용
         double radiusKm = targetKm / 3.0;
         double kmToLat = 1.0 / 111.0;
         double kmToLon = 1.0 / (111.0 * Math.cos(Math.toRadians(userLat)));
 
-        // 8방향 (N, NE, E, SE, S, SW, W, NW)
         double[][] dirs = {
                 { 0,  1},  // N
                 { 1,  1},  // NE
@@ -142,7 +164,6 @@ public class MapRouteService {
             list.add(new LatLon(lat, lon));
         }
 
-        // 항상 "사용자 위치 바로 근처 중심"도 하나 넣어주기
         if (list.size() < candidateCount) {
             list.add(new LatLon(userLat, userLon));
         }
@@ -150,9 +171,7 @@ public class MapRouteService {
         return list;
     }
 
-    /**
-     * GraphHopper로 실제 도보 경로 생성 + 거리/시간 계산
-     */
+    // ===== GraphHopper에 실제 경로 요청 =====
     private ShapeRouteResponse buildRouteFromBasePoints(List<GeoPoint> basePoints) {
         List<GeoPoint> routePoints = new ArrayList<>();
         double totalDistanceMeters = 0.0;
@@ -186,9 +205,7 @@ public class MapRouteService {
         return new ShapeRouteResponse(routePoints, totalKm, estimatedMinutes);
     }
 
-    /**
-     * 하트 모양 뼈대 포인트 생성
-     */
+    // ===== 하트 모양 =====
     private List<GeoPoint> generateHeartPoints(double centerLat,
                                                double centerLon,
                                                double sizeKm) {
@@ -197,7 +214,6 @@ public class MapRouteService {
 
         double radiusKm = sizeKm * 0.7;
         double kmToLat = 1.0 / 111.0;
-        double kmToLon = 1.0 / (111.0 * Math.cos(Math.toRadians(centerLat)));
 
         double scale = radiusKm * kmToLat * 0.06;
 
@@ -226,12 +242,55 @@ public class MapRouteService {
             list.add(new GeoPoint(lat, lon));
         }
 
-        return alignStartToCenter(list, centerLat, centerLon);
+        // ★ 하트 모양도 맨 아래 점이 내 위치가 되도록 정렬
+        return alignBottomToUser(list, centerLat, centerLon);
     }
 
-    /**
-     * 예비용 원형 뼈대
-     */
+    // ===== 정다각형(네모/세모 등) 공통 =====
+    private List<GeoPoint> generatePolygonPoints(double centerLat,
+                                                 double centerLon,
+                                                 double sizeKm,
+                                                 int sides,
+                                                 double rotationRad) {
+
+        List<GeoPoint> list = new ArrayList<>();
+
+        double radiusKm = sizeKm * 0.6;
+
+        double kmToLat = 1.0 / 111.0;
+        double kmToLon = 1.0 / (111.0 * Math.cos(Math.toRadians(centerLat)));
+
+        double[] vx = new double[sides];
+        double[] vy = new double[sides];
+        for (int i = 0; i < sides; i++) {
+            double t = 2.0 * Math.PI * i / sides + rotationRad;
+            vx[i] = radiusKm * Math.cos(t);
+            vy[i] = radiusKm * Math.sin(t);
+        }
+
+        int segPerSide = 12; // 한 변당 12개 포인트
+
+        for (int i = 0; i < sides; i++) {
+            int j = (i + 1) % sides;
+
+            for (int s = 0; s < segPerSide; s++) {
+                double ratio = (double) s / segPerSide;
+
+                double xKm = vx[i] + (vx[j] - vx[i]) * ratio;
+                double yKm = vy[i] + (vy[j] - vy[i]) * ratio;
+
+                double lat = centerLat + yKm * kmToLat;
+                double lon = centerLon + xKm * kmToLon;
+
+                list.add(new GeoPoint(lat, lon));
+            }
+        }
+
+        // ★ 네모/세모도 맨 아래 점이 내 위치가 되도록 정렬
+        return alignBottomToUser(list, centerLat, centerLon);
+    }
+
+    // ===== 원 모양 =====
     private List<GeoPoint> generateCirclePoints(double centerLat,
                                                 double centerLon,
                                                 double sizeKm) {
@@ -255,11 +314,11 @@ public class MapRouteService {
             list.add(new GeoPoint(lat, lon));
         }
 
-        return alignStartToCenter(list, centerLat, centerLon);
+        // ★ 원도 맨 아래 점이 내 위치
+        return alignBottomToUser(list, centerLat, centerLon);
     }
 
     // ===== DTO =====
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
