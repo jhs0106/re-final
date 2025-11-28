@@ -7,11 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>PetCare AI - 스마트한 반려동물 케어</title>
+    <title>PetTopia AI - 스마트한 반려동물 생활</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="AI 기술로 더 안전하고 건강한 반려동물 케어 서비스">
-    <meta name="keywords" content="반려동물, AI 산책, 펫케어, 홈캠, 건강진단, 산책알바, 펫다이어리">
+    <meta name="description" content="더 편리한 반려동물과의 생활">
+    <meta name="keywords" content="반려동물, AI 산책, 가상진단, 홈캠, 건강진단, 산책알바, 펫다이어리">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<c:url value='/images/favicon.ico'/>">
@@ -70,8 +70,8 @@
                     <i class="fas fa-paw"></i>
                 </div>
                 <div class="pet-logo-text">
-                    <span class="pet-logo-title">PetCare AI</span>
-                    <span class="pet-logo-subtitle">스마트 반려 케어</span>
+                    <span class="pet-logo-title">Pettopia</span>
+                    <span class="pet-logo-subtitle">스마트 반려 생활</span>
                 </div>
             </a>
 
@@ -96,7 +96,7 @@
                                 <i class="fas fa-map-marked-alt"></i> 지도 기반 산책
                             </a>
                             <a class="dropdown-item" href="<c:url value='/ai-walk'/>">
-                                <i class="fas fa-route"></i> AI 산책 추천
+                                <i class="fas fa-route"></i> AI 산책 제시
                             </a>
                             <a class="dropdown-item" href="<c:url value='/walk-matching'/>">
                                 <i class="fas fa-handshake"></i> 산책 매칭
@@ -199,10 +199,10 @@
                     <div class="pet-logo-icon mb-3">
                         <i class="fas fa-paw"></i>
                     </div>
-                    <h5 class="pet-logo-title">PetCare AI</h5>
+                    <h5 class="pet-logo-title">Pettopia</h5>
                     <p class="footer-desc">
-                        AI 기술로 더 안전하고 건강한<br>
-                        반려동물 케어 서비스
+                        반려동물과 스마트한 일상<br>
+
                     </p>
                 </div>
             </div>
@@ -245,7 +245,7 @@
         <hr class="footer-divider">
         <div class="footer-bottom">
             <p class="copyright">
-                &copy; 2024 PetCare AI. All rights reserved.
+                &copy; 2024 Pettopia. All rights reserved.
             </p>
             <p class="company-info">
                 사업자등록번호: 123-45-67890 | 대표: 홍길동<br>
