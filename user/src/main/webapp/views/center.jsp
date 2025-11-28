@@ -21,8 +21,8 @@
                         <span class="highlight">스마트한 일상</span>
                     </h1>
                     <p>
-                        AI 기술로 더 안전하고 건강한<br>
-                        반려동물 케어 서비스를 제공합니다
+                        반려동물과의 스마트한 일상을 제공합니다<br>
+
                     </p>
                     <div class="hero-buttons">
                         <button class="btn btn-pet-primary btn-lg" onclick="location.href='<c:url value='/map'/>'">
@@ -68,7 +68,7 @@
 <%--                                    <i class="fas fa-heart"></i>--%>
 <%--                                </div>--%>
 <%--                                <div class="hero-stat-number" data-target="98">0</div>--%>
-<%--                                <div class="hero-stat-label">24시간 케어<br><small class="text-muted">홈캠 실시간 분석</small></div>--%>
+<%--                                <div class="hero-stat-label">24시간 <br><small class="text-muted">홈캠 실시간 분석</small></div>--%>
 <%--                            </div>--%>
 <%--                        </div>--%>
 <%--                    </div>--%>
