@@ -139,6 +139,15 @@
                         </a>
                     </li>
 
+                    <c:if test="${sessionScope.user != null}">
+                        <li class="nav-item">
+                            <a class="nav-link" href="<c:url value='/chat/list'/>">
+                                <i class="fas fa-comments"></i>
+                                <span>채팅 목록</span>
+                            </a>
+                        </li>
+                    </c:if>
+
                     <!-- 공지사항 -->
                     <li class="nav-item">
                         <a class="nav-link" href="<c:url value='/notice'/>">

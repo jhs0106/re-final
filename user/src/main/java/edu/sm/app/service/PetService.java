@@ -3,7 +3,6 @@ package edu.sm.app.service;
 import edu.sm.app.dto.Pet;
 import edu.sm.app.dto.User;
 import edu.sm.app.repository.PetRepository;
-import edu.sm.app.service.UserService;
 import edu.sm.common.frame.SmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

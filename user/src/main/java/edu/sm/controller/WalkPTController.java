@@ -3,6 +3,7 @@ package edu.sm.controller;
 import edu.sm.app.dto.User;
 import edu.sm.app.dto.WalkPostDTO;
 import edu.sm.app.service.WalkPostService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
