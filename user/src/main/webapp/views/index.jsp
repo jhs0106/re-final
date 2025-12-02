@@ -261,7 +261,6 @@
             let globalWs;
 
             function connectGlobalWs() {
-                // 프로토콜 설정 (http -> ws, https -> wss)
                 const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
                 const wsUrl = protocol + location.host + "/ws/chat";
 
@@ -269,42 +268,73 @@
 
                 globalWs.onopen = function() {
                     console.log("🔔 알림용 소켓 연결됨");
-                    // 1. 연결 직후 'GLOBAL_INIT' 메시지를 보내 내 세션을 알림용으로 등록
-                    const msg = {
-                        senderId: userId,
-                        content: "GLOBAL_INIT"
-                    };
+                    const msg = { senderId: userId, content: "GLOBAL_INIT" };
                     globalWs.send(JSON.stringify(msg));
                 };
 
                 globalWs.onmessage = function(event) {
                     const data = JSON.parse(event.data);
 
-                    // 2. 알림 메시지 처리 (ChatHandler에서 type: 'NOTIFICATION'으로 보냄)
                     if (data.type === "NOTIFICATION") {
-                        // 현재 내가 그 채팅방에 들어가 있다면 알림을 띄우지 않음
-                        const currentUrl = window.location.href;
-                        if (currentUrl.includes("roomId=" + data.roomId)) {
+                        // 현재 같은 채팅방이면 알림 생략
+                        if (window.location.href.includes("roomId=" + data.roomId)) {
                             return;
                         }
 
-                        // 3. 알림 토스트 띄우기 (main.js에 있는 PetUtils 사용)
-                        const toastMsg = "💌 새 메시지: " + data.content;
-                        if (window.PetUtils && window.PetUtils.showToast) {
-                            window.PetUtils.showToast(toastMsg, 'info');
-                        } else {
-                            alert(toastMsg); // PetUtils가 로드되지 않았을 경우 대비
-                        }
+                        // 1. 메시지 및 링크 구성
+                        const senderName = data.senderName || "알림";
+                        const toastMsg = "💌 " + senderName + ": " + data.content;
+                        const chatLink = "/chat/room?roomId=" + data.roomId;
+
+                        // 2. 커스텀 토스트 호출 (main.js 수정 없이 구현)
+                        showChatNotification(toastMsg, chatLink);
                     }
                 };
 
                 globalWs.onclose = function() {
-                    console.log("알림 소켓 연결 종료. 3초 후 재연결...");
                     setTimeout(connectGlobalWs, 3000);
                 };
             }
 
-            // 페이지 로드 시 연결 시작
+            // ✅ 커스텀 알림 함수 (5초 유지 + 클릭 시 이동)
+            function showChatNotification(message, link) {
+                let toastContainer = document.getElementById('toastContainer');
+
+                // 컨테이너가 없으면 생성 (main.js가 아직 실행 안 됐을 경우 대비)
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toastContainer';
+                    toastContainer.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 9999;';
+                    document.body.appendChild(toastContainer);
+                }
+
+                const toast = document.createElement('div');
+                // 'toast-info' 스타일 사용
+                toast.className = 'toast toast-info show';
+                toast.style.cursor = 'pointer'; // 클릭 가능 커서
+
+                toast.innerHTML =
+                    '<div class="toast-body">' +
+                    '<i class="fas fa-info-circle"></i> ' +
+                    '<span>' + message + '</span>' +
+                    '</div>';
+
+                // 클릭 이벤트
+                toast.onclick = function() {
+                    window.location.href = link;
+                };
+
+                toastContainer.appendChild(toast);
+
+                // 5초 후 사라짐
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                    setTimeout(function() {
+                        toast.remove();
+                    }, 300);
+                }, 5000);
+            }
+
             window.addEventListener('load', function() {
                 connectGlobalWs();
             });
