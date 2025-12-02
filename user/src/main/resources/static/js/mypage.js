@@ -36,85 +36,372 @@ function togglePasswordVisibility(inputId) {
     }
 }
 
-// ========== 프로필 정보 수정 ==========
+// ========== 프로필 정보 수정 (기존 로직 유지) ==========
 document.addEventListener('DOMContentLoaded', function () {
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            alert('프로필 수정 기능 (개발 예정)');
-            // TODO: /api/mypage/profile PUT 요청
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+
+            fetch('/api/mypage/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('프로필이 수정되었습니다.');
+                            location.reload();
+                        } else {
+                            alert('프로필 수정에 실패했습니다: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('서버 오류가 발생했습니다.');
+                    });
         });
     }
 });
 
-// ========== 비밀번호 변경 ==========
+// ========== 비밀번호 변경 (기존 로직 유지) ==========
 document.addEventListener('DOMContentLoaded', function () {
     const passwordForm = document.getElementById('passwordForm');
     if (passwordForm) {
         passwordForm.addEventListener('submit', function (e) {
             e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
+            // 유효성 검사
             if (newPassword !== confirmPassword) {
                 alert('새 비밀번호가 일치하지 않습니다.');
                 return;
             }
+
             if (newPassword.length < 8) {
                 alert('비밀번호는 8자 이상이어야 합니다.');
                 return;
             }
-            alert('비밀번호 변경 기능 (개발 예정)');
-            // TODO: /api/mypage/password PUT 요청
+
+            const formData = {
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            };
+
+            fetch('/api/mypage/password', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('비밀번호가 변경되었습니다.');
+                            passwordForm.reset();
+                        } else {
+                            alert('비밀번호 변경에 실패했습니다: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('서버 오류가 발생했습니다.');
+                    });
         });
     }
 });
 
-// ========== 프로필 이미지 업로드 ==========
-document.addEventListener('DOMContentLoaded', function() {
+// ========== 프로필 이미지 업로드 (기존 로직 유지) ==========
+let profileImageListenerAdded = false;
+
+function initProfileImageUpload() {
     const input = document.getElementById('profileImageInput');
-    if (input) {
-        input.addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
 
-            if (!file.type.startsWith('image/')) {
-                alert('이미지 파일만 업로드 가능합니다.');
-                e.target.value = '';
-                return;
-            }
-            if (file.size > 5 * 1024 * 1024) {
-                alert('파일 크기는 5MB 이하여야 합니다.');
-                e.target.value = '';
-                return;
-            }
-            alert('프로필 이미지 업로드 기능 (개발 예정)');
-            // TODO: /api/mypage/profile-image POST 요청
-        });
-    }
-});
+    if (!input || profileImageListenerAdded) return;
 
-// ========== 회원 탈퇴 ==========
+    profileImageListenerAdded = true;
+
+    input.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        // 파일 타입 검증
+        if (!file.type.startsWith('image/')) {
+            alert('이미지 파일만 업로드 가능합니다.');
+            e.target.value = '';
+            return;
+        }
+
+        // 파일 크기 검증 (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('파일 크기는 5MB 이하여야 합니다.');
+            e.target.value = '';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/api/mypage/profile-image', {
+            method: 'POST',
+            body: formData
+        })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('프로필 사진이 업로드되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('업로드에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('서버 오류가 발생했습니다.');
+                });
+    });
+}
+
+// 프로필 이미지 업로드 초기화
+document.addEventListener('DOMContentLoaded', initProfileImageUpload);
+
+// ========== 회원 탈퇴 (기존 로직 유지) ==========
 function withdrawAccount() {
     if (confirm('정말 탈퇴하시겠습니까?\n모든 데이터가 삭제되며 복구할 수 없습니다.')) {
-        alert('회원 탈퇴 기능 (개발 예정)');
-        // TODO: /api/mypage/withdraw DELETE 요청
+        const password = prompt('비밀번호를 입력하세요:');
+
+        if (!password) {
+            alert('비밀번호를 입력해야 합니다.');
+            return;
+        }
+
+        fetch('/api/mypage/withdraw', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({password: password})
+        })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('회원 탈퇴가 완료되었습니다.');
+                        location.href = '/';
+                    } else {
+                        alert('탈퇴에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('서버 오류가 발생했습니다.');
+                });
     }
 }
 
-// ========== 반려동물 관련 ==========
+// ========== 반려동물 추가 모달 열기 ==========
 function openAddPetModal() {
-    alert('반려동물 추가 기능 (개발 예정)');
+    // 폼 초기화
+    document.getElementById('addPetForm').reset();
+    document.getElementById('modal-pet-photo-preview').innerHTML = '<i class="fas fa-camera"></i>';
+    document.getElementById('modalCustomPetType').style.display = 'none';
+
+    $('#addPetModal').modal('show');
 }
 
+// ========== 모달용 사진 미리보기 (추가) ==========
+function previewModalPetPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('modal-pet-photo-preview').innerHTML =
+                    '<img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// ========== 모달용 기타 동물 입력 토글 (추가) ==========
+function toggleModalCustomPetType() {
+    const petType = document.getElementById('modalPetType').value;
+    const customInput = document.getElementById('modalCustomPetType');
+
+    if (petType === 'ETC') {
+        customInput.style.display = 'block';
+        customInput.required = true;
+    } else {
+        customInput.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
+}
+
+// ========== 반려동물 추가 제출 ==========
+function submitAddPet() {
+    const form = document.getElementById('addPetForm');
+
+    if (!form.checkValidity()) {
+        alert('필수 항목을 모두 입력해주세요.');
+        form.reportValidity();
+        return;
+    }
+
+    const formData = new FormData(form);
+
+    fetch('/api/pets', {
+        method: 'POST',
+        body: formData
+    })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('반려동물이 추가되었습니다.');
+                    $('#addPetModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('추가에 실패했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('서버 오류가 발생했습니다.');
+            });
+}
+
+// ========== 반려동물 수정 모달 열기 ==========
 function editPet(petId) {
-    alert('반려동물 수정 기능 (개발 예정)\nID: ' + petId);
+    fetch('/api/pets/' + petId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const pet = data.pet;
+
+                    // 폼에 데이터 채우기
+                    document.getElementById('editPetId').value = pet.id;
+                    document.getElementById('editPetName').value = pet.name;
+                    document.getElementById('editPetType').value = pet.type;
+                    document.getElementById('editPetBreed').value = pet.breed || '';
+                    document.getElementById('editPetGender').value = pet.gender;
+                    document.getElementById('editPetAge').value = pet.age;
+                    document.getElementById('editPetWeight').value = pet.weight;
+
+                    // 기타 동물이면 커스텀 입력 표시
+                    if (pet.type === 'ETC') {
+                        document.getElementById('editCustomPetType').value = pet.customType || '';
+                        document.getElementById('editCustomPetType').style.display = 'block';
+                    }
+
+                    // 사진 미리보기
+                    if (pet.photo) {
+                        document.getElementById('edit-pet-photo-preview').innerHTML =
+                                '<img src="' + pet.photo + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">';
+                    } else {
+                        document.getElementById('edit-pet-photo-preview').innerHTML = '<i class="fas fa-camera"></i>';
+                    }
+
+                    $('#editPetModal').modal('show');
+                } else {
+                    alert('반려동물 정보를 불러오는데 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('서버 오류가 발생했습니다.');
+            });
 }
 
+// ========== 수정 모달용 사진 미리보기 ==========
+function previewEditPetPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('edit-pet-photo-preview').innerHTML =
+                    '<img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// ========== 수정 모달용 기타 동물 입력 토글 ==========
+function toggleEditCustomPetType() {
+    const petType = document.getElementById('editPetType').value;
+    const customInput = document.getElementById('editCustomPetType');
+
+    if (petType === 'ETC') {
+        customInput.style.display = 'block';
+        customInput.required = true;
+    } else {
+        customInput.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
+}
+
+// ========== 반려동물 수정 제출 ==========
+function submitEditPet() {
+    const form = document.getElementById('editPetForm');
+
+    if (!form.checkValidity()) {
+        alert('필수 항목을 모두 입력해주세요.');
+        form.reportValidity();
+        return;
+    }
+
+    const petId = document.getElementById('editPetId').value;
+    const formData = new FormData(form);
+
+    fetch('/api/pets/' + petId, {
+        method: 'PUT',
+        body: formData
+    })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('수정되었습니다.');
+                    $('#editPetModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('수정에 실패했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('서버 오류가 발생했습니다.');
+            });
+}
+
+// ========== 반려동물 삭제 ==========
 function deletePet(petId) {
     if (confirm('이 반려동물 정보를 삭제하시겠습니까?')) {
-        alert('반려동물 삭제 기능 (개발 예정)\nID: ' + petId);
+        fetch('/api/pets/' + petId, {
+            method: 'DELETE'
+        })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('삭제되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('삭제에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('서버 오류가 발생했습니다.');
+                });
     }
 }
 
@@ -150,14 +437,14 @@ function changeView(viewType) {
 }
 
 function openAddMemoModal(dateStr) {
-    alert('메모 추가 기능 (개발 예정)' + (dateStr ? '\n날짜: ' + dateStr : ''));
+    alert('메모 추가 모달 (개발 예정)' + (dateStr ? '\n날짜: ' + dateStr : ''));
 }
 
 function loadMoreDiary() {
     alert('더보기 기능 (개발 예정)');
 }
 
-// ========== FullCalendar 초기화 (간단 버전) ==========
+// ========== FullCalendar 초기화 ==========
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('diary-calendar-container');
 
@@ -206,12 +493,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             eventClick: function(info) {
                 alert('이벤트 상세 기능 (개발 예정)\n\n' + info.event.title);
-                // TODO: 상세 정보 모달 표시
             },
 
             dateClick: function(info) {
                 console.log('날짜 클릭:', info.dateStr);
-                // TODO: 메모 추가 기능
             }
         });
 
@@ -225,13 +510,11 @@ function changeReportPeriod(period) {
     buttons.forEach(btn => btn.classList.remove('active'));
     event.currentTarget.classList.add('active');
     console.log('리포트 기간:', period);
-    // TODO: 서버에서 데이터 가져오기
 }
 
 function generateReport() {
     if (confirm('최신 데이터로 리포트를 생성하시겠습니까?')) {
         alert('리포트 생성 기능 (개발 예정)');
-        // TODO: AI 분석 요청
     }
 }
 
@@ -240,6 +523,5 @@ document.addEventListener('DOMContentLoaded', function() {
     const activityCtx = document.getElementById('activityCanvas');
     if (activityCtx) {
         // TODO: Chart.js로 활동량 차트 그리기
-        // 지금은 캔버스만 있음
     }
 });
