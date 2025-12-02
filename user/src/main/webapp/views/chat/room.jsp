@@ -12,6 +12,75 @@
   .my-msg .msg-bubble { background-color: #ffe082; border-top-right-radius: 0; }
   .other-msg .msg-bubble { background-color: white; border: 1px solid #eee; border-top-left-radius: 0; }
   .msg-info { font-size: 12px; color: #888; margin-top: 5px; }
+
+  /* [추가] 플러스 버튼 및 메뉴 스타일 */
+  .chat-input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+  }
+  .btn-plus {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #eee;
+    color: #555;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-plus:hover {
+    background-color: #ddd;
+  }
+  .btn-plus.active {
+    background-color: #ccc;
+    transform: rotate(45deg); /* 회전 효과 */
+  }
+  .plus-menu {
+    display: none; /* 기본 숨김 */
+    padding: 20px 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    margin-top: 15px;
+    border-radius: 10px;
+  }
+  .plus-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    text-align: center;
+  }
+  .menu-item {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+    font-size: 13px;
+  }
+  .menu-icon-box {
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.1s;
+    color: #555;
+  }
+  .menu-item:hover .menu-icon-box {
+    transform: scale(1.05);
+    background-color: #fff8e1;
+  }
 </style>
 
 <div class="chat-wrapper">
@@ -37,10 +106,40 @@
         </c:forEach>
       </div>
 
-      <div class="input-group">
-        <input type="text" id="msgInput" class="form-control" placeholder="메시지 입력..." onkeypress="if(event.keyCode==13) sendMessage();">
-        <button class="btn btn-warning" onclick="sendMessage()">전송</button>
+      <div class="chat-input-area">
+        <button type="button" id="plusBtn" class="btn-plus" onclick="togglePlusMenu()">
+          <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="input-group" style="flex: 1;">
+          <input type="text" id="msgInput" class="form-control" placeholder="메시지 입력..." onkeypress="if(event.keyCode==13) sendMessage();">
+          <div class="input-group-append">
+            <button class="btn btn-warning" onclick="sendMessage()">전송</button>
+          </div>
+        </div>
       </div>
+
+      <div id="plusMenu" class="plus-menu">
+        <div class="plus-menu-grid">
+          <div class="menu-item" onclick="alert('앨범 기능 구현 예정')">
+            <div class="menu-icon-box"><i class="fas fa-images"></i></div>
+            <span>앨범</span>
+          </div>
+          <div class="menu-item" onclick="alert('카메라 기능 구현 예정')">
+            <div class="menu-icon-box"><i class="fas fa-camera"></i></div>
+            <span>카메라</span>
+          </div>
+          <div class="menu-item" onclick="alert('파일 전송 구현 예정')">
+            <div class="menu-icon-box"><i class="fas fa-file-alt"></i></div>
+            <span>파일</span>
+          </div>
+          <div class="menu-item" onclick="alert('위치 공유 구현 예정')">
+            <div class="menu-icon-box"><i class="fas fa-map-marker-alt"></i></div>
+            <span>위치</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -109,5 +208,22 @@
 
     ws.send(JSON.stringify(msg));
     input.value = "";
+  }
+
+  // [추가] 플러스 메뉴 토글 함수
+  function togglePlusMenu() {
+    var menu = document.getElementById("plusMenu");
+    var btn = document.getElementById("plusBtn");
+    var chatContainer = document.getElementById("chatContainer");
+
+    if (menu.style.display === "block") {
+      menu.style.display = "none";
+      btn.classList.remove("active");
+    } else {
+      menu.style.display = "block";
+      btn.classList.add("active");
+      // 메뉴가 열리면 스크롤을 맨 아래로 조정
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
   }
 </script>

@@ -9,31 +9,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>PetTopia AI - 스마트한 반려동물 생활</title>
 
-    <!-- SEO Meta Tags -->
     <meta name="description" content="더 편리한 반려동물과의 생활">
     <meta name="keywords" content="반려동물, AI 산책, 가상진단, 홈캠, 건강진단, 산책알바, 펫다이어리">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<c:url value='/images/favicon.ico'/>">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="<c:url value='/css/variables.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/common.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/layout.css'/>">
 
-    <!-- 페이지별 CSS -->
     <c:if test="${center == null || center == 'center'}">
         <link rel="stylesheet" href="<c:url value='/css/center.css'/>">
     </c:if>
@@ -55,16 +47,13 @@
 </head>
 <body>
 
-<!-- ✅ 이미지 시퀀스 백그라운드 (center 페이지에만) -->
 <c:if test="${center == null || center == 'center'}">
     <div id="sequence-container"></div>
 </c:if>
 
-<!-- 헤더 -->
 <header class="pet-header">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <!-- 로고 -->
             <a class="pet-logo" href="<c:url value='/'/>">
                 <div class="pet-logo-icon">
                     <i class="fas fa-paw"></i>
@@ -75,17 +64,14 @@
                 </div>
             </a>
 
-            <!-- 모바일 토글 -->
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#petNavbar" aria-controls="petNavbar"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- 네비게이션 메뉴 (요구사항 반영) -->
             <div class="collapse navbar-collapse pet-nav" id="petNavbar">
                 <ul class="navbar-nav ml-auto">
-                    <!-- ✅ 산책 드롭다운 (통합 버전) -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="walkMenu" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -107,7 +93,6 @@
                         </div>
                     </li>
 
-                    <!-- ✅ AI 서비스 드롭다운 (피규어 만들기 추가) -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="aiMenu" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -132,7 +117,6 @@
                         </div>
                     </li>
 
-                    <!-- 다이어리 -->
                     <li class="nav-item">
                         <a class="nav-link" href="<c:url value='/diary'/>">
                             <i class="fas fa-book"></i> 펫 다이어리
@@ -148,7 +132,6 @@
                         </li>
                     </c:if>
 
-                    <!-- 공지사항 -->
                     <li class="nav-item">
                         <a class="nav-link" href="<c:url value='/notice'/>">
                             <i class="fas fa-bell"></i> 공지사항
@@ -156,11 +139,9 @@
                     </li>
                 </ul>
 
-                <!-- ✅ 헤더 액션 버튼 (로그인 상태별) -->
                 <div class="header-actions ml-3">
                     <c:choose>
                         <c:when test="${not empty sessionScope.user}">
-                            <!-- 로그인 상태 -->
                             <a href="<c:url value='/customer-service'/>" class="btn btn-pet-outline btn-sm mr-2">
                                 <i class="fas fa-headset"></i> 고객센터
                             </a>
@@ -172,7 +153,6 @@
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <!-- 미로그인 상태 -->
                             <a href="<c:url value='/login'/>" class="btn btn-pet-outline btn-sm mr-2">
                                 <i class="fas fa-sign-in-alt"></i> 로그인
                             </a>
@@ -187,7 +167,6 @@
     </nav>
 </header>
 
-<!-- 메인 컨텐츠 -->
 <main class="pet-main-content">
     <c:choose>
         <c:when test="${center == null}">
@@ -199,7 +178,6 @@
     </c:choose>
 </main>
 
-<!-- 푸터 -->
 <footer class="pet-footer">
     <div class="container">
         <div class="row">
@@ -211,7 +189,6 @@
                     <h5 class="pet-logo-title">Pettopia</h5>
                     <p class="footer-desc">
                         반려동물과 스마트한 일상<br>
-
                     </p>
                 </div>
             </div>
@@ -264,21 +241,75 @@
     </div>
 </footer>
 
-<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Custom JS -->
 <script src="<c:url value='/js/main.js'/>"></script>
 
-<!-- 페이지별 JS -->
 <c:if test="${center == null || center == 'center'}">
     <script src="<c:url value='/js/scroll-video.js'/>"></script>
 </c:if>
 <c:if test="${center == 'mypage'}">
     <script src="<c:url value='/js/mypage.js'/>"></script>
+</c:if>
+
+<c:if test="${not empty sessionScope.user}">
+    <script>
+        (function() {
+            const userId = "${sessionScope.user.userId}";
+            let globalWs;
+
+            function connectGlobalWs() {
+                // 프로토콜 설정 (http -> ws, https -> wss)
+                const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
+                const wsUrl = protocol + location.host + "/ws/chat";
+
+                globalWs = new WebSocket(wsUrl);
+
+                globalWs.onopen = function() {
+                    console.log("🔔 알림용 소켓 연결됨");
+                    // 1. 연결 직후 'GLOBAL_INIT' 메시지를 보내 내 세션을 알림용으로 등록
+                    const msg = {
+                        senderId: userId,
+                        content: "GLOBAL_INIT"
+                    };
+                    globalWs.send(JSON.stringify(msg));
+                };
+
+                globalWs.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+
+                    // 2. 알림 메시지 처리 (ChatHandler에서 type: 'NOTIFICATION'으로 보냄)
+                    if (data.type === "NOTIFICATION") {
+                        // 현재 내가 그 채팅방에 들어가 있다면 알림을 띄우지 않음
+                        const currentUrl = window.location.href;
+                        if (currentUrl.includes("roomId=" + data.roomId)) {
+                            return;
+                        }
+
+                        // 3. 알림 토스트 띄우기 (main.js에 있는 PetUtils 사용)
+                        const toastMsg = "💌 새 메시지: " + data.content;
+                        if (window.PetUtils && window.PetUtils.showToast) {
+                            window.PetUtils.showToast(toastMsg, 'info');
+                        } else {
+                            alert(toastMsg); // PetUtils가 로드되지 않았을 경우 대비
+                        }
+                    }
+                };
+
+                globalWs.onclose = function() {
+                    console.log("알림 소켓 연결 종료. 3초 후 재연결...");
+                    setTimeout(connectGlobalWs, 3000);
+                };
+            }
+
+            // 페이지 로드 시 연결 시작
+            window.addEventListener('load', function() {
+                connectGlobalWs();
+            });
+        })();
+    </script>
 </c:if>
 
 </body>
