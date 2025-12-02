@@ -8,133 +8,87 @@
   .message-box { margin-bottom: 15px; display: flex; flex-direction: column; }
   .message-box.my-msg { align-items: flex-end; }
   .message-box.other-msg { align-items: flex-start; }
-
-  /* 일반 말풍선 스타일 */
   .msg-bubble { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 15px; position: relative; word-break: break-all;}
   .my-msg .msg-bubble { background-color: #ffe082; border-top-right-radius: 0; }
   .other-msg .msg-bubble { background-color: white; border: 1px solid #eee; border-top-left-radius: 0; }
-
   .msg-info { font-size: 12px; color: #888; margin-top: 5px; }
+  .chat-header-title { font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; }
+  .chat-header-title i { color: #ffc107; margin-right: 8px; font-size: 1.2rem; }
 
   /* 플러스 버튼 및 메뉴 스타일 */
-  .chat-input-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-top: 10px;
-  }
+  .chat-input-area { display: flex; align-items: center; gap: 10px; padding-top: 10px; }
   .btn-plus {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background-color: #eee;
-    color: #555;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s;
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background-color: #eee; color: #555; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.2s;
   }
   .btn-plus:hover { background-color: #ddd; }
   .btn-plus.active { background-color: #ccc; transform: rotate(45deg); }
 
   /* 확장 메뉴 스타일 */
   .plus-menu {
-    display: none;
-    padding: 20px 10px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #ddd;
-    margin-top: 15px;
-    border-radius: 10px;
+    display: none; padding: 20px 10px; background-color: #f8f9fa;
+    border-top: 1px solid #ddd; margin-top: 15px; border-radius: 10px;
   }
   .plus-menu-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    text-align: center;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center;
   }
-  .menu-item {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #333;
-    font-size: 13px;
-  }
+  .menu-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; color: #333; font-size: 13px; }
   .menu-icon-box {
-    width: 50px;
-    height: 50px;
-    background-color: white;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: transform 0.1s;
-    color: #555;
+    width: 50px; height: 50px; background-color: white; border-radius: 20px;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+    margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.1s; color: #555;
   }
-  .menu-item:hover .menu-icon-box {
-    transform: scale(1.05);
-    background-color: #e3f2fd;
-    color: #1565c0;
-  }
+  .menu-item:hover .menu-icon-box { transform: scale(1.05); background-color: #e3f2fd; color: #1565c0; }
 
-  /* [추가] 산책 신청 카드(선물하기 스타일) CSS */
+  /* [기존] 산책 신청 카드 스타일 */
   .walk-card {
-    width: 240px;
-    background-color: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border: 1px solid #eee;
-    margin-top: 5px;
+    width: 240px; background-color: white; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #eee; margin-top: 5px;
   }
-  .walk-card-content {
-    padding: 20px;
-    text-align: center;
-    background: #fff;
-  }
-  .walk-card-icon {
-    font-size: 40px;
-    color: #ffc107; /* 노란색 포인트 */
-    margin-bottom: 12px;
-  }
-  .walk-card-title {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px;
-    color: #333;
-  }
-  .walk-card-desc {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 0;
-  }
+  .walk-card-content { padding: 20px; text-align: center; background: #fff; }
+  .walk-card-icon { font-size: 40px; color: #ffc107; margin-bottom: 12px; }
+  .walk-card-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; color: #333; }
+  .walk-card-desc { font-size: 13px; color: #888; margin-bottom: 0; }
   .btn-start-walk {
-    width: 100%;
-    border: none;
-    background-color: #f8f9fa;
-    padding: 12px 0;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    border-top: 1px solid #eee;
-    font-weight: bold;
-    transition: background 0.2s;
+    width: 100%; border: none; background-color: #f8f9fa; padding: 12px 0;
+    font-size: 14px; color: #333; cursor: pointer; border-top: 1px solid #eee;
+    font-weight: bold; transition: background 0.2s;
   }
-  .btn-start-walk:hover {
-    background-color: #ffe082; /* 버튼 호버시 노란색 */
+  .btn-start-walk:hover { background-color: #ffe082; }
+
+  /* [추가] 영상통화 카드 스타일 (파란색 테마) */
+  .video-card {
+    width: 240px; background-color: white; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #eee; margin-top: 5px;
   }
+  .video-card-content { padding: 20px; text-align: center; background: #fff; }
+  .video-card-icon { font-size: 40px; color: #007bff; margin-bottom: 12px; } /* 파란색 아이콘 */
+  .video-card-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; color: #333; }
+  .video-card-desc { font-size: 13px; color: #888; margin-bottom: 0; }
+  .btn-start-video {
+    width: 100%; border: none; background-color: #f8f9fa; padding: 12px 0;
+    font-size: 14px; color: #333; cursor: pointer; border-top: 1px solid #eee;
+    font-weight: bold; transition: background 0.2s;
+  }
+  .btn-start-video:hover { background-color: #cce5ff; } /* 호버시 연한 파랑 */
 </style>
 
 <div class="chat-wrapper">
   <div class="card">
     <div class="card-header bg-white">
-      <h5 class="mb-0"><i class="fas fa-comments"></i> ${room.postTitle}</h5>
+      <div class="chat-header-title">
+        <i class="fas fa-user-circle"></i>
+        <c:choose>
+          <c:when test="${room.ownerId == user.userId}">
+            ${room.workerName}
+          </c:when>
+          <c:otherwise>
+            ${room.ownerName}
+          </c:otherwise>
+        </c:choose>
+      </div>
     </div>
     <div class="card-body">
       <div id="chatContainer" class="chat-container">
@@ -143,14 +97,26 @@
             <c:when test="${msg.senderId == user.userId}">
               <div class="message-box my-msg">
                 <c:choose>
+                  <%-- 산책 요청 메시지 --%>
                   <c:when test="${msg.content eq '[[WALK_REQUEST]]'}">
                     <div class="walk-card">
                       <div class="walk-card-content">
                         <div class="walk-card-icon"><i class="fas fa-dog"></i></div>
                         <div class="walk-card-title">산책해요!</div>
-                        <p class="walk-card-desc">산책 알바 신청이 들어왔어요!</p>
+                        <p class="walk-card-desc">산책 메이트 신청을 보냈습니다.</p>
                       </div>
                       <button class="btn-start-walk" onclick="startWalk()">산책 시작하기</button>
+                    </div>
+                  </c:when>
+                  <%-- [추가] 영상통화 요청 메시지 --%>
+                  <c:when test="${msg.content eq '[[VIDEO_REQUEST]]'}">
+                    <div class="video-card">
+                      <div class="video-card-content">
+                        <div class="video-card-icon"><i class="fas fa-video"></i></div>
+                        <div class="video-card-title">영상통화</div>
+                        <p class="video-card-desc">영상통화를 시작하시겠습니까?</p>
+                      </div>
+                      <button class="btn-start-video" onclick="startVideoCall()">영상통화 시작하기</button>
                     </div>
                   </c:when>
                   <c:otherwise>
@@ -162,6 +128,7 @@
             <c:otherwise>
               <div class="message-box other-msg">
                 <c:choose>
+                  <%-- 산책 요청 메시지 --%>
                   <c:when test="${msg.content eq '[[WALK_REQUEST]]'}">
                     <div class="walk-card">
                       <div class="walk-card-content">
@@ -170,6 +137,17 @@
                         <p class="walk-card-desc">함께 산책하시겠습니까?</p>
                       </div>
                       <button class="btn-start-walk" onclick="startWalk()">산책 시작하기</button>
+                    </div>
+                  </c:when>
+                  <%-- [추가] 영상통화 요청 메시지 --%>
+                  <c:when test="${msg.content eq '[[VIDEO_REQUEST]]'}">
+                    <div class="video-card">
+                      <div class="video-card-content">
+                        <div class="video-card-icon"><i class="fas fa-video"></i></div>
+                        <div class="video-card-title">영상통화</div>
+                        <p class="video-card-desc">영상통화를 시작하시겠습니까?</p>
+                      </div>
+                      <button class="btn-start-video" onclick="startVideoCall()">영상통화 시작하기</button>
                     </div>
                   </c:when>
                   <c:otherwise>
@@ -201,14 +179,12 @@
             <div class="menu-icon-box"><i class="fas fa-video"></i></div>
             <span>영상통화</span>
           </div>
-
           <div class="menu-item" onclick="requestWalk()">
             <div class="menu-icon-box"><i class="fas fa-walking"></i></div>
             <span>산책하기</span>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -221,7 +197,6 @@
 
   // 스크롤 맨 아래로
   chatContainer.scrollTop = chatContainer.scrollHeight;
-
   window.onload = function() {
     connect();
   };
@@ -233,7 +208,6 @@
     console.log("Connecting to: " + wsUrl);
 
     ws = new WebSocket(wsUrl);
-
     ws.onopen = function() {
       console.log("Connected!");
       var msg = {
@@ -246,31 +220,41 @@
 
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
-      if(data.content === "ENTER") return;
+
+      if(data.type === "NOTIFICATION" || data.content === "ENTER") return;
 
       var msgDiv = document.createElement("div");
 
-      // [수정] 산책 요청 메시지인지 확인하여 다르게 렌더링
+      // [수정] 산책 요청 및 영상통화 요청 카드 처리
       if (data.content === "[[WALK_REQUEST]]") {
-        // 카드형 메시지 HTML 생성
         var cardHtml =
                 '<div class="walk-card">' +
                 '<div class="walk-card-content">' +
                 '<div class="walk-card-icon"><i class="fas fa-dog"></i></div>' +
                 '<div class="walk-card-title">산책해요!</div>' +
-                '<p class="walk-card-desc">산책 메이트 신청이 도착했습니다.</p>' +
+                '<p class="walk-card-desc">산책 요청이 도착했습니다.</p>' +
                 '</div>' +
                 '<button class="btn-start-walk" onclick="startWalk()">산책 시작하기</button>' +
                 '</div>';
-
         msgDiv.innerHTML = cardHtml;
+
+      } else if (data.content === "[[VIDEO_REQUEST]]") { // [추가] 영상통화 카드 렌더링
+        var cardHtml =
+                '<div class="video-card">' +
+                '<div class="video-card-content">' +
+                '<div class="video-card-icon"><i class="fas fa-video"></i></div>' +
+                '<div class="video-card-title">영상통화</div>' +
+                '<p class="video-card-desc">영상통화를 시작하시겠습니까?</p>' +
+                '</div>' +
+                '<button class="btn-start-video" onclick="startVideoCall()">영상통화 시작하기</button>' +
+                '</div>';
+        msgDiv.innerHTML = cardHtml;
+
       } else {
-        // 일반 텍스트 메시지
         var content = '<div class="msg-bubble">' + data.content + '</div>';
         msgDiv.innerHTML = content;
       }
 
-      // 내 메시지인지 상대방 메시지인지 구분
       if(data.senderId == myId) {
         msgDiv.className = "message-box my-msg";
       } else {
@@ -286,13 +270,11 @@
     var input = document.getElementById("msgInput");
     var text = input.value;
     if(!text.trim()) return;
-
     var msg = {
       roomId: roomId,
       senderId: myId,
       content: text
     };
-
     ws.send(JSON.stringify(msg));
     input.value = "";
   }
@@ -300,7 +282,6 @@
   function togglePlusMenu() {
     var menu = document.getElementById("plusMenu");
     var btn = document.getElementById("plusBtn");
-    var chatContainer = document.getElementById("chatContainer");
 
     if (menu.style.display === "block") {
       menu.style.display = "none";
@@ -312,32 +293,38 @@
     }
   }
 
-  // [기능 구현] 영상통화 요청 (기존 유지)
+  // [수정] 영상통화 요청 (카드 전송)
   function requestVideoCall() {
-    alert("영상통화 요청을 보냅니다.");
-    // 여기에 WebRTC 연결 로직 등을 추가
-  }
-
-  // [기능 구현] 산책하기 카드 전송
-  function requestWalk() {
-    // 메뉴 닫기
-    togglePlusMenu();
-
-    // 특수 메시지 전송
+    togglePlusMenu(); // 메뉴 닫기
     var msg = {
       roomId: roomId,
       senderId: myId,
-      content: "[[WALK_REQUEST]]" // 약속된 산책 요청 코드
+      content: "[[VIDEO_REQUEST]]" // 영상통화 요청 특수 코드
     };
     ws.send(JSON.stringify(msg));
   }
 
-  // [기능 구현] 산책 시작하기 버튼 클릭 시 동작
+  // 산책하기 요청 (카드 전송)
+  function requestWalk() {
+    togglePlusMenu();
+    var msg = {
+      roomId: roomId,
+      senderId: myId,
+      content: "[[WALK_REQUEST]]"
+    };
+    ws.send(JSON.stringify(msg));
+  }
+
   function startWalk() {
-    if(confirm("산책을 시작하시겠습니까?")) {
-      // 여기에 실제 산책 모드 시작 로직 (예: 페이지 이동, 지도 표시 등)
-      alert("산책 모드로 진입합니다! (구현 예정)");
-      // location.href = '/walk/start?roomId=' + roomId; // 예시
+    alert("산책 모드를 시작합니다!");
+    // 추후 구현: location.href = '/walk/start'; 등
+  }
+
+  // [추가] 영상통화 시작 버튼 동작
+  function startVideoCall() {
+    if(confirm("영상통화를 연결하시겠습니까?")) {
+      // 추후 구현: window.open('/video/call/' + roomId, 'VideoCall', 'width=600,height=600');
+      alert("영상통화 연결 중입니다...");
     }
   }
 </script>
