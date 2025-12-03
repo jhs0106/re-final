@@ -124,7 +124,7 @@
                     <i class="fas fa-paw"></i>
                     내 반려동물 요약
                 </h3>
-                <a href="<c:url value='/mypage'/>" class="btn btn-pet-outline btn-sm">
+                <a href="<c:url value='/diary'/>" class="btn btn-pet-outline btn-sm">
                     전체 보기 <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
