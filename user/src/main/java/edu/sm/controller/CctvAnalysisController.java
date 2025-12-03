@@ -22,13 +22,20 @@ public class CctvAnalysisController {
     @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<String> analyzeSnapshot(
             @RequestParam("question") String question,
-            @RequestParam("attach") MultipartFile attach
-    ) throws IOException {
-        if (attach == null || attach.isEmpty() || attach.getContentType() == null || !attach.getContentType().startsWith("image/")) {
+            @RequestParam("attach") MultipartFile attach,
+            jakarta.servlet.http.HttpSession session) throws IOException {
+        if (attach == null || attach.isEmpty() || attach.getContentType() == null
+                || !attach.getContentType().startsWith("image/")) {
             log.warn("Invalid attachment received for CCTV analysis. Returning NO_PET_VISIBLE.");
             return Flux.just("NO_PET_VISIBLE");
         }
 
-        return cctvAnalysisService.analyzeAndRespond(question, attach.getContentType(), attach.getBytes());
+        Integer userId = null;
+        edu.sm.app.dto.User user = (edu.sm.app.dto.User) session.getAttribute("user");
+        if (user != null) {
+            userId = user.getUserId();
+        }
+
+        return cctvAnalysisService.analyzeAndRespond(question, attach.getContentType(), attach.getBytes(), userId);
     }
 }
