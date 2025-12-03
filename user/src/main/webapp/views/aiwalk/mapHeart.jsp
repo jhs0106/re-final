@@ -20,26 +20,7 @@
 <body>
 
 <br>
-<!-- 반려인/알바생 진입 버튼 -->
-<section style="margin-top:40px; text-align:center;">
-    <h2>산책 알바</h2>
 
-    <button type="button"
-            onclick="location.href='<c:url value="/walkjob/owner"/>'"
-            style="padding:10px 20px; margin:8px; border-radius:999px; border:1px solid #ddd; background:#1d4ed8; color:white;">
-        반려인 화면 열기
-    </button>
-
-    <button type="button"
-            onclick="location.href='<c:url value="/walkjob/worker"/>'"
-            style="padding:10px 20px; margin:8px; border-radius:999px; border:1px solid #ddd; background:#10b981; color:white;">
-        알바생 화면 열기
-    </button>
-
-    <p style="font-size:0.85rem; color:#6b7280; margin-top:8px;">
-        실제 테스트 시에는 한 브라우저(또는 PC/모바일)에서 반려인, 다른 브라우저에서 알바생으로 접속하세요.
-    </p>
-</section>
 
 <!-- HERO -->
 <section class="map-hero">
@@ -216,7 +197,7 @@
 
                 <button type="button" class="control-pill primary" onclick="reloadRoute()">코스 다시 생성</button>
 
-                <button type="button" class="control-pill" onclick="openSavedCourseModal()">저장된 코스 불러오기</button>
+                <button type="button" class="control-pill" onclick="openSavedCourseModal()">저장된 모양 코스 불러오기</button>
 
                 <button type="button" class="control-pill" id="voiceBtn">음성으로 요청</button>
                 <span id="voiceSpinner" style="visibility:hidden;">녹음/처리중...</span>
