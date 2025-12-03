@@ -114,6 +114,20 @@
                         </div>
                     </li>
 
+                    <!-- 펫 다이어리 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="<c:url value='/diary'/>">
+                            <i class="fas fa-book"></i> 펫 다이어리
+                        </a>
+                    </li>
+
+                    <!-- 행동 리포트 메뉴 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="<c:url value='/report'/>">
+                            <i class="fas fa-chart-line"></i> 행동 리포트
+                        </a>
+                    </li>
+
                     <c:if test="${sessionScope.user != null}">
                         <li class="nav-item">
                             <a class="nav-link" href="<c:url value='/chat/list'/>">
@@ -123,19 +137,19 @@
                         </li>
                     </c:if>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="<c:url value='/notice'/>">
-                            <i class="fas fa-bell"></i> 공지사항
-                        </a>
-                    </li>
+<%--                    <li class="nav-item">--%>
+<%--                        <a class="nav-link" href="<c:url value='/notice'/>">--%>
+<%--                            <i class="fas fa-bell"></i> 공지사항--%>
+<%--                        </a>--%>
+<%--                    </li>--%>
                 </ul>
 
                 <div class="header-actions ml-3">
                     <c:choose>
                         <c:when test="${not empty sessionScope.user}">
-                            <a href="<c:url value='/customer-service'/>" class="btn btn-pet-outline btn-sm mr-2">
-                                <i class="fas fa-headset"></i> 고객센터
-                            </a>
+<%--                            <a href="<c:url value='/customer-service'/>" class="btn btn-pet-outline btn-sm mr-2">--%>
+<%--                                <i class="fas fa-headset"></i> 고객센터--%>
+<%--                            </a>--%>
                             <a href="<c:url value='/mypage'/>" class="btn btn-pet-outline btn-sm mr-2">
                                 <i class="fas fa-user-circle"></i> 마이페이지
                             </a>
