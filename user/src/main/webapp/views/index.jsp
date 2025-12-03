@@ -244,6 +244,35 @@
             </p>
         </div>
     </div>
+    <!-- 전역 산책 종료 요청 배너 -->
+    <div id="walkjobAlertBanner"
+         style="display:none; position:fixed; top:16px; left:50%; transform:translateX(-50%);
+            background:#fee2e2; color:#b91c1c; padding:10px 18px; border-radius:999px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.12); z-index:9999; cursor:pointer;">
+        산책을 종료하시겠습니까? 클릭하여 확인하세요.
+    </div>
+
+    <!-- 산책 종료 확인 모달 (간단 버전) -->
+    <div id="walkjobFinishModal"
+         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:10000;
+            align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:20px 24px; border-radius:16px; max-width:320px; width:90%;">
+            <h3 style="margin-top:0; margin-bottom:10px; font-size:1.1rem;">산책을 종료하시겠습니까?</h3>
+            <p style="font-size:0.9rem; color:#4b5563; margin-bottom:16px;">
+                알바생이 산책 종료를 요청했습니다. 종료하면 이번 산책이 기록으로 저장됩니다.
+            </p>
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button id="walkjobFinishNoBtn"
+                        style="padding:6px 12px; border-radius:999px; border:1px solid #d1d5db; background:#fff;">
+                    아니오
+                </button>
+                <button id="walkjobFinishYesBtn"
+                        style="padding:6px 12px; border-radius:999px; border:none; background:#ef4444; color:#fff;">
+                    예
+                </button>
+            </div>
+        </div>
+    </div>
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -352,6 +381,61 @@
         })();
     </script>
 </c:if>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const banner = document.getElementById('walkjobAlertBanner');
+        const modal = document.getElementById('walkjobFinishModal');
+        const yesBtn = document.getElementById('walkjobFinishYesBtn');
+        const noBtn = document.getElementById('walkjobFinishNoBtn');
 
+        if (!banner || !modal) return;
+
+        let alertShown = false;
+
+        // 🔹 반려인 전역 알림용 SSE
+        const alertSource = new EventSource('<c:url value="/api/walkjob/alerts-stream"/>');
+
+        alertSource.addEventListener('finishRequest', function (e) {
+            if (alertShown) return; // 1회성
+            alertShown = true;
+            banner.style.display = 'block';
+        });
+
+        alertSource.onerror = function (e) {
+            console.error('alerts SSE error', e);
+        };
+
+        // 배너 클릭 → 모달 오픈 & 배너 닫기
+        banner.addEventListener('click', function () {
+            banner.style.display = 'none';
+            modal.style.display = 'flex';
+        });
+
+        // 아니오 → 모달만 닫고 아무 작업 안 함 (산책 계속)
+        noBtn.addEventListener('click', function () {
+            modal.style.display = 'none';
+        });
+
+        // 예 → 실제 finish 호출
+        yesBtn.addEventListener('click', async function () {
+            try {
+                const res = await fetch('<c:url value="/api/walkjob/finish"/>', {
+                    method: 'POST'
+                });
+                if (!res.ok) throw new Error('finish error');
+
+                // 필요하면 응답값 파싱
+                // const data = await res.json();
+
+                alert('산책을 종료했습니다. 산책 기록이 저장되었습니다.');
+            } catch (e) {
+                console.error(e);
+                alert('산책 종료 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            } finally {
+                modal.style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>
