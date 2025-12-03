@@ -61,6 +61,22 @@ public class MainController {
             List<Pet> pets = petService.getByUserId(user.getUserId());
             int petCount = pets.size();
 
+            // ✅ 반려동물 정보 상세 로그
+            log.info("조회된 반려동물 수: {}", petCount);
+            for (Pet pet : pets) {
+                log.info("Pet [petId={}, name={}, type={}, customType={}, breed={}, age={}, weight={}]",
+                        pet.getPetId(), pet.getName(), pet.getType(), pet.getCustomType(),
+                        pet.getBreed(), pet.getAge(), pet.getWeight());
+            }
+
+            // 가입일 포맷팅
+            if (user.getCreatedAt() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+                String formattedDate = user.getCreatedAt().format(formatter);
+                model.addAttribute("formattedCreatedAt", formattedDate);
+            }
+
+
             model.addAttribute("user", user);
             model.addAttribute("pets", pets);
             model.addAttribute("petCount", petCount);
