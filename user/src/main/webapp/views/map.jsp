@@ -2,50 +2,75 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="true" %>
 
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Jua&family=Gamja+Flower&display=swap">
+
+
 <style>
-  :root {
-    --primary-color: #1d4ed8;
-    --accent-pink: #ff4fa3;
+  /* ✅ index.jsp 의 :root, body 에 영향 안 가도록
+     이 페이지 안에서만 쓰는 테마 변수 */
+  .pet-map-theme {
+    --primary-color: #6366f1;
+    --accent-pink: #ff7ab8;
     --bg-soft: #f9fafb;
-    --card-radius: 18px;
-    --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --card-radius: 20px;
+    --shadow-soft: 0 22px 50px rgba(15, 23, 42, 0.08);
   }
 
-  body {
-    background: #f5f7fb;
-  }
-
-  /* 페이지 전체 래퍼 */
-  .map-page-wrapper {
+  /* 이 페이지 안 레이아웃 전용 */
+  .pet-map-theme .map-page-wrapper {
     padding: 40px 16px 80px;
     display: flex;
     justify-content: center;
+    background: radial-gradient(circle at top left, #ffe4f3 0, transparent 55%),
+    radial-gradient(circle at top right, #e0f2fe 0, transparent 55%),
+    #f5f7fb;
   }
 
-  .map-page-container {
+  .pet-map-theme .map-page-container {
     width: min(1200px, 100%);
   }
 
-  .map-page-header {
+  .pet-map-theme .map-page-header {
     text-align: center;
     margin-bottom: 24px;
   }
 
-  .map-page-header h1 {
-    font-size: 26px;
+  .pet-map-theme .map-page-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 10px;
+    color: #6b7280;
+  }
+
+  .pet-map-theme .map-page-badge span {
+    font-size: 14px;
+  }
+
+  .pet-map-theme .map-page-header h1 {
+    font-size: 28px;
     font-weight: 800;
     margin-bottom: 8px;
+    background: linear-gradient(120deg, #6366f1, #ec4899);
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
-  .map-page-header .subtitle {
-    color: #555;
+  .pet-map-theme .map-page-header .subtitle {
+    color: #6b7280;
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
-  .map-notice-card {
+  .pet-map-theme .map-notice-card {
     background: #fff7e6;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 14px 18px;
     border: 1px solid #ffe3a2;
     display: flex;
@@ -55,44 +80,76 @@
     margin-bottom: 20px;
   }
 
-  .map-notice-icon {
+  .pet-map-theme .map-notice-icon {
     font-size: 18px;
     margin-top: 2px;
     color: #f97316;
   }
 
-  .map-notice-text strong {
+  .pet-map-theme .map-notice-text strong {
     display: block;
     margin-bottom: 2px;
   }
 
-  .map-main-card {
+  .pet-map-theme .map-main-card {
     background: #ffffff;
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-soft);
-    padding: 18px 18px 20px;
+    padding: 20px 20px 22px;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
   }
 
-  .map-card-header {
+  .pet-map-theme .map-main-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right,
+    rgba(251, 207, 232, 0.6) 0,
+    transparent 60%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .pet-map-theme .map-main-inner {
+    position: relative; /* overlay 위에 콘텐츠 올라오도록 */
+  }
+
+  .pet-map-theme .map-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     gap: 10px;
   }
 
-  .map-card-title {
+  .pet-map-theme .map-card-title {
     font-weight: 700;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
-  .map-card-caption {
+  .pet-map-theme .map-card-title-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #fef3c7;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .pet-map-theme .map-card-caption {
     font-size: 12px;
     color: #777;
   }
 
   /* === 기존 map-container를 카드 안에서만 쓰도록 재정의 === */
-  .map-container {
+  .pet-map-theme .map-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -102,74 +159,87 @@
     gap: 16px;
   }
 
-  #map {
+  .pet-map-theme #map {
     flex: 7;
     min-height: 260px;
     height: 100%;
     background: #e5e7eb;
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
+    border: 1px solid #e5e7eb;
   }
 
-  .info-panel {
+  .pet-map-theme .info-panel {
     flex: 5;
     display: flex;
     flex-direction: column;
     background: #fff;
     min-width: 280px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 8px 8px 10px;
+    backdrop-filter: blur(6px);
+    background-color: rgba(255, 255, 255, 0.95);
   }
 
   /* 탭 */
-  .tab-head {
+  .pet-map-theme .tab-head {
     display: flex;
     height: 40px;
     margin-bottom: 8px;
-    border-bottom: none;
     border-radius: 999px;
     background: #eef2ff;
-    padding: 3px;
+    padding: 4px;
     overflow: hidden;
   }
 
-  .tab-head div {
+  .pet-map-theme .tab-head div {
     flex: 1;
     text-align: center;
-    line-height: 34px;
+    line-height: 32px;
     font-weight: 600;
     cursor: pointer;
     background: transparent;
     font-size: 13px;
     border-radius: 999px;
     color: #4b5563;
-    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.12s;
+    white-space: nowrap;
   }
 
-  .tab-head .active {
-    background: var(--primary-color);
+  .pet-map-theme .tab-head .active {
+    background: linear-gradient(120deg, #6366f1, #ec4899);
     color: #fff;
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 6px 18px rgba(129, 140, 248, 0.5);
+    transform: translateY(-1px);
   }
 
   /* 직접 검색 영역 */
-  #searchBox {
+  .pet-map-theme #searchBox {
     display: none;
     padding: 8px 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f3f4f6;
     background: #fafafa;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 8px;
   }
 
-  #searchBox input {
+  .pet-map-theme #searchBox input {
     width: 70%;
-    padding: 6px 8px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    padding: 7px 9px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
     font-size: 13px;
+    outline: none;
   }
 
-  #searchBox button {
-    padding: 6px 12px;
+  .pet-map-theme #searchBox input:focus {
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.25);
+  }
+
+  .pet-map-theme #searchBox button {
+    padding: 7px 14px;
     margin-left: 6px;
     background: var(--primary-color);
     color: #fff;
@@ -180,40 +250,71 @@
     font-weight: 600;
   }
 
-  #infoList {
+  .pet-map-theme #infoList {
     flex: 1;
     overflow-y: auto;
     padding: 6px;
-    background: #fff;
+    background: transparent;
   }
 
-  .info-card {
-    padding: 12px;
-    border: 2px solid #ddd;
-    background: #fafafa;
-    border-radius: 12px;
-    margin-bottom: 10px;
+  .pet-map-theme .info-empty {
+    padding: 16px;
+    font-size: 13px;
+    color: #9ca3af;
+    text-align: center;
+  }
+
+  .pet-map-theme .info-card {
+    padding: 11px 12px;
+    border: 2px solid #e5e7eb;
+    background: #f9fafb;
+    border-radius: 14px;
+    margin-bottom: 9px;
     font-size: 13px;
     cursor: pointer;
-    transition: border-color 0.18s, background 0.18s, transform 0.12s;
+    transition: border-color 0.18s, background 0.18s, transform 0.12s, box-shadow 0.12s;
+    position: relative;
   }
 
-  .info-card:hover {
-    border-color: #c7d2fe;
-    transform: translateY(-1px);
-  }
-
-  .info-card b {
+  .pet-map-theme .info-card::before {
+    content: "🐾";
+    position: absolute;
+    right: 10px;
+    top: 10px;
     font-size: 14px;
+    opacity: 0.7;
   }
 
-  .info-card.active-card {
-    border: 3px solid var(--accent-pink);
-    background: #ffe8f4;
+  .pet-map-theme .info-card:hover {
+    border-color: #c7d2fe;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(148, 163, 184, 0.3);
+    background: #ffffff;
   }
 
-  .route-btn {
+  .pet-map-theme .info-card b {
+    font-size: 14px;
     display: inline-block;
+    margin-bottom: 2px;
+  }
+
+  .pet-map-theme .info-card small {
+    display: block;
+    font-size: 11px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+  }
+
+  .pet-map-theme .info-card.active-card {
+    border: 2px solid var(--accent-pink);
+    background: #fff0f6;
+    box-shadow: 0 10px 24px rgba(236, 72, 153, 0.35);
+  }
+
+  .pet-map-theme .route-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     margin-top: 6px;
     background: var(--accent-pink);
     color: #fff;
@@ -225,79 +326,158 @@
     font-weight: 600;
   }
 
+  .pet-map-theme .route-btn::before {
+    content: "📍";
+    font-size: 12px;
+  }
+
+  /* 반응형 */
   @media (max-width: 900px) {
-    .map-container {
+    .pet-map-theme .map-container {
       flex-direction: column;
       height: auto;
     }
-    #map {
+    .pet-map-theme #map {
       flex: none;
       height: 320px;
     }
-    .info-panel {
+    .pet-map-theme .info-panel {
       flex: 1;
       max-height: 360px;
       min-width: 100%;
     }
   }
+  /*!* 전체 기본 폰트 – 이 페이지 래퍼 안에서만 적용 *!*/
+  /*.pet-map-theme {*/
+  /*  font-family: 'Jua', -apple-system, BlinkMacSystemFont,*/
+  /*  'Segoe UI', system-ui, sans-serif;*/
+  /*}*/
 
+  /*!* 제목/메인 타이틀은 더 동글동글한 폰트 *!*/
+  /*.pet-map-theme h1,*/
+  /*.pet-map-theme .map-card-title {*/
+  /*'Segoe UI', system-ui, sans-serif;*/
+  /*}*/
+
+  /*!* 탭/버튼도 살짝 통통한 느낌 유지 *!*/
+  /*.pet-map-theme .tab-head div,*/
+  /*.pet-map-theme .route-btn,*/
+  /*.pet-map-theme .map-page-badge {*/
+  /*  font-family: 'Jua', system-ui, sans-serif;*/
+  /*}*/
+  /* === 글자 조금씩 키우는 오버라이드 === */
+  .pet-map-theme .map-page-header h1 {
+    font-size: 38px;            /* 28 → 32 */
+  }
+
+  .pet-map-theme .map-page-header .subtitle {
+    font-size: 17px;            /* 14 → 15 */
+  }
+
+  .pet-map-theme .map-page-badge {
+    font-size: 15px;            /* 12 → 13 */
+  }
+
+  .pet-map-theme .map-card-title {
+    font-size: 20px;            /* 16 → 18 */
+  }
+
+  .pet-map-theme .map-card-caption {
+    font-size: 15px;            /* 12 → 13 */
+  }
+
+  .pet-map-theme .tab-head div {
+    font-size: 16px;            /* 13 → 14 */
+  }
+
+  .pet-map-theme #searchBox input,
+  .pet-map-theme #searchBox button {
+    font-size: 16px;            /* 13 → 14 */
+  }
+
+  .pet-map-theme .info-card {
+    font-size: 16px;            /* 13 → 14 */
+  }
+
+  .pet-map-theme .info-card b {
+    font-size: 17px;            /* 14 → 15 */
+  }
+
+  .pet-map-theme .route-btn {
+    font-size: 15px;            /* 12 → 13 */
+  }
   @media (max-width: 600px) {
-    .map-page-wrapper {
+    .pet-map-theme .map-page-wrapper {
       padding-top: 24px;
     }
-    .map-main-card {
-      padding: 14px 12px 16px;
+    .pet-map-theme .map-main-card {
+      padding: 16px 14px 18px;
     }
+  }
+
+  /* 이 페이지 안 요소만 박스사이징統一 */
+  .pet-map-theme .map-page-container * {
+    box-sizing: border-box;
   }
 </style>
 
-<div class="map-page-wrapper">
-  <div class="map-page-container">
-    <!-- 상단 타이틀 / 설명 -->
-    <div class="map-page-header">
-      <h1>주변 펫 시설 찾기</h1>
-      <p class="subtitle">
-        현재 위치 기준으로 동물병원 · 애견카페 · 애견호텔을 검색합니다.<br>
-        시설을 선택하면 카카오맵 길찾기로 바로 이동할 수 있어요.
-      </p>
-    </div>
-
-    <!-- 안내 카드 -->
-    <div class="map-notice-card">
-      <div class="map-notice-icon">⚠️</div>
-      <div class="map-notice-text">
-        <strong>표시되는 정보는 카카오맵 데이터를 기반으로 합니다.</strong>
-        실제 영업 여부·시간·휴무일 등은 방문 전 반드시 전화 등으로 재확인해주세요.
+<div class="pet-map-theme">
+  <div class="map-page-wrapper">
+    <div class="map-page-container">
+      <!-- 상단 타이틀 / 설명 -->
+      <div class="map-page-header">
+        <div class="map-page-badge">
+          <span>🐶</span> 펫 전용 주변 시설 안내
+        </div>
+        <h1>주변 펫 시설 찾기</h1>
+        <p class="subtitle">
+          현재 위치 기준으로 동물병원 · 애견카페 · 애견호텔을 검색합니다.<br>
+          시설을 선택하면 카카오맵 길찾기로 바로 이동할 수 있어요.
+        </p>
       </div>
-    </div>
 
-    <!-- 메인 카드 -->
-    <div class="map-main-card">
-      <div class="map-card-header">
-        <div>
-          <div class="map-card-title">내 주변 펫 전용 시설</div>
-          <div class="map-card-caption">탭을 눌러 시설 종류를 바꾸거나, 직접 검색해보세요.</div>
+      <!-- 안내 카드 -->
+      <div class="map-notice-card">
+        <div class="map-notice-icon">⚠️</div>
+        <div class="map-notice-text">
+          <strong>표시되는 정보는 카카오맵 데이터를 기반으로 합니다.</strong>
+          실제 영업 여부·시간·휴무일 등은 방문 전 반드시 전화 등으로 재확인해주세요.
         </div>
       </div>
 
-      <!-- 여기부터는 원래 구조 그대로 (id/class 유지) -->
-      <div class="map-container">
-        <div id="map"></div>
-
-        <div class="info-panel">
-          <div class="tab-head">
-            <div id="tab-hospital" class="active">동물병원</div>
-            <div id="tab-cafe">애견카페</div>
-            <div id="tab-hotel">애견호텔</div>
-            <div id="tab-search">직접 검색</div>
+      <!-- 메인 카드 -->
+      <div class="map-main-card">
+        <div class="map-main-inner">
+          <div class="map-card-header">
+            <div>
+              <div class="map-card-title">
+                <div class="map-card-title-icon">🐾</div>
+                내 주변 펫 전용 시설
+              </div>
+              <div class="map-card-caption">탭을 눌러 시설 종류를 바꾸거나, 직접 검색해보세요.</div>
+            </div>
           </div>
 
-          <div id="searchBox">
-            <input id="searchKeyword" type="text" placeholder="예: 서울 애견카페, 강남 동물병원 등">
-            <button id="searchBtn" type="button">검색</button>
-          </div>
+          <!-- 여기부터는 원래 구조 그대로 (id/class 유지) -->
+          <div class="map-container">
+            <div id="map"></div>
 
-          <div id="infoList"></div>
+            <div class="info-panel">
+              <div class="tab-head">
+                <div id="tab-hospital" class="active">동물병원</div>
+                <div id="tab-cafe">애견카페</div>
+                <div id="tab-hotel">애견호텔</div>
+                <div id="tab-search">직접 검색</div>
+              </div>
+
+              <div id="searchBox">
+                <input id="searchKeyword" type="text" placeholder="예: 서울 애견카페, 강남 동물병원 등">
+                <button id="searchBtn" type="button">검색</button>
+              </div>
+
+              <div id="infoList"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -436,7 +616,7 @@
     list.innerHTML = "";
 
     if (!places || places.length === 0) {
-      list.innerHTML = "<div style='padding:16px;'>검색 결과가 없습니다.</div>";
+      list.innerHTML = "<div class='info-empty'>검색 결과가 없습니다.</div>";
       return;
     }
 
@@ -608,7 +788,7 @@
       closeInfoWindow();
       deactivateCards();
       document.getElementById("infoList").innerHTML =
-              "<div style='padding:16px;'>검색어를 입력한 후 검색 버튼을 눌러주세요.</div>";
+              "<div class='info-empty'>검색어를 입력한 후 검색 버튼을 눌러주세요.</div>";
     };
 
     // 직접 검색 → 전국 검색

@@ -1186,15 +1186,21 @@
 
     function updateFreeNavigation(lat, lon) {
         if (freeTrackLatLngs.length === 0) {
+            // 첫 지점은 무조건 추가
             freeTrackLatLngs.push([lat, lon]);
         } else {
             const [prevLat, prevLon] = freeTrackLatLngs[freeTrackLatLngs.length - 1];
             const move = distanceMeters(prevLat, prevLon, lat, lon);
-            if (move < 2) return;
-            freeTrackLatLngs.push([lat, lon]);
-            freeWalkedMeters += move;
+
+            // ★ 이동 거리가 2m 미만이면 "거리/경로"만 업데이트 안 하고,
+            //    아래 시간/마커 갱신은 그대로 진행하도록 변경
+            if (move >= 2) {
+                freeTrackLatLngs.push([lat, lon]);
+                freeWalkedMeters += move;
+            }
         }
 
+        // ★ 현재 위치 마커는 항상 갱신
         if (!freeUserMarker) {
             freeUserMarker = L.marker([lat, lon], {
                 title: '현재 위치',
@@ -1204,6 +1210,7 @@
             freeUserMarker.setLatLng([lat, lon]);
         }
 
+        // ★ 경로 polyline 은 실제로 이동이 있을 때만 갱신
         if (freeTrackLatLngs.length >= 2) {
             if (freePolyline) {
                 freePolyline.setLatLngs(freeTrackLatLngs);
@@ -1220,12 +1227,14 @@
         const km = freeWalkedMeters / 1000;
         document.getElementById('generalDistanceLabel').textContent = km.toFixed(2) + ' km';
 
+        // ★ 여기 시간 부분은 이동 거리와 상관없이 항상 갱신되게 유지
         if (freeWalkingStartedAt) {
             const now = new Date();
             const minutes = Math.max(1, Math.round((now - freeWalkingStartedAt) / 60000));
             document.getElementById('generalTimeLabel').textContent = minutes + ' 분';
         }
     }
+
 
     function startGeneralWalk() {
         if (!navigator.geolocation) {
