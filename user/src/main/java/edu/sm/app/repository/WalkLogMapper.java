@@ -20,4 +20,6 @@ public interface WalkLogMapper {
             @Param("userId") int userId);
 
     List<WalkLogDto> findByUserIdAndMonth(@Param("userId") int userId, @Param("yearMonth") String yearMonth);
+
+    void delete(Integer id);
 }

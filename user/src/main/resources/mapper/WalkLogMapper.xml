@@ -103,4 +103,8 @@
         ORDER BY start_time DESC
     </select>
 
+    <delete id="delete" parameterType="int">
+        DELETE FROM walk_log WHERE walking_recode_id = #{id}
+    </delete>
+
 </mapper>

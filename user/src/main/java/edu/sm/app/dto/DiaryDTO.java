@@ -30,4 +30,5 @@ public class DiaryDTO {
     // Form binding fields
     private String dateStr;
     private String timeStr;
+    private String existingImages; // Comma-separated list of existing images to keep
 }
