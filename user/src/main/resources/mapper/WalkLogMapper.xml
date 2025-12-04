@@ -54,7 +54,7 @@
              #{distanceKm},
              #{routeData},
              #{plannedDistanceKm},
-             #{walkedDistanceKm},
+             COALESCE(#{walkedDistanceKm}, 0),
              #{plannedRouteData},
              #{walkedRouteData},
              #{shapeType},
