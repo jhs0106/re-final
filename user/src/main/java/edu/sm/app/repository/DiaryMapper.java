@@ -2,6 +2,7 @@ package edu.sm.app.repository;
 
 import edu.sm.app.dto.DiaryDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public interface DiaryMapper {
 
     List<DiaryDTO> selectByUserId(Integer userId);
 
-    List<DiaryDTO> selectByUserIdAndMonth(Integer userId, String yearMonth, Integer petId); // yearMonth format:
-                                                                                            // '2024-12'
+    List<DiaryDTO> selectByUserIdAndMonth(@Param("userId") Integer userId, @Param("yearMonth") String yearMonth,
+            @Param("petId") Integer petId); // yearMonth format:
+    // '2024-12'
 }

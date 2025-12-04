@@ -33,6 +33,10 @@ public class DiaryService {
         diaryMapper.delete(id);
     }
 
+    public void removeWalkLog(Integer id) throws Exception {
+        walkLogMapper.delete(id);
+    }
+
     public DiaryDTO get(Integer id) throws Exception {
         return diaryMapper.selectById(id);
     }
@@ -63,24 +67,37 @@ public class DiaryService {
             timeline.add(entry);
         }
 
+        // 2. Fetch Walk Logs and convert to DiaryDTO (Only if no specific pet filter is
+        // applied, as walks are not pet-specific yet)
         // 2. Fetch Walk Logs and convert to DiaryDTO
         List<WalkLogDto> walkLogs = walkLogMapper.findByUserIdAndMonth(userId, yearMonth);
         for (WalkLogDto walk : walkLogs) {
+            // Filter by petId if provided
+            if (petId != null) {
+                if (walk.getPetId() == null || !walk.getPetId().equals(petId)) {
+                    continue;
+                }
+            }
+
+            // Skip if essential data is missing
+            if (walk.getWalkingRecodeId() == null || walk.getStartTime() == null) {
+                continue;
+            }
+
             DiaryDTO walkEntry = DiaryDTO.builder()
-                    .id((int) (long) walk.getWalkingRecodeId()) // Use walk ID (might need differentiation in frontend)
+                    .id(walk.getWalkingRecodeId().intValue()) // Safe conversion after null check
                     .userId(walk.getUserId())
                     .type("walk")
                     .title("산책 기록")
                     .content(String.format("거리: %.2fkm, 시간: %s ~ %s",
                             walk.getDistanceKm() != null ? walk.getDistanceKm() : 0.0,
-                            walk.getStartTime() != null
-                                    ? walk.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"))
-                                    : "00:00",
-                            walk.getEndTime() != null ? walk.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+                            walk.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                            walk.getEndTime() != null
+                                    ? walk.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
                                     : "00:00"))
                     .date(walk.getStartTime())
                     .isAuto(true)
-                    .meta(String.format("%.2fkm", walk.getDistanceKm() != null ? walk.getDistanceKm() : 0.0))
+                    .meta(walk.getWalkedRouteData()) // Pass route data for map display
                     .build();
             timeline.add(walkEntry);
         }
