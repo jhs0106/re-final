@@ -1,1083 +1,406 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-        <link rel="stylesheet" href="<c:url value='/css/diary.css'/>">
+        <!-- 펫 다이어리 컨테이너 -->
+        <div class="diary-container">
+            <div class="diary-wrapper">
+
+                <!-- 헤더 섹션 -->
+                <div class="diary-header">
+                    <div class="diary-header-content">
+                        <h1 class="diary-title">
+                            <i class="fas fa-book-open"></i>
+                            펫 다이어리
+                        </h1>
+                        <p class="diary-subtitle">AI가 반려동물 입장에서 작성하는 특별한 하루</p>
+                    </div>
+                    <div class="diary-legend">
+                        <span class="legend-item walk">
+                            <i class="fas fa-walking"></i> 산책일기
+                        </span>
+                        <span class="legend-item behavior">
+                            <i class="fas fa-camera"></i> 행동일기
+                        </span>
+                        <span class="legend-item daily">
+                            <i class="fas fa-heart"></i> 하루일기
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 캘린더 섹션 -->
+                <div class="diary-calendar-card">
+                    <div id="diaryCalendar"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 산책일기 모달 -->
+        <div class="modal fade" id="walkDiaryModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content diary-modal-content walk-modal">
+                    <div class="modal-header diary-modal-header walk-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-walking"></i>
+                            <span id="walkDiaryTitle">산책일기</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" style="color: white;">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body diary-modal-body">
+                        <div class="diary-meta">
+                            <span class="diary-date" id="walkDiaryDate"></span>
+                            <span class="diary-pet" id="walkDiaryPet"></span>
+                        </div>
+                        <div class="diary-content" id="walkDiaryContent"></div>
+                        <div class="diary-metadata">
+                            <h6><i class="fas fa-map-marked-alt"></i> 산책 정보</h6>
+                            <div class="metadata-grid">
+                                <div class="metadata-item">
+                                    <span class="metadata-label">거리</span>
+                                    <span class="metadata-value" id="walkDistance"></span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="metadata-label">시간</span>
+                                    <span class="metadata-value" id="walkDuration"></span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="metadata-label">경로</span>
+                                    <span class="metadata-value" id="walkRoute"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 행동일기 모달 -->
+        <div class="modal fade" id="behaviorDiaryModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content diary-modal-content behavior-modal">
+                    <div class="modal-header diary-modal-header behavior-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-camera"></i>
+                            <span id="behaviorDiaryTitle">행동일기</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" style="color: white;">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body diary-modal-body">
+                        <div class="diary-meta">
+                            <span class="diary-date" id="behaviorDiaryDate"></span>
+                            <span class="diary-pet" id="behaviorDiaryPet"></span>
+                        </div>
+                        <div class="diary-content" id="behaviorDiaryContent"></div>
+                        <div class="diary-metadata">
+                            <h6><i class="fas fa-video"></i> 홈캠 이벤트</h6>
+                            <div class="event-list" id="behaviorEvents"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하루일기 모달 -->
+        <div class="modal fade" id="dailyDiaryModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content diary-modal-content daily-modal">
+                    <div class="modal-header diary-modal-header daily-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-heart"></i>
+                            <span id="dailyDiaryTitle">하루일기</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" style="color: white;">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body diary-modal-body">
+                        <div class="diary-meta">
+                            <span class="diary-date" id="dailyDiaryDate"></span>
+                            <span class="diary-pet" id="dailyDiaryPet"></span>
+                        </div>
+                        <div class="diary-content" id="dailyDiaryContent"></div>
+                        <div class="diary-metadata">
+                            <h6><i class="fas fa-clipboard-list"></i> 하루 요약</h6>
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <i class="fas fa-walking"></i>
+                                    <span id="dailySummaryWalk"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <i class="fas fa-camera"></i>
+                                    <span id="dailySummaryBehavior"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- FullCalendar CSS -->
         <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
 
-        <div class="diary-container">
-            <div class="container">
-                <!-- Page Header -->
-                <div class="diary-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h1>
-                                <i class="fas fa-book" style="color: var(--primary-color);"></i>
-                                펫 다이어리
-                            </h1>
-                            <p class="subtitle">
-                                우리 아이의 특별한 순간을 기록하고, 자동으로 저장되는 활동들을 확인하세요
-                            </p>
-                        </div>
-                        <button class="btn btn-pet-primary btn-lg" onclick="openAddDiaryModal()">
-                            <i class="fas fa-plus-circle mr-2"></i>
-                            메모 추가하기
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Summary Statistics -->
-                <div class="diary-summary-section mb-4">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="summary-stat-card">
-                                <div class="stat-icon" style="background: linear-gradient(135deg, #9775FA, #7950F2);">
-                                    <i class="fas fa-book-open"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h4>총 기록</h4>
-                                    <p class="stat-number" id="totalRecords">0</p>
-                                    <span class="stat-detail">전체 활동</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="summary-stat-card">
-                                <div class="stat-icon" style="background: linear-gradient(135deg, #FF6B6B, #FA5252);">
-                                    <i class="fas fa-walking"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h4>산책 기록</h4>
-                                    <p class="stat-number" id="walkRecords">0</p>
-                                    <span class="stat-detail">자동 저장</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="summary-stat-card">
-                                <div class="stat-icon" style="background: linear-gradient(135deg, #4ECDC4, #38D9A9);">
-                                    <i class="fas fa-video"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h4>홈캠 이벤트</h4>
-                                    <p class="stat-number" id="homecamRecords">0</p>
-                                    <span class="stat-detail">AI 감지</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="summary-stat-card">
-                                <div class="stat-icon" style="background: linear-gradient(135deg, #FFD43B, #FF922B);">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h4>특별한 날</h4>
-                                    <p class="stat-number" id="specialRecords">0</p>
-                                    <span class="stat-detail">기념일</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filter Buttons -->
-                <div class="diary-filters mb-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="filter-tags d-flex align-items-center">
-                            <select class="form-control form-control-sm mr-2" id="petFilter" style="width: auto;"
-                                onchange="filterByPet()">
-                                <option value="">모든 반려동물</option>
-                                <!-- Dynamically populated -->
-                            </select>
-                            <button class="filter-tag active" data-type="all" onclick="filterDiaryType('all')">
-                                <i class="fas fa-list"></i> 전체
-                            </button>
-                            <button class="filter-tag" data-type="walk" onclick="filterDiaryType('walk')">
-                                <i class="fas fa-walking"></i> 산책
-                            </button>
-                            <button class="filter-tag" data-type="health" onclick="filterDiaryType('health')">
-                                <i class="fas fa-heartbeat"></i> 건강
-                            </button>
-                            <button class="filter-tag" data-type="homecam" onclick="filterDiaryType('homecam')">
-                                <i class="fas fa-video"></i> 홈캠
-                            </button>
-                            <button class="filter-tag" data-type="memo" onclick="filterDiaryType('memo')">
-                                <i class="fas fa-pen"></i> 메모
-                            </button>
-                            <button class="filter-tag" data-type="special" onclick="filterDiaryType('special')">
-                                <i class="fas fa-star"></i> 기념일
-                            </button>
-                        </div>
-                        <div class="view-toggle">
-                            <button class="btn btn-sm btn-pet-outline active" id="calendarViewBtn"
-                                onclick="switchView('calendar')">
-                                <i class="fas fa-calendar-alt"></i> 캘린더
-                            </button>
-                            <button class="btn btn-sm btn-pet-outline" id="listViewBtn" onclick="switchView('list')">
-                                <i class="fas fa-list"></i> 리스트
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Calendar View -->
-                <div id="calendarView" class="diary-calendar-section">
-                    <div class="info-card">
-                        <div class="calendar-header">
-                            <h3 class="info-card-title">
-                                <i class="fas fa-calendar-alt"></i>
-                                통합 타임라인 캘린더
-                            </h3>
-                            <p class="text-muted">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                산책, 홈캠 이벤트, 건강 체크 등이 자동으로 기록됩니다
-                            </p>
-                        </div>
-                        <div id="calendar"></div>
-                    </div>
-                </div>
-
-                <!-- List View -->
-                <div id="listView" class="diary-list-section" style="display: none;">
-                    <div class="info-card">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="info-card-title mb-0">
-                                <i class="fas fa-clock"></i>
-                                최근 활동 내역
-                            </h3>
-                            <div class="sort-options">
-                                <select class="form-control form-control-sm" id="sortSelect" onchange="sortDiaryList()">
-                                    <option value="date-desc">최신순</option>
-                                    <option value="date-asc">오래된순</option>
-                                    <option value="type">유형별</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="diary-timeline" id="diaryTimeline">
-                            <!-- Dynamically populated timeline items will appear here -->
-                            <div class="empty-state" id="emptyState">
-                                <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-                                <h5 class="text-muted">아직 기록이 없습니다</h5>
-                                <p class="text-muted">첫 메모를 추가하거나 활동을 시작해보세요!</p>
-                            </div>
-                        </div>
-
-                        <!-- Load More Button -->
-                        <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
-                            <button class="btn btn-pet-outline" onclick="loadMoreDiaryEntries()">
-                                <i class="fas fa-chevron-down mr-2"></i>
-                                더보기
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add/Edit Diary Entry Modal -->
-        <div class="modal fade" id="diaryEntryModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-                <div class="modal-content" style="border-radius: 1.5rem; border: none;">
-                    <div class="modal-header" style="border-bottom: 2px solid #e9ecef; padding: 1.5rem 2rem;">
-                        <h5 class="modal-title" style="font-size: 1.25rem; font-weight: 700; color: #212529;">
-                            <i class="fas fa-pen mr-2" style="color: #9775FA;"></i>
-                            <span id="modalTitle">메모 추가하기</span>
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal"
-                            style="font-size: 1.5rem; opacity: 0.5;">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body" style="padding: 2rem;">
-                        <form id="diaryEntryForm">
-                            <input type="hidden" id="entryId" name="id">
-                            <input type="hidden" id="existingImages" name="existingImages">
-
-                            <!-- Entry Type -->
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-tag mr-1"></i>
-                                    기록 유형 <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-control" id="entryType" name="type" required>
-                                    <option value="">선택하세요</option>
-                                    <option value="memo">일반 메모</option>
-                                    <option value="special">특별한 날/기념일</option>
-                                    <option value="health">건강 기록</option>
-                                    <option value="food">식사/간식</option>
-                                    <option value="grooming">미용</option>
-                                    <option value="training">훈련</option>
-                                    <option value="other">기타</option>
-                                </select>
-                            </div>
-
-                            <!-- Title -->
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-heading mr-1"></i>
-                                    제목 <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="entryTitle" name="title"
-                                    placeholder="예: 우리 뭉치 생일" required maxlength="100">
-                            </div>
-
-                            <!-- Date and Time -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>
-                                            <i class="fas fa-calendar mr-1"></i>
-                                            날짜 <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="date" class="form-control" id="entryDate" name="dateStr" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>
-                                            <i class="fas fa-clock mr-1"></i>
-                                            시간
-                                        </label>
-                                        <input type="time" class="form-control" id="entryTime" name="timeStr">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Content -->
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-comment mr-1"></i>
-                                    내용 <span class="text-danger">*</span>
-                                </label>
-                                <textarea class="form-control" id="entryContent" name="content" rows="5"
-                                    placeholder="오늘 있었던 일을 자세히 적어주세요..." required></textarea>
-                            </div>
-
-                            <!-- Image Upload -->
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-image mr-1"></i>
-                                    사진 첨부 (선택사항)
-                                </label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="entryImages" name="images"
-                                        accept="image/*" multiple onchange="previewImages(this)">
-                                    <label class="custom-file-label" for="entryImages">파일 선택</label>
-                                </div>
-                                <small class="form-text text-muted">
-                                    최대 5장까지 업로드 가능 (JPG, PNG, GIF)
-                                </small>
-                                <div id="imagePreviewContainer" class="mt-3 row"></div>
-                            </div>
-
-                            <!-- Tags -->
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-tags mr-1"></i>
-                                    태그 (선택사항)
-                                </label>
-                                <input type="text" class="form-control" id="entryTags" name="tags"
-                                    placeholder="#행복 #건강 #생일 (스페이스로 구분)">
-                                <small class="form-text text-muted">
-                                    태그를 추가하면 나중에 쉽게 찾을 수 있어요
-                                </small>
-                            </div>
-
-                            <!-- Pet Selection (if multiple pets) -->
-                            <div class="form-group">
-                                <label>
-                                    <i class="fas fa-paw mr-1"></i>
-                                    반려동물 선택
-                                </label>
-                                <select class="form-control" id="entryPet" name="petId">
-                                    <option value="">전체</option>
-                                    <!-- Dynamically populated pet list -->
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="modal-footer" style="border-top: 2px solid #e9ecef; padding: 1rem 2rem;">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
-                            style="height: 2.75rem; border-radius: 0.75rem; font-weight: 600; padding: 0 1.5rem;">
-                            <i class="fas fa-times mr-2"></i> 취소
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="saveDiaryEntry()"
-                            style="background: linear-gradient(135deg, #9775FA, #7950F2); border: none; height: 2.75rem; border-radius: 0.75rem; font-weight: 600; padding: 0 1.5rem;">
-                            <i class="fas fa-save mr-2"></i> 저장하기
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- View Detail Modal -->
-        <div class="modal fade" id="diaryDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-                <div class="modal-content" style="border-radius: 1.5rem; border: none;">
-                    <div class="modal-header" style="border-bottom: 2px solid #e9ecef; padding: 1.5rem 2rem;">
-                        <h5 class="modal-title" style="font-size: 1.25rem; font-weight: 700;" id="detailTitle"></h5>
-                        <button type="button" class="close" data-dismiss="modal"
-                            style="font-size: 1.5rem; opacity: 0.5;">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body" style="padding: 2rem;">
-                        <div id="detailContent"></div>
-                    </div>
-
-                    <div class="modal-footer" style="border-top: 2px solid #e9ecef; padding: 1rem 2rem;">
-                        <button type="button" class="btn btn-outline-danger" onclick="deleteDiaryEntry()"
-                            style="height: 2.75rem; border-radius: 0.75rem; font-weight: 600; padding: 0 1.5rem;">
-                            <i class="fas fa-trash mr-2"></i> 삭제
-                        </button>
-                        <button type="button" class="btn btn-outline-primary" onclick="editDiaryEntry()"
-                            style="height: 2.75rem; border-radius: 0.75rem; font-weight: 600; padding: 0 1.5rem;">
-                            <i class="fas fa-edit mr-2"></i> 수정
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            style="height: 2.75rem; border-radius: 0.75rem; font-weight: 600; padding: 0 1.5rem;">
-                            닫기
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- FullCalendar JS -->
         <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/ko.global.min.js'></script>
 
         <script>
-            (function () {
-                let calendar;
-                let allEvents = [];
-                let currentFilter = 'all';
-                let currentView = 'calendar';
-                let currentEntryId = null;
-                let pets = [];
-                let currentPetFilter = '';
-                let keptImages = []; // Array to store existing images being kept during edit
+            document.addEventListener('DOMContentLoaded', function () {
 
-                const eventTypeConfig = {
-                    walk: {
-                        color: '#20C997',
-                        icon: 'fa-walking',
-                        label: '산책'
+                // ============ Mock Data ============
+                // TODO: Replace with actual API call
+                // fetch('/api/diary/list?userId=' + userId)
+                //   .then(res => res.json())
+                //   .then(diaries => { /*populate calendar */ })
+
+                const mockDiaries = [
+                    // 산책일기
+                    {
+                        id: 1,
+                        type: 'walk',
+                        date: '2025-12-05',
+                        title: '오늘 산책은 최고였어!',
+                        petName: '뽀삐',
+                        content: '주인님과 함께 공원에 갔어요! 🌳 오늘은 날씨가 정말 좋았어요. 햇살이 따뜻하게 내 등을 비춰주고, 산들바람이 내 귀를 간지럽혔어요.\\n\\n공원에 도착하자마자 다람쿼를 발견했어요! 내가 쫓아가려고 했는데 주인님이 목줄을 꽉 잡으시더라고요. 에이, 조금만 놀게 해주시지~ 😊\\n\\n그래도 오늘 산책은 정말 재미있었어요. 다른 강아지 친구들도 많이 만났고, 특히 골든 리트리버 친구랑 한참 놀았어요. 꼬리를 엄청 흔들었더니 주인님이 웃으시더라고요!',
+                        distance: '2.3km',
+                        duration: '45분',
+                        route: '근린공원 → 산책로 → 놀이터'
                     },
-                    homecam: {
-                        color: '#FFD43B',
-                        icon: 'fa-video',
-                        label: '홈캠'
+                    {
+                        id: 2,
+                        type: 'walk',
+                        date: '2025-12-03',
+                        title: '비 오는 날 산책',
+                        petName: '뽀삐',
+                        content: '오늘은 비가 와서 짧게 산책했어요. 🌧️ 비 냄새가 정말 좋았어요! 주인님이 우산을 씌워주셨지만, 나는 빗물에 발을 담그는 게 더 좋아요.\\n\\n빗소리를 들으며 걷는 게 평소와 달라서 신기했어요. 땅에서 올라오는 냄새도 더 진했고요. 주인님은 빨리 집에 가고 싶어 하셨지만, 나는 좀 더 있고 싶었어요!',
+                        distance: '1.1km',
+                        duration: '20분',
+                        route: '집 앞 → 골목길'
                     },
-                    hospital: {
-                        color: '#FF6B6B',
-                        icon: 'fa-hospital',
-                        label: '병원'
+                    // 행동일기
+                    {
+                        id: 3,
+                        type: 'behavior',
+                        date: '2025-12-04',
+                        title: '심심한 하루',
+                        petName: '뽀삐',
+                        content: '오늘은 주인님이 아침 일찍 나가셨어요. 😢 혼자 남겨진 나는 처음에는 문 앞에서 기다렸어요. 혹시 금방 돌아오시나 해서요.\\n\\n하지만 시간이 지나도 안 오시더라고요. 그래서 내 장난감이랑 놀았어요. 삑삑이 인형을 물고 이리저리 뛰어다녔어요. 소파에 올라가서 낮잠도 자고, 물도 마시고...\\n\\n오후 3시쯤에 택배 아저씨가 문 앞에 오셨어요! 나는 열심히 짖어서 알려드렸어요. 내가 집을 잘 지키고 있다는 걸 보여드리고 싶었거든요! 🐕',
+                        events: [
+                            { time: '09:15', event: '문 앞에서 대기', analysis: '주인 귀가 대기 행동' },
+                            { time: '11:30', event: '장난감과 놀이', analysis: '정상적인 놀이 행동' },
+                            { time: '13:45', event: '소파에서 휴식', analysis: '안정된 상태' },
+                            { time: '15:20', event: '방문자 감지 - 짖음', analysis: '경계 행동 (정상)' }
+                        ]
                     },
-                    anniversary: {
-                        color: '#FCC419',
-                        icon: 'fa-birthday-cake',
-                        label: '기념일'
+                    {
+                        id: 4,
+                        type: 'behavior',
+                        date: '2025-12-02',
+                        title: '장난꾸러기 하루',
+                        petName: '뽀삐',
+                        content: '오늘 주인님이 재택근무를 하셨어요! 😍 너무 신나서 아침부터 꼬리를 계속 흔들었어요.\\n\\n주인님이 화상회의를 하실 때, 나도 카메라에 나오고 싶어서 자꾸 화면 앞으로 갔어요. 주인님이 살짝 당황하시는 것 같았지만, 회의하시는 분들이 귀엽다고 하시더라고요! 히히~\\n\\n점심시간에는 주인님이 밥 드실 때 옆에서 앉아서 기다렸어요. 혹시 나한테도 주실까 해서요. 역시나 작은 간식을 주셨어요! 최고!',
+                        events: [
+                            { time: '09:30', event: '주인 근처에서 활동', analysis: '친화적 행동' },
+                            { time: '11:00', event: '화상회의 중 접근', analysis: '관심 표현' },
+                            { time: '12:30', event: '식사 시간 대기', analysis: '학습된 행동' },
+                            { time: '16:00', event: '놀이 요청', analysis: '활동적 상태' }
+                        ]
                     },
-                    food: {
-                        color: '#38D9A9',
-                        icon: 'fa-utensils',
-                        label: '식사'
+                    // 하루일기 (12월 1일~5일)
+                    {
+                        id: 5,
+                        type: 'daily',
+                        date: '2025-12-01',
+                        title: '즐거운 하루',
+                        petName: '뽀삐',
+                        content: '오늘은 정말 완벽한 하루였어요! 🎉\\n\\n아침에는 주인님과 함께 긴 산책을 했어요. 공원에서 다른 강아지 친구들을 만나서 신나게 놀았어요. 특히 시바견 친구랑 술래잡기를 했는데, 내가 이겼어요!\\n\\n집에 돌아와서는 주인님이 새로 사주신 장난감으로 놀았어요. 로프 장난감인데, 주인님이랑 잡아당기기 놀이를 했어요. 정말 재미있었어요!\\n\\n오후에는 따뜻한 햇살 아래서 낮잠을 잤어요. 창가에 누워서 바깥 풍경을 보다가 스르륵 잠들었는데, 정말 행복한 꿈을 꿨어요. 주인님과 넓은 들판을 뛰어다니는 꿈이었어요.\\n\\n저녁에는 맛있는 저녁 밥을 먹고, 주인님 무릎에 앉아서 TV를 봤어요. 주인님이 내 머리를 쓰다듬어 주실 때가 제일 행복해요. 💕',
+                        walkSummary: '공원 산책 2.5km, 친구들과 놀이',
+                        behaviorSummary: '장난감 놀이, 낮잠, TV 시청'
                     },
-                    grooming: {
-                        color: '#74C0FC',
-                        icon: 'fa-cut',
-                        label: '미용'
+                    {
+                        id: 6,
+                        type: 'daily',
+                        date: '2025-12-02',
+                        title: '함께한 화요일',
+                        petName: '뽀삐',
+                        content: '오늘은 주인님이 집에서 일하셨어요! 😍 재택근무라고 하시더라고요.\\n\\n아침 산책 후 하루 종일 주인님과 함께 있을 수 있어서 너무 좋았어요. 주인님이 일하실 때 발 밑에 누워있었는데, 가끔 발을 쓰다듬어 주셨어요.\\n\\n화상회의 할 때는 재미있었어요! 화면에 나도 나오고 싶어서 자꾸 카메라 앞으로 갔더니, 다른 사람들이 웃으시더라고요. 주인님은 좀 당황하셨지만, 저는 스타가 된 기분이었어요!\\n\\n점심시간에는 주인님 옆에서 기다리며 앉아있었어요. 역시나 맛있는 간식을 주셨어요. 저녁에는 같이 TV를 보면서 편안한 시간을 보냈어요. 주인님과 함께하는 하루가 제일 행복해요!',
+                        walkSummary: '아침 산책, 주인님과 함께',
+                        behaviorSummary: '재택근무 동행, 화상회의 스타, 간식'
                     },
-                    training: {
-                        color: '#FF922B',
-                        icon: 'fa-graduation-cap',
-                        label: '훈련'
+                    {
+                        id: 7,
+                        type: 'daily',
+                        date: '2025-12-03',
+                        title: '비 오는 수요일',
+                        petName: '뽀삐',
+                        content: '오늘은 비가 와서 특별한 하루였어요! 🌧️\\n\\n아침 산책은 짧았지만 비 냄새가 정말 좋았어요. 빗방울이 내 털에 떨어지는 느낌도 신기했고, 웅덩이를 밟는 것도 재미있었어요. 주인님은 빨리 들어가자고 하셨지만요!\\n\\n집에 돌아와서는 수건으로 몸을 말렸어요. 주인님이 부드럽게 닦아주시는 게 좋았어요. 그 후에는 창문 밖을 바라보며 빗소리를 들었어요. 차분하고 평화로운 느낌이었어요.\\n\\n저녁에는 주인님이 따뜻한 밥을 주셨어요. 비 오는 날에는 밥이 더 맛있는 것 같아요. 밥을 먹고 나서는 주인님 옆에 꼭 붙어서 쉬었어요. 비 오는 날도 나쁘지 않네요!',
+                        walkSummary: '비 오는 날 짧은 산책 1.1km',
+                        behaviorSummary: '빗소리 감상, 창밖 구경, 휴식'
                     },
-                    other: {
-                        color: '#868E96',
-                        icon: 'fa-ellipsis-h',
-                        label: '기타'
+                    {
+                        id: 8,
+                        type: 'daily',
+                        date: '2025-12-04',
+                        title: '조용한 목요일',
+                        petName: '뽀삐',
+                        content: '오늘은 주인님이 회사에 가셔서 혼자 있는 시간이 많았어요. 😌\\n\\n아침에는 짧은 산책을 하고 바로 집에 왔어요. 주인님이 바빠 보이셨거든요. 집에서는 내 장난감들과 놀면서 시간을 보냈어요. 삑삑이 인형이랑 술래잡기도 하고, 소파 위에서 점프도 했어요!\\n\\n점심때쯤 졸려서 낮잠을 잤어요. 창가에서 햇빛을 받으며 자는 게 제일 좋아요. 택배 아저씨가 오셨을 때는 제대로 짖어서 알려드렸어요. 나는 집을 지키는 훌륭한 강아지니까요!\\n\\n주인님이 돌아오시니까 너무 반가웠어요. 꼬리를 세차게 흔들며 환영했더니 주인님이 안아주셨어요. 역시 주인님과 함께 있을 때가 제일 좋아요!',
+                        walkSummary: '아침 짧은 산책',
+                        behaviorSummary: '혼자 놀이, 낮잠, 집 지키기'
+                    },
+                    {
+                        id: 9,
+                        type: 'daily',
+                        date: '2025-12-05',
+                        title: '완벽한 금요일!',
+                        petName: '뽀삐',
+                        content: '드디어 금요일이에요! 🎉 주인님이 오늘 기분이 정말 좋아 보이셨어요.\\n\\n아침 산책은 공원에서 했는데, 날씨가 너무 좋아서 평소보다 오래 걸었어요. 다람쥐도 보고, 새 친구들도 만나고... 정말 즐거웠어요! 주인님도 계속 웃으시면서 사진을 많이 찍으셨어요.\\n\\n집에 돌아와서는 간식도 받고, 좋아하는 담요 위에서 낮잠도 잤어요. 저녁에는 주인님이랑 같이 소파에 앉아서 영화를 봤어요. 주인님 무릎에 머리를 올리고 있으니까 너무 행복했어요.\\n\\n내일도 이렇게 행복한 하루였으면 좋겠어요! 💕',
+                        walkSummary: '공원 산책 2.3km, 즐거운 놀이 시간',
+                        behaviorSummary: '간식, 낮잠, 영화 시청'
                     }
-                };
+                ];
 
-                // Initialize when page loads
-                document.addEventListener('DOMContentLoaded', function () {
-                    initializeCalendar();
-                    loadPets();
-                    loadDiaryData();
-                    setDefaultDate();
+                // ============ FullCalendar 초기화 ============
+                const calendarEl = document.getElementById('diaryCalendar');
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'ko',
+                    height: 'auto',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth'
+                    },
+                    events: mockDiaries.map(diary => ({
+                        id: diary.id,
+                        title: diary.title,
+                        date: diary.date,
+                        backgroundColor: getEventColor(diary.type),
+                        borderColor: getEventColor(diary.type),
+                        extendedProps: {
+                            type: diary.type,
+                            petName: diary.petName,
+                            content: diary.content,
+                            distance: diary.distance,
+                            duration: diary.duration,
+                            route: diary.route,
+                            events: diary.events,
+                            walkSummary: diary.walkSummary,
+                            behaviorSummary: diary.behaviorSummary
+                        }
+                    })),
+                    eventClick: function (info) {
+                        showDiaryModal(info.event);
+                    }
                 });
 
-                function initializeCalendar() {
-                    const calendarEl = document.getElementById('calendar');
+                calendar.render();
 
-                    calendar = new FullCalendar.Calendar(calendarEl, {
-                        initialView: 'dayGridMonth',
-                        locale: 'ko',
-                        headerToolbar: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                        },
-                        buttonText: {
-                            today: '오늘',
-                            month: '월',
-                            week: '주',
-                            day: '일',
-                            list: '목록'
-                        },
-                        height: 'auto',
-                        navLinks: true,
-                        editable: false,
-                        dayMaxEvents: 3,
-                        eventClick: function (info) {
-                            showDiaryDetail(info.event);
-                        },
-                        events: [] // Will be populated by loadDiaryData()
-                    });
+                // ============ Helper Functions ============
 
-                    calendar.render();
-                }
-
-                function setDefaultDate() {
-                    const today = new Date();
-                    const dateStr = today.toISOString().split('T')[0];
-                    document.getElementById('entryDate').value = dateStr;
-                }
-
-                function loadPets() {
-                    fetch('/api/diary/pets')
-                        .then(response => response.json())
-                        .then(data => {
-                            pets = data;
-                            const petFilter = document.getElementById('petFilter');
-                            const entryPet = document.getElementById('entryPet');
-
-                            // Clear existing options except first
-                            while (petFilter.options.length > 1) petFilter.remove(1);
-                            while (entryPet.options.length > 1) entryPet.remove(1);
-
-                            data.forEach(pet => {
-                                // Filter dropdown
-                                const option1 = new Option(pet.name, pet.petId);
-                                petFilter.add(option1);
-
-                                // Modal dropdown
-                                const option2 = new Option(pet.name, pet.petId);
-                                entryPet.add(option2);
-                            });
-                        })
-                        .catch(error => console.error('Error loading pets:', error));
-                }
-
-                window.filterByPet = function () {
-                    currentPetFilter = document.getElementById('petFilter').value;
-                    loadDiaryData();
-                };
-
-                // Load diary data from backend
-                function loadDiaryData() {
-                    let url = '/api/diary/entries';
-                    const params = new URLSearchParams();
-                    if (currentPetFilter) {
-                        params.append('petId', currentPetFilter);
+                function getEventColor(type) {
+                    switch (type) {
+                        case 'walk': return '#4ECDC4';
+                        case 'behavior': return '#51CF66';
+                        case 'daily': return '#B197FC';
+                        default: return '#868e96';
                     }
+                }
 
-                    // Add timestamp to prevent caching
-                    params.append('_t', new Date().getTime());
+                function showDiaryModal(event) {
+                    const type = event.extendedProps.type;
+                    const props = event.extendedProps;
 
-                    if (params.toString()) {
-                        url += '?' + params.toString();
-                    }
+                    if (type === 'walk') {
+                        $('#walkDiaryTitle').text(event.title);
+                        $('#walkDiaryDate').text(event.start.toLocaleDateString('ko-KR'));
+                        $('#walkDiaryPet').text(props.petName);
+                        $('#walkDiaryContent').html(props.content.replace(/\n/g, '<br>'));
+                        $('#walkDistance').text(props.distance);
+                        $('#walkDuration').text(props.duration);
+                        $('#walkRoute').text(props.route);
+                        $('#walkDiaryModal').modal('show');
+                    } else if (type === 'behavior') {
+                        $('#behaviorDiaryTitle').text(event.title);
+                        $('#behaviorDiaryDate').text(event.start.toLocaleDateString('ko-KR'));
+                        $('#behaviorDiaryPet').text(props.petName);
+                        $('#behaviorDiaryContent').html(props.content.replace(/\n/g, '<br>'));
 
-                    fetch(url)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            allEvents = data;
-                            updateCalendar();
-                            updateStatistics();
-                            renderListView();
-                        })
-                        .catch(error => {
-                            console.error('Error loading diary data:', error);
-                            // Show error state in UI
-                            const timeline = document.getElementById('diaryTimeline');
-                            if (timeline) {
-                                timeline.innerHTML = `
-                            <div class="text-center py-5">
-                                <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
-                                <h5 class="text-muted">데이터를 불러오는데 실패했습니다</h5>
-                                <p class="text-muted">잠시 후 다시 시도해주세요</p>
-                            </div>
-                        `;
-                            }
+                        let eventsHtml = '';
+                        props.events.forEach(evt => {
+                            eventsHtml += `
+                    <div class="event-item">
+                        <span class="event-time">\${evt.time}</span>
+                        <span class="event-desc">\${evt.event}</span>
+                        <span class="event-analysis">\${evt.analysis}</span>
+                    </div>
+                `;
                         });
-                }
-
-                function updateCalendar() {
-                    const filteredEvents = currentFilter === 'all'
-                        ? allEvents
-                        : allEvents.filter(evt => evt.type === currentFilter);
-
-                    const calendarEvents = filteredEvents.map(evt => {
-                        const config = eventTypeConfig[evt.type] || eventTypeConfig.other;
-                        return {
-                            id: evt.id,
-                            title: evt.title,
-                            start: evt.date,
-                            backgroundColor: config.color,
-                            borderColor: config.color,
-                            extendedProps: evt
-                        };
-                    });
-
-                    calendar.removeAllEvents();
-                    calendar.addEventSource(calendarEvents);
-                }
-
-                function updateStatistics() {
-                    const stats = {
-                        total: allEvents.length,
-                        walk: allEvents.filter(e => e.type === 'walk').length,
-                        homecam: allEvents.filter(e => e.type === 'homecam').length,
-                        special: allEvents.filter(e => e.type === 'special').length
-                    };
-
-                    document.getElementById('totalRecords').textContent = stats.total;
-                    document.getElementById('walkRecords').textContent = stats.walk;
-                    document.getElementById('homecamRecords').textContent = stats.homecam;
-                    document.getElementById('specialRecords').textContent = stats.special;
-                }
-
-                function renderListView() {
-                    const timeline = document.getElementById('diaryTimeline');
-                    const emptyState = document.getElementById('emptyState');
-
-                    if (!timeline || !emptyState) return;
-
-                    const filteredEvents = currentFilter === 'all'
-                        ? allEvents
-                        : allEvents.filter(evt => evt.type === currentFilter);
-
-                    timeline.innerHTML = ''; // Clear existing content
-
-                    if (filteredEvents.length === 0) {
-                        emptyState.style.display = 'block';
-                        timeline.appendChild(emptyState);
-                        return;
-                    }
-
-                    emptyState.style.display = 'none';
-
-                    filteredEvents.forEach(entry => {
-                        const config = eventTypeConfig[entry.type] || eventTypeConfig.other;
-                        const itemHtml = createTimelineItem(entry, config);
-
-                        const div = document.createElement('div');
-                        div.innerHTML = itemHtml;
-                        div.onclick = function (e) {
-                            // Prevent click when clicking on map or buttons
-                            if (e.target.closest('.btn') || e.target.closest('.map-container') || e.target.closest('.entry-images')) return;
-                            showDiaryDetailById(entry.id);
-                        };
-                        timeline.appendChild(div);
-
-                        // Initialize map for walk logs
-                        if (entry.type === 'walk' && entry.meta) {
-                            setTimeout(() => {
-                                initMap(entry.id, entry.meta);
-                            }, 100);
-                        }
-                    });
-                }
-
-                function createTimelineItem(entry, config) {
-                    // Parse images
-                    let images = [];
-                    if (entry.images) {
-                        if (Array.isArray(entry.images)) {
-                            images = entry.images;
-                        } else if (typeof entry.images === 'string' && entry.images.trim() !== '') {
-                            images = entry.images.split(',').filter(img => img.trim() !== '');
-                        }
-                    }
-
-                    return `
-    <div class="diary-item" data-type="\${entry.type}">
-        <div class="diary-item-icon" style="background: linear-gradient(135deg, \${config.color}, \${config.color}dd);">
-            <i class="fas \${config.icon}"></i>
-        </div>
-        <div class="diary-item-content">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h5 class="diary-item-title">
-                        \${entry.title}
-                        \${entry.isAuto ? '<span class="badge badge-primary ml-2">자동</span>' : '<span class="badge badge-secondary ml-2">수동</span>'}
-                    </h5>
-                    <p class="diary-item-date">
-                        <i class="fas fa-calendar"></i> \${formatDate(entry.date)}
-                    </p>
-                </div>
-                <span class="badge" style="background-color: \${config.color};">\${config.label}</span>
-            </div>
-            <p class="diary-item-preview">\${entry.content || ''}</p>
-            \${images.length > 0 ? `
-                        < div class="diary-item-images mt-2 mb-2" >
-                            <div class="row no-gutters">
-                                \${images.slice(0, 4).map(img => `
-                            <div class="col-3 px-1">
-                                <img src="\${img}" class="img-fluid rounded" style="height: 60px; object-fit: cover; width: 100%;" alt="Diary Image">
-                            </div>
-                        `).join('')}
-                            </div>
-                </div >
-                        ` : ''}
-            \${entry.meta && entry.type !== 'walk' ? `< div class="diary-item-meta" >\${ entry.meta }</div > ` : ''}
-            \${entry.type === 'walk' && entry.meta ? `< div id = "map-\${entry.id}" class="map-container" style = "width:100%; height:200px; margin-top:10px; border-radius:8px;" ></div > ` : ''}
-        </div>
-    </div>
-`;
-                }
-
-                function formatDate(dateStr) {
-                    const date = new Date(dateStr);
-                    return date.toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        weekday: 'short'
-                    });
-                }
-
-                // Switch between calendar and list view
-                window.switchView = function (view) {
-                    currentView = view;
-
-                    if (view === 'calendar') {
-                        document.getElementById('calendarView').style.display = 'block';
-                        document.getElementById('listView').style.display = 'none';
-                        document.getElementById('calendarViewBtn').classList.add('active');
-                        document.getElementById('listViewBtn').classList.remove('active');
-                    } else {
-                        document.getElementById('calendarView').style.display = 'none';
-                        document.getElementById('listView').style.display = 'block';
-                        document.getElementById('calendarViewBtn').classList.remove('active');
-                        document.getElementById('listViewBtn').classList.add('active');
-                    }
-                };
-
-                // Filter diary by type
-                window.filterDiaryType = function (type) {
-                    currentFilter = type;
-
-                    // Update active button
-                    document.querySelectorAll('.filter-tag').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    document.querySelector(`[data-type="\${type}"]`).classList.add('active');
-
-                    updateCalendar();
-                    renderListView();
-                };
-
-                // Open add diary modal
-                window.openAddDiaryModal = function () {
-                    currentEntryId = null;
-                    document.getElementById('modalTitle').textContent = '메모 추가하기';
-                    document.getElementById('diaryEntryForm').reset();
-                    document.getElementById('entryId').value = '';
-                    document.getElementById('existingImages').value = '';
-                    keptImages = [];
-                    document.getElementById('imagePreviewContainer').innerHTML = '';
-                    setDefaultDate();
-                    $('#diaryEntryModal').modal('show');
-                };
-
-                // Show diary detail
-                function showDiaryDetail(event) {
-                    const entry = event.extendedProps;
-                    showDiaryDetailById(event.id);
-                }
-
-                window.showDiaryDetailById = function (id) {
-                    const entry = allEvents.find(e => e.id === id);
-                    if (!entry) return;
-
-                    currentEntryId = id;
-                    const config = eventTypeConfig[entry.type] || eventTypeConfig.other;
-
-                    // Parse images
-                    let images = [];
-                    if (entry.images) {
-                        if (Array.isArray(entry.images)) {
-                            images = entry.images;
-                        } else if (typeof entry.images === 'string' && entry.images.trim() !== '') {
-                            images = entry.images.split(',').filter(img => img.trim() !== '');
-                        }
-                    }
-
-                    document.getElementById('detailTitle').innerHTML = `
-    <i class="fas \${config.icon} mr-2" style="color: \${config.color};"></i>
-    \${entry.title}
-`;
-
-                    document.getElementById('detailContent').innerHTML = `
-    <div class="entry-detail-content">
-        <div class="detail-meta mb-3">
-            <span class="badge" style="background-color: \${config.color};">\${config.label}</span>
-            \${entry.isAuto ? '<span class="badge badge-primary ml-2">자동 기록</span>' : '<span class="badge badge-secondary ml-2">수동 기록</span>'}
-        </div>
-        <p class="text-muted mb-3">
-            <i class="fas fa-calendar mr-2"></i>\${formatDate(entry.date)}
-            \${entry.time ? `< i class="fas fa-clock ml-3 mr-2" ></i >\${ entry.time } ` : ''}
-        </p>
-        <div class="entry-content">
-            \${entry.content || ''}
-        </div>
-        \${images.length > 0 ? `
-                        < div class="entry-images mt-3" >
-                            <div class="row">
-                                \${images.map(img => `
-                        <div class="col-md-4 mb-2">
-                            <img src="\${img}" class="img-fluid rounded" alt="Diary image">
-                        </div>
-                    `).join('')}
-                            </div>
-            </div >
-                        ` : ''}
-        \${entry.tags ? `
-                        < div class="entry-tags mt-3" >
-                    \${
-                        entry.tags.split(' ').map(tag => `
-                    <span class="badge badge-light">\${tag}</span>
-                `).join('')
-                    }
-            </div >
-                        ` : ''}
-        
-        \${entry.type === 'walk' && entry.meta ? `
-                        < div id = "map-detail-\${entry.id}" style = "width:100%; height:200px; margin-top:10px; border-radius:8px;" ></div >
-                            ` : ''}
-    </div>
-`;
-
-                    // Hide/Show Edit/Delete buttons based on type
-                    const footer = document.querySelector('#diaryDetailModal .modal-footer');
-                    const editBtn = footer.querySelector('button[onclick="editDiaryEntry()"]');
-
-                    footer.style.display = 'flex';
-
-                    if (entry.type === 'walk' || entry.isAuto) {
-                        // Hide edit button for auto-generated entries like walk, but allow delete
-                        if (editBtn) editBtn.style.display = 'none';
-                    } else {
-                        if (editBtn) editBtn.style.display = 'inline-block';
-                    }
-
-                    $('#diaryDetailModal').modal('show');
-
-                    // Initialize map for walk logs in detail view
-                    if (entry.type === 'walk' && entry.meta) {
-                        setTimeout(() => {
-                            initMap('detail-' + entry.id, entry.meta);
-                        }, 200); // Slightly longer delay for modal animation
-                    }
-                };
-
-                // Initialize Kakao Map for Walk Log
-                window.initMap = function (id, routeData) {
-                    try {
-                        const container = document.getElementById(`map-\${id}`);
-                        if (!container) {
-                            // console.warn(`Map container map-\${id} not found`);
-                            return;
-                        }
-
-                        // Ensure container has dimensions
-                        if (container.offsetHeight === 0) {
-                            container.style.height = '200px';
-                        }
-
-                        const options = {
-                            center: new kakao.maps.LatLng(33.450701, 126.570667),
-                            level: 3
-                        };
-
-                        const map = new kakao.maps.Map(container, options);
-
-                        // Parse route data
-                        let path = [];
-                        let parsedData = routeData;
-
-                        if (typeof routeData === 'string') {
-                            try {
-                                parsedData = JSON.parse(routeData);
-                            } catch (e) {
-                                console.error("Failed to parse route data", e);
-                                return;
-                            }
-                        }
-
-                        if (Array.isArray(parsedData)) {
-                            path = parsedData.map(coord => {
-                                return new kakao.maps.LatLng(coord.lat || coord.y, coord.lng || coord.x);
-                            });
-                        }
-
-                        if (path.length > 0) {
-                            // Draw polyline
-                            const polyline = new kakao.maps.Polyline({
-                                path: path,
-                                strokeWeight: 5,
-                                strokeColor: '#FF0000',
-                                strokeOpacity: 0.7,
-                                strokeStyle: 'solid'
-                            });
-                            polyline.setMap(map);
-
-                            // Set bounds
-                            const bounds = new kakao.maps.LatLngBounds();
-                            path.forEach(point => bounds.extend(point));
-                            map.setBounds(bounds);
-
-                            // Relayout to ensure map renders correctly
-                            setTimeout(() => {
-                                map.relayout();
-                                map.setBounds(bounds);
-                            }, 100);
-                        }
-                    } catch (e) {
-                        console.error('Error initializing map for entry ' + id, e);
-                    }
-                };
-
-                // Save diary entry
-                window.saveDiaryEntry = function () {
-                    const form = document.getElementById('diaryEntryForm');
-                    if (!form.checkValidity()) {
-                        form.reportValidity();
-                        return;
-                    }
-
-                    const formData = new FormData(form);
-
-                    // Add dateStr and timeStr explicitly
-                    formData.set('dateStr', document.getElementById('entryDate').value);
-                    formData.set('timeStr', document.getElementById('entryTime').value);
-
-                    const url = '/api/diary/entries';
-                    const isUpdate = !!document.getElementById('entryId').value;
-                    const method = isUpdate ? 'PUT' : 'POST';
-
-                    fetch(url, {
-                        method: method,
-                        body: formData
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                $('#diaryEntryModal').modal('hide');
-                                loadDiaryData(); // Reload data
-                                alert('저장되었습니다!');
-                            } else {
-                                return response.text().then(text => { throw new Error(text) });
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error saving diary entry:', error);
-                            alert('저장 중 오류가 발생했습니다: ' + error.message);
-                        });
-                };
-
-                // Edit diary entry
-                window.editDiaryEntry = function (id) {
-                    const targetId = id || currentEntryId;
-                    const entry = allEvents.find(e => e.id === targetId);
-                    if (!entry) return;
-
-                    currentEntryId = targetId;
-
-                    $('#diaryDetailModal').modal('hide');
-
-                    // Populate form with existing data
-                    document.getElementById('modalTitle').textContent = '메모 수정하기';
-                    document.getElementById('entryId').value = entry.id;
-                    document.getElementById('entryType').value = entry.type;
-                    document.getElementById('entryTitle').value = entry.title;
-
-                    // Handle date format
-                    if (entry.date) {
-                        const dateObj = new Date(entry.date);
-                        const year = dateObj.getFullYear();
-                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                        const day = String(dateObj.getDate()).padStart(2, '0');
-                        const hours = String(dateObj.getHours()).padStart(2, '0');
-                        const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-
-                        document.getElementById('entryDate').value = `\${year}-\${month}-\${day}`;
-                        document.getElementById('entryTime').value = `\${hours}:\${minutes}`;
-                    }
-
-                    document.getElementById('entryContent').value = entry.content || '';
-                    document.getElementById('entryTags').value = entry.tags || '';
-                    document.getElementById('entryPet').value = entry.petId || '';
-
-                    // Handle existing images
-                    keptImages = [];
-                    if (entry.images) {
-                        if (Array.isArray(entry.images)) {
-                            keptImages = [...entry.images];
-                        } else if (typeof entry.images === 'string' && entry.images.trim() !== '') {
-                            keptImages = entry.images.split(',').filter(img => img.trim() !== '');
-                        }
-                    }
-                    document.getElementById('existingImages').value = keptImages.join(',');
-
-                    // Clear file input
-                    document.getElementById('entryImages').value = '';
-                    document.querySelector('.custom-file-label').textContent = '파일 선택';
-
-                    renderPreviews();
-
-                    $('#diaryEntryModal').modal('show');
-                };
-
-                // Delete diary entry
-                window.deleteDiaryEntry = function () {
-                    const id = currentEntryId;
-                    if (!id) return;
-
-                    const entry = allEvents.find(e => e.id === id);
-                    const type = entry ? entry.type : '';
-
-                    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-                    fetch(`/api/diary/entries/\${id}?type=\${type}`, {
-                        method: 'DELETE'
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                $('#diaryEntryModal').modal('hide');
-                                $('#diaryDetailModal').modal('hide');
-                                loadDiaryData();
-                                alert('삭제되었습니다!');
-                            } else {
-                                alert('삭제 중 오류가 발생했습니다.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error deleting diary entry:', error);
-                            alert('삭제 중 오류가 발생했습니다.');
-                        });
-                };
-
-                // Sort diary list
-                window.sortDiaryList = function () {
-                    const sortValue = document.getElementById('sortSelect').value;
-
-                    if (sortValue === 'date-desc') {
-                        allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    } else if (sortValue === 'date-asc') {
-                        allEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-                    } else if (sortValue === 'type') {
-                        allEvents.sort((a, b) => a.type.localeCompare(b.type));
-                    }
-
-                    renderListView();
-                };
-
-                // Load more diary entries
-                window.loadMoreDiaryEntries = function () {
-                    console.log('Load more entries');
-                };
-
-                // Preview images
-                window.previewImages = function (input) {
-                    renderPreviews();
-                };
-
-                // Render all previews (existing + new)
-                function renderPreviews() {
-                    const container = document.getElementById('imagePreviewContainer');
-                    container.innerHTML = '';
-
-                    const input = document.getElementById('entryImages');
-                    let totalCount = keptImages.length;
-
-                    // 1. Render existing images
-                    keptImages.forEach((img, index) => {
-                        const col = document.createElement('div');
-                        col.className = 'col-md-3 mb-2';
-                        col.innerHTML = `
-                            <div class="position-relative">
-                                <img src="\${img}" class="img-fluid rounded" alt="Existing Image" style="height: 100px; object-fit: cover; width: 100%;">
-                                <button type="button" class="btn btn-sm btn-danger position-absolute"
-                                    style="top: 5px; right: 20px;" onclick="removeExistingImage(\${index})">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                <span class="badge badge-secondary position-absolute" style="bottom: 5px; right: 20px;">기존</span>
-                            </div>
-                        `;
-                        container.appendChild(col);
-                    });
-
-                    // 2. Render new files
-                    if (input.files) {
-                        Array.from(input.files).forEach((file, index) => {
-                            if (totalCount >= 5) return; // Max 5 images total
-                            totalCount++;
-
-                            const reader = new FileReader();
-                            reader.onload = function (e) {
-                                const col = document.createElement('div');
-                                col.className = 'col-md-3 mb-2';
-                                col.innerHTML = `
-                                    <div class="position-relative">
-                                        <img src="\${e.target.result}" class="img-fluid rounded" alt="New Image" style="height: 100px; object-fit: cover; width: 100%;">
-                                        <span class="badge badge-success position-absolute" style="bottom: 5px; right: 20px;">신규</span>
-                                    </div>
-                                `;
-                                container.appendChild(col);
-                            };
-                            reader.readAsDataURL(file);
-                        });
-
-                        // Update file input label
-                        const newFileCount = Math.min(input.files.length, 5 - keptImages.length);
-                        const label = document.querySelector('.custom-file-label');
-                        if (newFileCount > 0 || keptImages.length > 0) {
-                            label.textContent = `총 \${keptImages.length + newFileCount}개 파일`;
-                        } else {
-                            label.textContent = '파일 선택';
-                        }
+                        $('#behaviorEvents').html(eventsHtml);
+                        $('#behaviorDiaryModal').modal('show');
+                    } else if (type === 'daily') {
+                        $('#dailyDiaryTitle').text(event.title);
+                        $('#dailyDiaryDate').text(event.start.toLocaleDateString('ko-KR'));
+                        $('#dailyDiaryPet').text(props.petName);
+                        $('#dailyDiaryContent').html(props.content.replace(/\n/g, '<br>'));
+                        $('#dailySummaryWalk').text(props.walkSummary);
+                        $('#dailySummaryBehavior').text(props.behaviorSummary);
+                        $('#dailyDiaryModal').modal('show');
                     }
                 }
 
-                window.removeExistingImage = function (index) {
-                    keptImages.splice(index, 1);
-                    document.getElementById('existingImages').value = keptImages.join(',');
-                    renderPreviews();
-                };
-
-                window.removePreviewImage = function (index) {
-                    // Cannot easily remove from input.files, so we just reset the input for now or ignore
-                    // For better UX, we would need a DataTransfer object to manipulate files, 
-                    // but for simplicity, we'll just rely on re-selecting files if user wants to change new uploads.
-                    // Or we could implement a custom file list management.
-                    // For now, let's just clear the input if they want to remove new files.
-                    document.getElementById('entryImages').value = '';
-                    renderPreviews();
-                };
-            })();
+                // ============ Backend Integration Guide ============
+                /*
+                 * TODO: Implement backend API integration
+                 * 
+                 * 1. 다이어리 목록 조회:
+                 *    GET /api/diary/list?userId={userId}&month={month}
+                 *    Response: [{ id, type, date, title, petName, content, ... }]
+                 * 
+                 * 2. 산책일기 생성:
+                 *    POST /api/diary/walk
+                 *    Body: { 
+                 *      walkId: number,
+                 *      petId: number,
+                 *      gpsData: { lat, lng, route },
+                 *      distance: string,
+                 *      duration: string
+                 *    }
+                 *    - 백엔드에서 산책 데이터를 LLM에 전송
+                 *    - LLM이 반려동물 입장에서 일기 작성
+                 *    - 생성된 일기를 DB에 저장하고 반환
+                 * 
+                 * 3. 행동일기 생성:
+                 *    POST /api/diary/behavior
+                 *    Body: {
+                 *      petId: number,
+                 *      date: string,
+                 *      cameraEvents: [{ time, event, imageUrl, aiAnalysis }]
+                 *    }
+                 *    - 홈캠 이벤트 데이터를 LLM에 전송
+                 *    - LLM이 반려동물 입장에서 일기 작성
+                 *    - 생성된 일기를 DB에 저장하고 반환
+                 * 
+                 * 4. 하루일기 생성:
+                 *    POST /api/diary/daily
+                 *    Body: {
+                 *      petId: number,
+                 *      date: string,
+                 *      walkDiaryId: number (optional),
+                 *      behaviorDiaryId: number (optional)
+                 *    }
+                 *    - 산책일기와 행동일기를 결합하여 LLM에 전송
+                 *    - LLM이 하루 전체를 요약한 일기 작성
+                 *    - 생성된 일기를 DB에 저장하고 반환
+                 * 
+                 * 5. 프론트엔드 수정 사항:
+                 *    - mockDiaries 제거
+                 *    - API 호출로 실제 데이터 fetch
+                 *    - 로딩 상태 UI 추가
+                 *    - 에러 처리 추가
+                 */
+            });
         </script>
-        <!-- Kakao Map SDK -->
-        <script
-            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55e3779d3a4e94654971764756e0a939&libraries=services"></script>
