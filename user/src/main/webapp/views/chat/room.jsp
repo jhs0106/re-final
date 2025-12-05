@@ -431,9 +431,10 @@
                                             <div class="card-content-area">
                                                 <div class="card-icon-large"><i class="fas fa-id-card-alt"></i></div>
                                                 <div class="card-title">이력서 전송 완료</div>
+                                                    <%-- [수정] 카드 내용 변경 --%>
                                                 <ul class="resume-list">
-                                                    <li><strong>경력:</strong> 펫시터 6개월</li>
-                                                    <li><strong>자격:</strong> 반려동물 관리사 2급</li>
+                                                    <li><strong>반려견 산책:</strong> 3회</li>
+                                                    <li><strong>반려묘 미용:</strong> 1회</li>
                                                 </ul>
                                             </div>
                                             <button class="btn-card-action" style="background-color: #ddd; color: #777; cursor: default;">전송됨</button>
@@ -473,11 +474,13 @@
                                             <div class="card-content-area">
                                                 <div class="card-icon-large"><i class="fas fa-id-card-alt"></i></div>
                                                 <div class="card-title">이력서가 도착했습니다</div>
+                                                    <%-- [수정] 카드 내용 변경 --%>
                                                 <ul class="resume-list">
-                                                    <li><strong>경력:</strong> 펫시터 6개월</li>
-                                                    <li><strong>자격:</strong> 반려동물 관리사 2급</li>
+                                                    <li><strong>반려견 산책:</strong> 3회</li>
+                                                    <li><strong>반려묘 미용:</strong> 1회</li>
                                                 </ul>
                                             </div>
+                                                <%-- JSP 로딩 시점 상대방 이름 설정 --%>
                                             <c:set var="targetName" value="${room.ownerId == user.userId ? room.workerName : room.ownerName}" />
                                             <button class="btn-card-action" onclick="openResumeModal('${targetName}')">상세보기</button>
                                         </div>
@@ -588,18 +591,24 @@
     var roomId = "${room.roomId}";
     var myId = "${user.userId}";
 
-    // [중요] 이름 정보 변수에 저장 (JSP -> JS)
-    // 내가 owner라면 내 이름은 ownerName, 아니면 workerName
-    var amIOwner = ${room.ownerId == user.userId};
+    // JS 오류 방지: 문자열로 비교
+    var ownerId = "${room.ownerId}";
+    var currentUserId = "${user.userId}";
+    var amIOwner = (ownerId === currentUserId);
+
     var myName = amIOwner ? "${room.ownerName}" : "${room.workerName}";
     var partnerName = amIOwner ? "${room.workerName}" : "${room.ownerName}";
 
     var chatContainer = document.getElementById("chatContainer");
 
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    if(chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
     window.onload = function () {
         connect();
     };
+
     function connect() {
         var protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
         var wsUrl = protocol + location.host + "/ws/chat";
@@ -624,7 +633,6 @@
             var msgDiv = document.createElement("div");
             var isMine = (data.senderId == myId);
 
-            // 메시지를 보낸 사람의 이름을 판별
             var senderName = isMine ? myName : partnerName;
 
             if (data.content === "[[WALK_REQUEST]]") {
@@ -661,9 +669,6 @@
                 var titleText = isMine ? '이력서 전송 완료' : '이력서가 도착했습니다';
                 var btnStyle = isMine ? 'style="background-color: #ddd; color: #777; cursor: default;"' : '';
                 var btnText = isMine ? '전송됨' : '상세보기';
-
-                // [수정] 모달 열 때 senderName(보낸 사람 이름)을 전달
-                // 주의: 문자열 따옴표 처리를 위해 \'' + name + '\' 형태 사용
                 var btnAttr = isMine ? 'disabled' : 'onclick="openResumeModal(\'' + senderName + '\')"';
 
                 msgDiv.innerHTML =
@@ -671,9 +676,10 @@
                     '<div class="card-content-area">' +
                     '<div class="card-icon-large"><i class="fas fa-id-card-alt"></i></div>' +
                     '<div class="card-title">' + titleText + '</div>' +
+                    // [수정] JS 렌더링 카드 내용 변경
                     '<ul class="resume-list">' +
-                    '<li><strong>경력:</strong> 펫시터 6개월</li>' +
-                    '<li><strong>자격:</strong> 반려동물 관리사 2급</li>' +
+                    '<li><strong>반려견 산책:</strong> 3회</li>' +
+                    '<li><strong>반려묘 미용:</strong> 1회</li>' +
                     '</ul>' +
                     '</div>' +
                     '<button class="btn-card-action" ' + btnStyle + ' ' + btnAttr + '>' + btnText + '</button>' +
@@ -742,6 +748,7 @@
     }
 
     function sendResume() {
+        console.log("Sending Resume...");
         togglePlusMenu();
         var msg = {
             roomId: roomId,
@@ -765,16 +772,13 @@
         alert("산책 리포트 확인 기능 (구현 예정)");
     }
 
-    // [수정] 모달 열기 함수 (이름 인자 추가)
     function openResumeModal(name) {
-        // 모달 내부의 이름 영역에 전달받은 name 넣기
         var nameField = document.getElementById("modalResumeName");
         if(name) {
             nameField.innerText = name;
         } else {
             nameField.innerText = "이름 없음";
         }
-
         document.getElementById("resumeModal").style.display = "block";
     }
 
