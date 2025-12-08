@@ -4,8 +4,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
     <meta charset="UTF-8">
     <title>모양별 산책 코스</title>
+
+    <!-- Google Font (map.jsp와 동일 계열 느낌) -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Jua&family=Gamja+Flower&display=swap">
 
     <!-- Leaflet -->
     <link rel="stylesheet"
@@ -19,328 +24,396 @@
 
 <body>
 
-<br>
+<div class="walk-map-theme">
+    <div class="walk-page-wrapper">
+        <div class="walk-page-container">
 
-
-<!-- HERO -->
-<section class="map-hero">
-    <div class="map-hero__content">
-        <p class="map-hero__eyebrow">PET WALKING EXPERIENCE</p>
-        <h1 class="map-hero__title">내 주변 모양별 산책 코스</h1>
-        <p class="map-hero__desc">
-            현재 위치를 기준으로 예쁜 도형 산책 코스와 일반 산책 코스를 기록할 수 있어요.<br>
-            반려동물 정보 기반 AI 제시 거리, 음성으로 코스 요청, 저장된 코스 네비게이션까지 한 화면에서 이용해 보세요.
-        </p>
-
-        <!-- ★ 추가: 반려동물 선택 -->
-        <div class="pet-row" style="margin-bottom:8px;">
-            <label for="petSelect" style="font-size:0.9rem; margin-right:4px;">
-                반려동물 선택
-            </label>
-            <select id="petSelect" style="padding:4px 8px; font-size:0.9rem;">
-                <!-- JS에서 채움 -->
-            </select>
-        </div>
-
-        <div class="map-hero__actions">
-            <button type="button" class="btn btn-primary btn-lg" id="heroGeneralBtn">
-                일반 산책 시작
-            </button>
-            <button type="button" class="btn btn-primary btn-lg" id="heroShapeBtn">
-                내 주변 도형 코스 보기
-            </button>
-        </div>
-    </div>
-    <div class="map-hero__illustration">
-        <div class="pulse"></div>
-        <div class="pulse delay"></div>
-        <div class="hero-card">
-            <p class="hero-card__title">오늘 제시된 산책 거리</p>
-            <p class="hero-card__value" id="heroPlannedKm">- km</p>
-            <p class="hero-card__hint" style="font-size:0.8rem; color:var(--map-muted);">
-                반려동물 정보 기반 제시 코스
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- 상단 2열: 왼쪽 일반 산책, 오른쪽 반려동물 추천 -->
-<section class="map-layout" id="generalLayout">
-    <!-- 일반 산책 코스 카드 -->
-    <div class="map-panel">
-        <div class="map-panel__header">
-            <div>
-                <p class="map-panel__eyebrow">LIVE WALK LOG</p>
-                <h2>일반 산책 코스 기록</h2>
-                <p class="map-panel__sub">
-                    별도 도형 없이, 실제로 걸은 경로를 그대로 기록합니다.<br>
-                    네비게이션 시작 후 산책을 마친 뒤 저장하면, 다이어리에서 다시 볼 수 있어요.
+            <!-- 상단 공통 헤더 (map.jsp 스타일 참고) -->
+            <header class="walk-page-header">
+                <button type="button"
+                        class="btn btn-primary btn-lg"
+                        onclick="location.href='<c:url value='/walklist'/>'">
+                    산책 리스트 보기
+                </button>
+                <div class="walk-page-badge">
+                    <span>🐾</span> 내 반려동물 맞춤 산책 맵
+                </div>
+                <h1>모양 + 일반 산책 한 번에</h1>
+                <p class="walk-page-subtitle">
+                    반려동물 정보 기반 제시 거리, 실제 일반 산책 기록, 예쁜 도형 산책 네비게이션을<br>
+                    한 페이지에서 편하게 사용할 수 있어요.
                 </p>
-            </div>
-        </div>
+            </header>
 
-        <div class="map-panel__body">
-            <div class="map-canvas">
-                <div id="mapFree" aria-label="일반 산책 지도"></div>
-            </div>
-        </div>
-
-        <div class="map-panel__footer">
-            <div class="map-stats">
-                <div>
-                    <p class="map-stats__label">오늘 산책 거리(일반)</p>
-                    <p class="map-stats__value" id="generalDistanceLabel">-</p>
-                </div>
-                <div>
-                    <p class="map-stats__label">실제 소요 시간</p>
-                    <p class="map-stats__value" id="generalTimeLabel">-</p>
-                </div>
-            </div>
-            <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button type="button" class="btn btn-primary btn-sm" onclick="startGeneralWalk()">
-                    네비게이션 시작
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="finishGeneralWalk()">
-                    산책 종료 &amp; 저장
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 오른쪽: 반려동물 정보 기반 산책 거리 제시 -->
-    <div class="side-panel">
-        <div id="setupSidePanels">
-            <article class="panel-card">
-                <header>
-                    <p class="panel-card__eyebrow">PET RECOMMENDATION</p>
-                    <h3>반려동물 정보 기반 산책 거리 제시</h3>
-                    <p class="panel-card__desc">
-                        등록된 반려동물의 나이, 체중, 종, 성별 정보를 바탕으로
-                        오늘 적당한 산책 거리를 AI가 추천해 드립니다.
+            <!-- HERO -->
+            <section class="map-hero">
+                <div class="map-hero__content">
+                    <p class="map-hero__eyebrow">PET WALKING EXPERIENCE</p>
+                    <h1 class="map-hero__title">내 주변 모양별 산책 코스</h1>
+                    <p class="map-hero__desc">
+                        현재 위치를 기준으로 예쁜 도형 산책 코스와 일반 산책 코스를 기록할 수 있어요.<br>
+                        반려동물 정보 기반 AI 제시 거리, 음성으로 코스 요청, 저장된 코스 네비게이션까지 한 화면에서 이용해 보세요.
                     </p>
-                </header>
 
-                <div id="petBox" class="pet-box">
-                    <div class="pet-box-title">내 반려동물 정보 기반 AI 산책 거리 제시</div>
-                    <div id="petLoadingText">반려동물 정보를 불러오는 중입니다...</div>
+                    <!-- ★ 추가: 반려동물 선택 -->
+                    <div class="pet-row" style="margin-bottom:8px;">
+                        <label for="petSelect" style="font-size:0.9rem; margin-right:4px;">
+                            반려동물 선택
+                        </label>
+                        <select id="petSelect" style="padding:4px 8px; font-size:0.9rem;">
+                            <!-- JS에서 채움 -->
+                        </select>
+                    </div>
 
-                    <div id="petContent" style="display:none;">
-                        <div class="pet-row" id="petInfoText"></div>
-                        <div class="pet-row">
-                            제시된 산책 거리:
-                            <span id="petRecommendKm" class="pet-highlight">- km</span>
-                        </div>
-                        <div class="pet-row">
-                            <small id="petReasonText"></small>
+                    <div class="map-hero__actions">
+                        <button type="button" class="btn btn-primary btn-lg" id="heroGeneralBtn">
+                            일반 산책 시작
+                        </button>
+                        <button type="button" class="btn btn-primary btn-lg" id="heroShapeBtn">
+                            내 주변 도형 코스 보기
+                        </button>
+                    </div>
+                </div>
+                <div class="map-hero__illustration">
+                    <div class="pulse"></div>
+                    <div class="pulse delay"></div>
+                    <div class="hero-card">
+                        <p class="hero-card__title">오늘 제시된 산책 거리</p>
+                        <p class="hero-card__value" id="heroPlannedKm">- km</p>
+                        <p class="hero-card__hint" style="font-size:0.8rem; color:var(--map-muted);">
+                            반려동물 정보 기반 제시 코스
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 상단 2열: 왼쪽 일반 산책, 오른쪽 반려동물 추천 -->
+            <section class="map-layout" id="generalLayout">
+                <!-- 일반 산책 코스 카드 -->
+                <div class="map-panel">
+                    <div class="map-panel__header">
+                        <div>
+                            <p class="map-panel__eyebrow">LIVE WALK LOG</p>
+                            <h2>일반 산책 코스 기록</h2>
+                            <p class="map-panel__sub">
+                                별도 도형 없이, 실제로 걸은 경로를 그대로 기록합니다.<br>
+                                네비게이션 시작 후 산책을 마친 뒤 저장하면, 다이어리에서 다시 볼 수 있어요.
+                            </p>
                         </div>
                     </div>
 
-                    <div id="petErrorText" style="display:none; color:#d9534f;">
-                        반려동물 정보를 불러오지 못했습니다. 로그인을 하거나 반려동물 정보를 등록 후 다시 시도해주세요.
+                    <div class="map-panel__body">
+                        <div class="map-canvas">
+                            <div id="mapFree" aria-label="일반 산책 지도"></div>
+                        </div>
+                    </div>
+
+                    <div class="map-panel__footer">
+                        <div class="map-stats">
+                            <div>
+                                <p class="map-stats__label">오늘 산책 거리(일반)</p>
+                                <p class="map-stats__value" id="generalDistanceLabel">-</p>
+                            </div>
+                            <div>
+                                <p class="map-stats__label">실제 소요 시간</p>
+                                <p class="map-stats__value" id="generalTimeLabel">-</p>
+                            </div>
+                        </div>
+                        <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="startGeneralWalk()">
+                                네비게이션 시작
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="finishGeneralWalk()">
+                                산책 종료 &amp; 저장
+                            </button>
+                            <!-- ★ 일반 산책 사진 촬영 버튼 -->
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="openGeneralPhotoModal()">
+                                산책 사진 찍기
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </article>
-        </div>
-    </div>
-</section>
 
-<!-- 하단: 모양별 산책 코스 설정(기존 기능) -->
-<section class="map-layout" id="shapeLayout">
-    <div class="map-panel">
-        <!-- 설정 모드 헤더 -->
-        <div id="setupHeader" class="map-panel__header">
-            <div>
-                <p class="map-panel__eyebrow">AI ASSISTED WALK</p>
-                <h2>모양별 산책 코스 설정</h2>
-                <p class="map-panel__sub">
-                    목표 거리를 정하고, 내 위치 기준으로 도형 코스를 생성해 보세요.<br>
-                    도로가 많은 위치에서 목표거리를 5~10km로 설정 후 도형 생성시 제일 예쁜 모양이 나와요.
-                </p>
+                <!-- 오른쪽: 반려동물 정보 기반 산책 거리 제시 -->
+                <div class="side-panel">
+                    <div id="setupSidePanels">
+                        <article class="panel-card">
+                            <header>
+                                <p class="panel-card__eyebrow">PET RECOMMENDATION</p>
+                                <h3>반려동물 정보 기반 산책 거리 제시</h3>
+                                <p class="panel-card__desc">
+                                    등록된 반려동물의 나이, 체중, 종, 성별 정보를 바탕으로
+                                    오늘 적당한 산책 거리를 AI가 추천해 드립니다.
+                                </p>
+                            </header>
+
+                            <div id="petBox" class="pet-box">
+                                <div class="pet-box-title">내 반려동물 정보 기반 AI 산책 거리 제시</div>
+                                <div id="petLoadingText">반려동물 정보를 불러오는 중입니다...</div>
+
+                                <div id="petContent" style="display:none;">
+                                    <div class="pet-row" id="petInfoText"></div>
+                                    <div class="pet-row">
+                                        제시된 산책 거리:
+                                        <span id="petRecommendKm" class="pet-highlight">- km</span>
+                                    </div>
+                                    <div class="pet-row">
+                                        <small id="petReasonText"></small>
+                                    </div>
+                                </div>
+
+                                <div id="petErrorText" style="display:none; color:#d9534f;">
+                                    반려동물 정보를 불러오지 못했습니다. 로그인을 하거나 반려동물 정보를 등록 후 다시 시도해주세요.
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 하단: 모양별 산책 코스 설정(기존 기능) -->
+            <section class="map-layout" id="shapeLayout">
+                <div class="map-panel">
+                    <!-- 설정 모드 헤더 -->
+                    <div id="setupHeader" class="map-panel__header">
+                        <div>
+                            <p class="map-panel__eyebrow">AI ASSISTED WALK</p>
+                            <h2>모양별 산책 코스 설정</h2>
+                            <p class="map-panel__sub">
+                                목표 거리를 정하고, 내 위치 기준으로 도형 코스를 생성해 보세요.<br>
+                                도로가 많은 위치에서 목표거리를 5~10km로 설정 후 도형 생성시 제일 예쁜 모양이 나와요.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 네비 모드 헤더 -->
+                    <div id="navHeader" class="map-panel__header" style="display:none;">
+                        <div>
+                            <p class="map-panel__eyebrow">LIVE NAVIGATION</p>
+                            <h2>실시간 산책 네비게이션</h2>
+                            <p class="map-panel__sub">현재 위치를 따라가며 도형 코스를 얼마나 채웠는지 확인할 수 있어요.</p>
+                        </div>
+                        <div class="map-panel__header-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="enterSetupMode()">
+                                ← 코스 설정으로 돌아가기
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="openFinishModal()">
+                                코스 완수
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 설정 모드 툴바 -->
+                    <div id="setupToolbar" class="map-panel__toolbar">
+                        <div class="control-box">
+                            <label>
+                                목표 거리(km):
+                                <input id="targetKmInput" type="number" step="0.1" value="8.0">
+                            </label>
+
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <button type="button" class="control-pill shape-pill is-active" data-shape="heart"
+                                        onclick="setShapeType('heart')">
+                                    하트
+                                </button>
+                                <button type="button" class="control-pill shape-pill" data-shape="circle"
+                                        onclick="setShapeType('circle')">
+                                    원
+                                </button>
+                                <button type="button" class="control-pill shape-pill" data-shape="square"
+                                        onclick="setShapeType('square')">
+                                    네모
+                                </button>
+                                <button type="button" class="control-pill shape-pill" data-shape="triangle"
+                                        onclick="setShapeType('triangle')">
+                                    세모
+                                </button>
+                            </div>
+
+                            <button type="button" class="control-pill primary" onclick="reloadRoute()">코스 다시 생성</button>
+
+                            <button type="button" class="control-pill" onclick="openSavedCourseModal()">저장된 모양 코스 불러오기</button>
+
+                            <button type="button" class="control-pill" id="voiceBtn">음성으로 요청</button>
+                            <span id="voiceSpinner" style="visibility:hidden;">녹음/처리중...</span>
+
+                            <button type="button" class="control-pill primary" onclick="goNavigation()">네비게이션 시작</button>
+                        </div>
+                    </div>
+
+                    <!-- 네비 모드 툴바 -->
+                    <div id="navToolbar" class="map-panel__toolbar" style="display:none;">
+                        <div class="toolbar-left">
+                            <div>
+                                <p class="map-stats__label">총 거리</p>
+                                <p class="map-stats__value" id="navTotalDist">-</p>
+                            </div>
+                            <div>
+                                <p class="map-stats__label">예상 시간</p>
+                                <p class="map-stats__value" id="navTotalTime">-</p>
+                            </div>
+                            <div>
+                                <p class="map-stats__label">진행률</p>
+                                <p class="map-stats__value" id="navProgress">0%</p>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <p class="toolbar-hint">
+                                현재 상태: <span id="navStatus" style="font-weight:600; color:#111827;">위치 확인 중...</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 지도 -->
+                    <div class="map-panel__body">
+                        <div class="map-canvas">
+                            <div id="map" aria-label="도형 산책 지도"></div>
+                            <div class="map-canvas__badge" id="mapSelectionBadge">
+                                내 위치 기준 도형 코스 준비 중...
+                            </div>
+                            <div class="map-legend">
+                                <span class="legend-line legend-line--red"></span> 설계된 도형 코스
+                                <span class="legend-line legend-line--green" style="margin-left:12px;"></span> 실제 걸은 경로
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 설정 모드 푸터 -->
+                    <div id="setupFooter" class="map-panel__footer">
+                        <div class="map-stats" id="summarySection">
+                            <div>
+                                <p class="map-stats__label">오늘 코스 총 거리</p>
+                                <p class="map-stats__value" id="distanceLabel">-</p>
+                            </div>
+                            <div>
+                                <p class="map-stats__label">예상 소요시간</p>
+                                <p class="map-stats__value" id="timeLabel">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 네비 모드 푸터 -->
+                    <div id="navFooter" class="map-panel__footer" style="display:none;">
+                        <div class="map-stats">
+                            <div>
+                                <p class="map-stats__label">실제 걸은 거리(추정)</p>
+                                <p class="map-stats__value" id="navWalkedKm">-</p>
+                            </div>
+                            <div>
+                                <p class="map-stats__label">산책 시작 시간</p>
+                                <p class="map-stats__value" id="navStartTime">-</p>
+                            </div>
+                            <div>
+                                <p class="map-stats__label">실제 경과 시간</p>
+                                <p class="map-stats__value" id="navElapsedMin">-</p>
+                            </div>
+                        </div>
+                        <!-- ★ 모양 산책 사진 촬영 버튼 -->
+                        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="openShapePhotoModal()">
+                                산책 사진 찍기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 도형 네비 모드 전용 사이드 패널 -->
+                <div class="side-panel" id="shapeSidePanel">
+                    <div id="navSidePanels" style="display:none;">
+                        <article class="panel-card">
+                            <header>
+                                <p class="panel-card__eyebrow">WALK STATUS</p>
+                                <h3>오늘 산책 진행 현황</h3>
+                                <p class="panel-card__desc">
+                                    도형 코스를 얼마나 채웠는지, 얼마나 걸었는지 실시간으로 확인할 수 있어요.
+                                </p>
+                            </header>
+                            <div style="margin-top:12px;">
+                                <p class="map-stats__label">현재 진행률</p>
+                                <p class="map-stats__value" id="sideNavProgress">0%</p>
+
+                                <p class="map-stats__label" style="margin-top:12px;">현재 상태</p>
+                                <p class="map-stats__value" id="sideNavStatus" style="font-size:1rem;">위치 확인 중...</p>
+
+                                <button type="button" class="btn btn-primary btn-sm" style="margin-top:18px;"
+                                        onclick="openFinishModal()">
+                                    코스 완수하기
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <audio id="voiceRouteAudio"></audio>
+
+            <!-- 저장된 코스 모달 -->
+            <div id="savedCourseModal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3>저장된 코스 불러오기</h3>
+                    <div id="savedCourseList"
+                         style="max-height:300px; overflow-y:auto; text-align:left; font-size:14px; margin-top:8px;">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="closeSavedCourseModal()">닫기</button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- 네비 모드 헤더 -->
-        <div id="navHeader" class="map-panel__header" style="display:none;">
-            <div>
-                <p class="map-panel__eyebrow">LIVE NAVIGATION</p>
-                <h2>실시간 산책 네비게이션</h2>
-                <p class="map-panel__sub">현재 위치를 따라가며 도형 코스를 얼마나 채웠는지 확인할 수 있어요.</p>
-            </div>
-            <div class="map-panel__header-actions">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="enterSetupMode()">
-                    ← 코스 설정으로 돌아가기
-                </button>
-                <button type="button" class="btn btn-danger btn-sm" onclick="openFinishModal()">
-                    코스 완수
-                </button>
-            </div>
-        </div>
-
-        <!-- 설정 모드 툴바 -->
-        <div id="setupToolbar" class="map-panel__toolbar">
-            <div class="control-box">
-                <label>
-                    목표 거리(km):
-                    <input id="targetKmInput" type="number" step="0.1" value="8.0">
-                </label>
-
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button type="button" class="control-pill shape-pill is-active" data-shape="heart"
-                            onclick="setShapeType('heart')">
-                        하트
-                    </button>
-                    <button type="button" class="control-pill shape-pill" data-shape="circle"
-                            onclick="setShapeType('circle')">
-                        원
-                    </button>
-                    <button type="button" class="control-pill shape-pill" data-shape="square"
-                            onclick="setShapeType('square')">
-                        네모
-                    </button>
-                    <button type="button" class="control-pill shape-pill" data-shape="triangle"
-                            onclick="setShapeType('triangle')">
-                        세모
-                    </button>
-                </div>
-
-                <button type="button" class="control-pill primary" onclick="reloadRoute()">코스 다시 생성</button>
-
-                <button type="button" class="control-pill" onclick="openSavedCourseModal()">저장된 모양 코스 불러오기</button>
-
-                <button type="button" class="control-pill" id="voiceBtn">음성으로 요청</button>
-                <span id="voiceSpinner" style="visibility:hidden;">녹음/처리중...</span>
-
-                <button type="button" class="control-pill primary" onclick="goNavigation()">네비게이션 시작</button>
-            </div>
-        </div>
-
-        <!-- 네비 모드 툴바 -->
-        <div id="navToolbar" class="map-panel__toolbar" style="display:none;">
-            <div class="toolbar-left">
-                <div>
-                    <p class="map-stats__label">총 거리</p>
-                    <p class="map-stats__value" id="navTotalDist">-</p>
-                </div>
-                <div>
-                    <p class="map-stats__label">예상 시간</p>
-                    <p class="map-stats__value" id="navTotalTime">-</p>
-                </div>
-                <div>
-                    <p class="map-stats__label">진행률</p>
-                    <p class="map-stats__value" id="navProgress">0%</p>
+            <!-- 산책 완료 모달 -->
+            <div id="finishModal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3>오늘 산책 완료!</h3>
+                    <p id="finishMessageMain">수고하셨어요 🎉</p>
+                    <p id="finishMessageSub" style="font-size: 14px; color:#555;"></p>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="closeFinishModal()">확인</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="saveCourse()">코스 저장하기</button>
+                    </div>
                 </div>
             </div>
-            <div class="toolbar-right">
-                <p class="toolbar-hint">
-                    현재 상태: <span id="navStatus" style="font-weight:600; color:#111827;">위치 확인 중...</span>
-                </p>
-            </div>
-        </div>
 
-        <!-- 지도 -->
-        <div class="map-panel__body">
-            <div class="map-canvas">
-                <div id="map" aria-label="도형 산책 지도"></div>
-                <div class="map-canvas__badge" id="mapSelectionBadge">
-                    내 위치 기준 도형 코스 준비 중...
-                </div>
-                <div class="map-legend">
-                    <span class="legend-line legend-line--red"></span> 설계된 도형 코스
-                    <span class="legend-line legend-line--green" style="margin-left:12px;"></span> 실제 걸은 경로
-                </div>
-            </div>
-        </div>
-
-        <!-- 설정 모드 푸터 -->
-        <div id="setupFooter" class="map-panel__footer">
-            <div class="map-stats" id="summarySection">
-                <div>
-                    <p class="map-stats__label">오늘 코스 총 거리</p>
-                    <p class="map-stats__value" id="distanceLabel">-</p>
-                </div>
-                <div>
-                    <p class="map-stats__label">예상 소요시간</p>
-                    <p class="map-stats__value" id="timeLabel">-</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 네비 모드 푸터 -->
-        <div id="navFooter" class="map-panel__footer" style="display:none;">
-            <div class="map-stats">
-                <div>
-                    <p class="map-stats__label">실제 걸은 거리(추정)</p>
-                    <p class="map-stats__value" id="navWalkedKm">-</p>
-                </div>
-                <div>
-                    <p class="map-stats__label">산책 시작 시간</p>
-                    <p class="map-stats__value" id="navStartTime">-</p>
-                </div>
-                <div>
-                    <p class="map-stats__label">실제 경과 시간</p>
-                    <p class="map-stats__value" id="navElapsedMin">-</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 도형 네비 모드 전용 사이드 패널 -->
-    <div class="side-panel" id="shapeSidePanel">
-        <div id="navSidePanels" style="display:none;">
-            <article class="panel-card">
-                <header>
-                    <p class="panel-card__eyebrow">WALK STATUS</p>
-                    <h3>오늘 산책 진행 현황</h3>
-                    <p class="panel-card__desc">
-                        도형 코스를 얼마나 채웠는지, 얼마나 걸었는지 실시간으로 확인할 수 있어요.
+            <!-- ★ 산책 사진 촬영 모달 (일반/모양 공통) -->
+            <div id="photoModal" class="modal-overlay">
+                <div class="modal-content" style="max-width:480px;">
+                    <h3>산책 사진 찍기</h3>
+                    <p style="font-size:13px; color:#555; margin-bottom:8px;">
+                        산책 중에 반려동물 사진을 남겨보세요. 산책 종료 후 해당 산책 기록과 함께 저장됩니다.
                     </p>
-                </header>
-                <div style="margin-top:12px;">
-                    <p class="map-stats__label">현재 진행률</p>
-                    <p class="map-stats__value" id="sideNavProgress">0%</p>
 
-                    <p class="map-stats__label" style="margin-top:12px;">현재 상태</p>
-                    <p class="map-stats__value" id="sideNavStatus" style="font-size:1rem;">위치 확인 중...</p>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+                        <video id="photoVideo" autoplay playsinline
+                               style="width:100%; border-radius:12px; background:#000;"></video>
+                        <canvas id="photoCanvas" style="display:none;"></canvas>
+                        <img id="photoPreview"
+                             alt="캡처된 사진 미리보기"
+                             style="max-width:100%; border-radius:12px; display:none;"/>
+                    </div>
 
-                    <button type="button" class="btn btn-primary btn-sm" style="margin-top:18px;"
-                            onclick="openFinishModal()">
-                        코스 완수하기
-                    </button>
+                    <div class="modal-actions" style="margin-top:12px;">
+                        <button type="button" class="btn btn-primary btn-sm" id="photoCaptureBtn">
+                            사진 캡처
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" id="photoSaveBtn" disabled>
+                            이 사진 사용하기
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="closePhotoModal()">
+                            닫기
+                        </button>
+                    </div>
+
+                    <p id="photoInfoText" style="font-size:12px; color:#666; margin-top:6px;">
+                        일반 산책 또는 모양 네비게이션이 진행 중일 때만 저장됩니다.
+                    </p>
                 </div>
-            </article>
-        </div>
-    </div>
-</section>
+            </div>
 
-<audio id="voiceRouteAudio"></audio>
-
-<!-- 저장된 코스 모달 -->
-<div id="savedCourseModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>저장된 코스 불러오기</h3>
-        <div id="savedCourseList"
-             style="max-height:300px; overflow-y:auto; text-align:left; font-size:14px; margin-top:8px;">
-        </div>
-        <div class="modal-actions">
-            <button type="button" class="btn btn-secondary btn-sm"
-                    onclick="closeSavedCourseModal()">닫기</button>
-        </div>
-    </div>
-</div>
-
-<!-- 산책 완료 모달 -->
-<div id="finishModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>오늘 산책 완료!</h3>
-        <p id="finishMessageMain">수고하셨어요 🎉</p>
-        <p id="finishMessageSub" style="font-size: 14px; color:#555;"></p>
-        <div class="modal-actions">
-            <button type="button" class="btn btn-secondary btn-sm"
-                    onclick="closeFinishModal()">확인</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="saveCourse()">코스 저장하기</button>
-        </div>
-    </div>
-</div>
+        </div><!-- .walk-page-container -->
+    </div><!-- .walk-page-wrapper -->
+</div><!-- .walk-map-theme -->
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -348,7 +421,6 @@
         crossorigin=""></script>
 
 <script>
-
     const DEFAULT_CENTER_LAT = 36.777381;
     const DEFAULT_CENTER_LON = 127.001764;
 
@@ -373,6 +445,22 @@
     let walkingStartedAt = null;
     let walkedMeters = 0;
     let userTrackLatLngs = [];
+
+    // ★ 도형 네비 최근 위치
+    let lastNavLat = null;
+    let lastNavLon = null;
+
+    // ===== 산책 사진 관련 전역 =====
+    // 현재 어느 산책에서 사진을 찍는지: 'general' or 'shape'
+    let currentPhotoContext = null;
+
+    // 산책마다 따로 사진 버퍼
+    let generalPhotoBuffer = [];  // 일반 산책용 사진 목록
+    let shapePhotoBuffer = [];    // 모양 산책용 사진 목록
+
+    // 카메라/이미지 버퍼
+    let photoStream = null;
+    let photoBlob = null;
 
     const userIcon = L.icon({
         iconUrl: '<c:url value="/images/pno.png"/>',
@@ -553,6 +641,10 @@
     }
 
     function updateNavigation(lat, lon) {
+        // ★ 최신 위치 저장
+        lastNavLat = lat;
+        lastNavLon = lon;
+
         if (userTrackLatLngs.length === 0) {
             userTrackLatLngs.push([lat, lon]);
         } else {
@@ -1020,7 +1112,6 @@
     }
 </script>
 
-
 <!-- 도형 코스 + 실제 코스 저장 -->
 <script>
     function openFinishModal() {
@@ -1142,8 +1233,17 @@
 
             const data = await res.json();
             console.log('saveCourse result', data);
-            alert('코스를 저장했습니다. (도형 + 실제 경로 기준)');
+
+            // ★ 모양 산책 사진 업로드
+            if (data && data.walkingRecodeId) {
+                await uploadShapeWalkPhotos(data.walkingRecodeId);
+            }
+
+            alert('코스를 저장했습니다. (도형 + 실제 경로 기준)\n산책이 종료되었습니다.');
             closeFinishModal();
+
+            // ★ 종료 느낌: 산책 리스트로 이동
+            window.location.href = '<c:url value="/walklist"/>';
         } catch (e) {
             console.error(e);
             alert('코스 저장 중 오류가 발생했습니다. 로그인 후 다시 시도하세요.');
@@ -1172,6 +1272,10 @@
     let freeWalkingStartedAt = null;
     let freeWatchId = null;
 
+    // ★ 일반 산책 최근 위치
+    let freeLastLat = null;
+    let freeLastLon = null;
+
     function initFreeMap() {
         const el = document.getElementById('mapFree');
         if (!el) return;
@@ -1185,6 +1289,10 @@
     }
 
     function updateFreeNavigation(lat, lon) {
+        // ★ 최신 위치 저장
+        freeLastLat = lat;
+        freeLastLon = lon;
+
         if (freeTrackLatLngs.length === 0) {
             // 첫 지점은 무조건 추가
             freeTrackLatLngs.push([lat, lon]);
@@ -1333,13 +1441,253 @@
 
             const data = await res.json();
             console.log('free walk saved', data);
-            alert('일반 산책 기록을 저장했습니다.');
+
+            // ★ 일반 산책 사진 업로드
+            if (data && data.walkingRecodeId) {
+                await uploadGeneralWalkPhotos(data.walkingRecodeId);
+            }
+
+            alert('일반 산책 기록을 저장했습니다.\n산책이 종료되었습니다.');
+
+            // ★ 종료 느낌: 산책 리스트로 이동
+            window.location.href = '<c:url value="/walklist"/>';
         } catch (e) {
             console.error(e);
             alert('일반 산책 기록 저장 중 오류가 발생했습니다.');
         }
     }
 
+</script>
+
+<!-- 산책 사진 모달 + 업로드 공통 로직 -->
+<script>
+    function hasActiveGeneralWalk() {
+        return !!freeWalkingStartedAt;
+    }
+
+    function hasActiveShapeWalk() {
+        return !!walkingStartedAt;
+    }
+
+    async function openPhotoModalBase() {
+        const modal = document.getElementById('photoModal');
+        const video = document.getElementById('photoVideo');
+        const preview = document.getElementById('photoPreview');
+        const saveBtn = document.getElementById('photoSaveBtn');
+
+        preview.style.display = 'none';
+        saveBtn.disabled = true;
+        photoBlob = null;
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({video: true});
+            photoStream = stream;
+            video.srcObject = stream;
+            modal.style.display = 'flex';
+        } catch (e) {
+            console.error(e);
+            alert('카메라 접근 권한이 필요합니다.');
+        }
+    }
+
+    function closePhotoModal() {
+        const modal = document.getElementById('photoModal');
+        const video = document.getElementById('photoVideo');
+
+        modal.style.display = 'none';
+
+        if (photoStream) {
+            photoStream.getTracks().forEach(t => t.stop());
+            photoStream = null;
+        }
+        video.srcObject = null;
+    }
+
+    // ★ 일반 산책용 버튼에서 호출
+    async function openGeneralPhotoModal() {
+        if (!hasActiveGeneralWalk()) {
+            alert('일반 산책 네비게이션이 진행 중일 때만 사진을 저장할 수 있습니다.');
+            return;
+        }
+        currentPhotoContext = 'general';
+        await openPhotoModalBase();
+    }
+
+    // ★ 모양 산책용 버튼에서 호출
+    async function openShapePhotoModal() {
+        if (!hasActiveShapeWalk()) {
+            alert('도형 산책 네비게이션이 진행 중일 때만 사진을 저장할 수 있습니다.');
+            return;
+        }
+        currentPhotoContext = 'shape';
+        await openPhotoModalBase();
+    }
+
+    async function uploadGeneralWalkPhotos(walkingRecodeId) {
+        if (!generalPhotoBuffer || generalPhotoBuffer.length === 0) return;
+
+        try {
+            for (const p of generalPhotoBuffer) {
+                const form = new FormData();
+                form.append('walkingRecodeId', walkingRecodeId);
+                form.append('lat', p.lat);
+                form.append('lng', p.lon);
+                form.append('image', p.blob, 'general-walk-photo.jpg');
+
+                const res = await fetch('/api/walk/photos', {
+                    method: 'POST',
+                    body: form
+                });
+
+                if (!res.ok) {
+                    console.error('일반 산책 사진 업로드 실패:', res.status);
+                } else {
+                    const data = await res.json();
+                    console.log('general photo uploaded:', data);
+                }
+            }
+        } catch (e) {
+            console.error('일반 산책 사진 업로드 중 오류:', e);
+        } finally {
+            generalPhotoBuffer = [];
+        }
+    }
+
+    async function uploadShapeWalkPhotos(walkingRecodeId) {
+        if (!shapePhotoBuffer || shapePhotoBuffer.length === 0) return;
+
+        try {
+            for (const p of shapePhotoBuffer) {
+                const form = new FormData();
+                form.append('walkingRecodeId', walkingRecodeId);
+                form.append('lat', p.lat);
+                form.append('lng', p.lon);
+                form.append('image', p.blob, 'shape-walk-photo.jpg');
+
+                const res = await fetch('/api/walk/photos', {
+                    method: 'POST',
+                    body: form
+                });
+
+                if (!res.ok) {
+                    console.error('모양 산책 사진 업로드 실패:', res.status);
+                } else {
+                    const data = await res.json();
+                    console.log('shape photo uploaded:', data);
+                }
+            }
+        } catch (e) {
+            console.error('모양 산책 사진 업로드 중 오류:', e);
+        } finally {
+            shapePhotoBuffer = [];
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const captureBtn = document.getElementById('photoCaptureBtn');
+        const saveBtn = document.getElementById('photoSaveBtn');
+        const video = document.getElementById('photoVideo');
+        const canvas = document.getElementById('photoCanvas');
+        const preview = document.getElementById('photoPreview');
+
+        if (!captureBtn || !saveBtn) return;
+
+        // 사진 캡처
+        captureBtn.addEventListener('click', () => {
+            if (!video.videoWidth || !video.videoHeight) {
+                alert('카메라 영상이 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
+                return;
+            }
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    alert('이미지 캡처에 실패했습니다.');
+                    return;
+                }
+                photoBlob = blob;
+
+                const url = URL.createObjectURL(blob);
+                preview.src = url;
+                preview.style.display = 'block';
+
+                saveBtn.disabled = false;
+            }, 'image/jpeg', 0.9);
+        });
+
+        // 이 사진을 현재 산책(일반/모양)의 버퍼에 저장
+        saveBtn.addEventListener('click', async () => {
+            if (!photoBlob) {
+                alert('먼저 사진을 캡처해 주세요.');
+                return;
+            }
+            if (!currentPhotoContext) {
+                alert('어떤 산책인지 알 수 없습니다. 다시 시도해 주세요.');
+                return;
+            }
+
+            // 좌표 결정
+            let lat = null;
+            let lon = null;
+            if (currentPhotoContext === 'general') {
+                lat = freeLastLat;
+                lon = freeLastLon;
+            } else if (currentPhotoContext === 'shape') {
+                lat = lastNavLat;
+                lon = lastNavLon;
+            }
+
+            // 좌표가 없으면 최후 수단으로 getCurrentPosition
+            if (lat == null || lon == null) {
+                try {
+                    const pos = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: false,
+                            timeout: 10000,
+                            maximumAge: 10000
+                        });
+                    });
+                    lat = pos.coords.latitude;
+                    lon = pos.coords.longitude;
+                } catch (e) {
+                    console.warn('사진 좌표용 위치 가져오기 실패', e);
+                }
+            }
+
+            if (lat == null || lon == null) {
+                alert('현재 위치를 가져올 수 없어 이 사진은 산책 기록에 저장되지 않습니다.');
+                return;
+            }
+
+            // ★ 컨텍스트별 버퍼에 push
+            const item = {
+                blob: photoBlob,
+                lat: lat,
+                lon: lon
+            };
+
+            if (currentPhotoContext === 'general') {
+                generalPhotoBuffer.push(item);
+            } else if (currentPhotoContext === 'shape') {
+                shapePhotoBuffer.push(item);
+            }
+
+            alert('사진을 현재 산책에 추가했습니다.\n산책 종료 후 기록과 함께 DB에 저장됩니다.');
+            closePhotoModal();
+        });
+
+        const photoModal = document.getElementById('photoModal');
+        if (photoModal) {
+            photoModal.addEventListener('click', (e) => {
+                if (e.target.id === 'photoModal') {
+                    closePhotoModal();
+                }
+            });
+        }
+    });
 </script>
 
 <!-- 초기화 -->

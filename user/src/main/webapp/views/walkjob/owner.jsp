@@ -3,14 +3,13 @@
 <%@ page isELIgnored="true" %>
 <link rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
 <style>
   /* ===== 색상 팔레트 (산책 알바 매칭 페이지 톤 참고) ===== */
   .walkjob-owner-page {
     --wj-bg: #f3f4f6;
     --wj-card: #ffffff;
     --wj-border-soft: #e5e7eb;
-    --wj-shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.06);
+    --wj-shadow-soft: 0 22px 50px rgba(15, 23, 42, 0.08);
 
     --wj-primary: #10b981;      /* 메인 초록 */
     --wj-primary-soft: #dcfce7;
@@ -21,16 +20,50 @@
     --wj-title: #111827;
   }
 
-  /* 전역 body 건드리지 않고 페이지 안에서만 배경 */
+  /* ===== 바깥 배경 래퍼 (map.jsp / worker.jsp 톤 맞추기) ===== */
+  .walkjob-owner-shell {
+    padding: 40px 16px 80px;
+    display: flex;
+    justify-content: center;
+    background:
+            radial-gradient(circle at top left, #ffe4f3 0, transparent 55%),
+            radial-gradient(circle at top right, #e0f2fe 0, transparent 55%),
+            #f5f7fb;
+  }
+
+  .walkjob-owner-inner {
+    width: min(1100px, 100%);
+  }
+
   .walkjob-owner-page {
-    width: min(960px, 94vw);
-    margin: 40px auto 80px;
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
     padding: 24px 26px 28px;
     border-radius: 28px;
     background: var(--wj-card);
     box-shadow: var(--wj-shadow-soft);
     border: 1px solid var(--wj-border-soft);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    /* overflow: hidden;  <= 이 줄 삭제 */
+  }
+
+  .walkjob-owner-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+            radial-gradient(circle at top right,
+            rgba(219, 234, 254, 0.9) 0,
+            transparent 60%);
+    opacity: 0.9;
+    pointer-events: none;
+    border-radius: inherit;  /* ★ 이 줄 추가 */
+  }
+
+  .walkjob-owner-page-inner {
+    position: relative; /* ::before 위에 실제 내용 올리기 */
   }
 
   .walkjob-owner-header {
@@ -42,8 +75,8 @@
   }
 
   .walkjob-owner-header-left h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.8rem;
+    font-weight: 800;
     color: var(--wj-title);
     margin: 4px 0 6px;
   }
@@ -52,6 +85,7 @@
     margin: 0;
     font-size: 0.9rem;
     color: var(--wj-muted);
+    line-height: 1.6;
   }
 
   .walkjob-owner-header-right {
@@ -86,7 +120,7 @@
     margin-top: 4px;
   }
 
-  /* ===== 반려동물 선택 섹션 (★ 추가) ===== */
+  /* ===== 반려동물 선택 섹션 ===== */
   .owner-pet-select {
     margin-top: 12px;
     margin-bottom: 10px;
@@ -116,6 +150,7 @@
     border-radius: 999px;
     border: 1px solid #d1d5db;
     font-size: 0.9rem;
+    background: #ffffff;
   }
 
   .owner-pet-select-row button {
@@ -126,11 +161,20 @@
     color: #fff;
     font-size: 0.86rem;
     cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(22, 163, 74, 0.25);
+  }
+
+  .owner-pet-select-row button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(22, 163, 74, 0.3);
   }
 
   .owner-pet-select-row button:disabled {
     opacity: .6;
     cursor: default;
+    box-shadow: none;
+    transform: none;
   }
 
   .owner-pet-selected-label {
@@ -145,7 +189,8 @@
     border-radius: 22px;
     overflow: hidden;
     border: 1px solid var(--wj-border-soft);
-    box-shadow: 0 12px 24px rgba(15,23,42,0.08);
+    box-shadow: 0 12px 30px rgba(15,23,42,0.12);
+    background: #e5e7eb;
   }
 
   .walkjob-owner-page #map {
@@ -225,6 +270,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    background: #f9fafb;
   }
 
   .walkjob-owner-page .status-chip::before {
@@ -257,9 +303,13 @@
   }
 
   @media (max-width: 768px) {
+    .walkjob-owner-shell {
+      padding-top: 24px;
+      padding-bottom: 40px;
+    }
     .walkjob-owner-page {
       padding: 18px 16px 22px;
-      border-radius: 20px;
+      border-radius: 22px;
     }
     .walkjob-owner-header {
       flex-direction: column;
@@ -278,67 +328,77 @@
   }
 </style>
 
-<br>
-<div class="walkjob-owner-page">
-  <header class="walkjob-owner-header">
-    <div class="walkjob-owner-header-left">
-      <div class="badge">산책 알바 · 반려인 화면</div>
-      <h1>내 반려동물 산책 모니터링</h1>
-      <p>알바생이 산책을 시작하면 이 화면에서 실시간 경로와 정보를 확인할 수 있습니다.</p>
-    </div>
-    <div class="walkjob-owner-header-right">
-      <div class="walkjob-owner-sublabel">
-        현재 진행 중인 산책을 실시간으로 추적하고, 거리·시간·칼로리를 한눈에 확인해요.
-      </div>
-    </div>
-  </header>
+<div class="walkjob-owner-shell">
+  <div class="walkjob-owner-inner">
+    <div class="walkjob-owner-page">
+      <div class="walkjob-owner-page-inner">
 
-  <!-- ★ 오늘 산책할 반려동물 선택 섹션 -->
-  <section class="owner-pet-select">
-    <div class="owner-pet-select-title">오늘 산책할 반려동물 선택</div>
-    <p style="margin:0; font-size:0.82rem; color:#6b7280;">
-      여러 마리의 반려동물이 있는 경우, 오늘 알바생이 산책시킬 반려동물을 먼저 선택해 주세요.
-    </p>
-    <div class="owner-pet-select-row">
-      <select id="ownerPetSelect">
-        <option value="">반려동물 목록을 불러오는 중입니다...</option>
-      </select>
-      <button id="ownerPetSelectBtn" type="button">선택 완료</button>
-    </div>
-    <p id="ownerSelectedPetLabel" class="owner-pet-selected-label">
-      아직 오늘 산책할 반려동물이 선택되지 않았습니다.
-    </p>
-  </section>
+        <header class="walkjob-owner-header">
+          <div class="walkjob-owner-header-left">
+            <div class="badge">산책 알바 · 반려인 화면</div>
+            <h1>내 반려동물 산책 모니터링</h1>
+            <p>
+              알바생이 산책을 시작하면 이 화면에서 실시간 경로와 정보를 확인할 수 있습니다.<br>
+              산책 거리·시간·칼로리를 한 번에 확인하고, 안전한 산책을 도와주세요.
+            </p>
+          </div>
+          <div class="walkjob-owner-header-right">
+            <div class="walkjob-owner-sublabel">
+              오늘 산책할 반려동물을 먼저 선택하면 알바생 화면에 연동됩니다.
+            </div>
+          </div>
+        </header>
 
-  <div class="map-wrap">
-    <div id="map"></div>
-  </div>
+        <!-- ★ 오늘 산책할 반려동물 선택 섹션 -->
+        <section class="owner-pet-select">
+          <div class="owner-pet-select-title">오늘 산책할 반려동물 선택</div>
+          <p style="margin:0; font-size:0.82rem; color:#6b7280;">
+            여러 마리의 반려동물이 있는 경우, 오늘 알바생이 산책시킬 반려동물을 먼저 선택해 주세요.
+          </p>
+          <div class="owner-pet-select-row">
+            <select id="ownerPetSelect">
+              <option value="">반려동물 목록을 불러오는 중입니다...</option>
+            </select>
+            <button id="ownerPetSelectBtn" type="button">선택 완료</button>
+          </div>
+          <p id="ownerSelectedPetLabel" class="owner-pet-selected-label">
+            아직 오늘 산책할 반려동물이 선택되지 않았습니다.
+          </p>
+        </section>
 
-  <div class="walkjob-footer-row">
-    <div class="stats">
-      <div class="stat-card dist">
-        <p class="stat-label"><span class="icon">📏</span>현재 걸은 거리</p>
-        <p class="stat-value"><span id="distLabel">0.00 km</span></p>
-      </div>
-      <div class="stat-card time">
-        <p class="stat-label"><span class="icon">⏱</span>경과 시간</p>
-        <p class="stat-value"><span id="timeLabel">0초</span></p>
-      </div>
-      <div class="stat-card kcal">
-        <p class="stat-label"><span class="icon">🔥</span>소모 칼로리</p>
-        <p class="stat-value"><span id="kcalLabel">0 kcal</span></p>
-      </div>
-      <div class="stat-card pace">
-        <p class="stat-label"><span class="icon">🚶‍♂️</span>평균 페이스</p>
-        <p class="stat-value"><span id="paceLabel">0'00"/km</span></p>
-      </div>
-    </div>
+        <div class="map-wrap">
+          <div id="map"></div>
+        </div>
 
-    <div class="status">
-      <span class="status-label">상태</span>
-      <span id="statusText" class="status-chip status-wait">
-        알바생 연결 대기 중...
-      </span>
+        <div class="walkjob-footer-row">
+          <div class="stats">
+            <div class="stat-card dist">
+              <p class="stat-label"><span class="icon">📏</span>현재 걸은 거리</p>
+              <p class="stat-value"><span id="distLabel">0.00 km</span></p>
+            </div>
+            <div class="stat-card time">
+              <p class="stat-label"><span class="icon">⏱</span>경과 시간</p>
+              <p class="stat-value"><span id="timeLabel">0초</span></p>
+            </div>
+            <div class="stat-card kcal">
+              <p class="stat-label"><span class="icon">🔥</span>소모 칼로리</p>
+              <p class="stat-value"><span id="kcalLabel">0 kcal</span></p>
+            </div>
+            <div class="stat-card pace">
+              <p class="stat-label"><span class="icon">🚶‍♂️</span>평균 페이스</p>
+              <p class="stat-value"><span id="paceLabel">0'00"/km</span></p>
+            </div>
+          </div>
+
+          <div class="status">
+            <span class="status-label">상태</span>
+            <span id="statusText" class="status-chip status-wait">
+              알바생 연결 대기 중...
+            </span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
@@ -363,8 +423,6 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-
 
 <script>
   let map, routePolyline, lastPoints = [], currentMarker;

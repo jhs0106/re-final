@@ -10,7 +10,7 @@
     --wj-bg: #f3f4f6;
     --wj-card: #ffffff;
     --wj-border-soft: #e5e7eb;
-    --wj-shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.06);
+    --wj-shadow-soft: 0 22px 50px rgba(15, 23, 42, 0.08);
 
     --wj-primary: #10b981;
     --wj-primary-soft: #dcfce7;
@@ -21,17 +21,48 @@
     --wj-title: #111827;
   }
 
+  /* ===== map.jsp 같은 배경 & 중앙 카드 래핑 ===== */
+  .walkjob-worker-shell {
+    padding: 40px 16px 80px;
+    display: flex;
+    justify-content: center;
+    background:
+            radial-gradient(circle at top left, #ffe4f3 0, transparent 55%),
+            radial-gradient(circle at top right, #e0f2fe 0, transparent 55%),
+            #f5f7fb;
+  }
+
+  .walkjob-worker-inner {
+    width: min(1100px, 100%);
+  }
+
   /* ✔ index.jsp의 body, .container 를 건드리지 않고
-     이 페이지 전용 래퍼 클래스만 사용 */
+     이 페이지 전용 카드만 스타일링 */
   .walkjob-worker-page {
-    width: min(960px, 94vw);
-    margin: 40px auto 80px;
+    position: relative;
     padding: 24px 26px 28px;
-    border-radius: 28px;
+    border-radius: 24px;
     background: var(--wj-card);
     box-shadow: var(--wj-shadow-soft);
     border: 1px solid var(--wj-border-soft);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+
+  /* 카드 안에 살짝 그라디언트 오버레이 */
+  .walkjob-worker-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right,
+    rgba(219, 234, 254, 0.8) 0,
+    transparent 60%);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  .walkjob-worker-page-inner {
+    position: relative; /* 오버레이 위에 실제 콘텐츠 올라오게 */
   }
 
   .walkjob-worker-header {
@@ -44,15 +75,16 @@
 
   .walkjob-worker-header-left h1 {
     margin: 4px 0 6px;
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.9rem;
+    font-weight: 800;
     color: var(--wj-title);
   }
 
   .walkjob-worker-header-left p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--wj-muted);
+    line-height: 1.6;
   }
 
   .walkjob-worker-header-right {
@@ -65,7 +97,7 @@
     gap: 6px;
     padding: 6px 12px;
     border-radius: 999px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     background: #dbeafe;
     color: #1d4ed8;
     font-weight: 600;
@@ -77,7 +109,7 @@
   }
 
   .walkjob-worker-sublabel {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--wj-muted);
     padding: 4px 10px;
     border-radius: 999px;
@@ -87,62 +119,38 @@
     margin-top: 4px;
   }
 
-  .walkjob-worker-page .pet-info-card {
+  /* map.jsp 스타일 참고한 안내 카드 */
+  .walkjob-worker-notice {
     margin-top: 10px;
-    padding: 14px 18px;
-    border-radius: 18px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 24px rgba(15,23,42,0.06);
-    font-size: 0.9rem;
+    margin-bottom: 6px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #fff7e6;
+    border: 1px solid #fed7aa;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .pet-info-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
     gap: 8px;
-    margin-bottom: 4px;
+    font-size: 0.82rem;
+    color: #92400e;
   }
 
-  .walkjob-worker-page .pet-info-card h2 {
-    margin: 0;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .walkjob-worker-notice-icon {
+    font-size: 1.1rem;
+    margin-top: 2px;
   }
 
-  .walkjob-worker-page .pet-info-card h2::before {
-    content: "🐾";
-    font-size: 1.05rem;
-  }
-
-  .walkjob-worker-page .pet-info-chip {
-    font-size: 0.78rem;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: #eef2ff;
-    color: #4f46e5;
-  }
-
-  .walkjob-worker-page .pet-info-card strong {
-    font-weight: 600;
-  }
-
-  .walkjob-worker-page .pet-info-card p {
-    margin: 0;
+  .walkjob-worker-notice-text strong {
+    display: block;
+    margin-bottom: 2px;
   }
 
   .walkjob-worker-page .map-wrap {
-    margin-top: 16px;
+    margin-top: 14px;
     border-radius: 22px;
     overflow: hidden;
     border: 1px solid #e5e7eb;
     box-shadow: 0 12px 30px rgba(15,23,42,0.12);
+    background: #e5e7eb;
   }
 
   .walkjob-worker-page #map {
@@ -151,7 +159,7 @@
 
   /* ===== 컨트롤 + 상태 ===== */
   .walkjob-worker-page .controls-row {
-    margin-top: 16px;
+    margin-top: 18px;
     display: flex;
     justify-content: space-between;
     gap: 16px;
@@ -221,6 +229,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    background: #f9fafb;
   }
 
   .walkjob-worker-page .status-pill::before {
@@ -304,6 +313,10 @@
   }
 
   @media (max-width: 768px) {
+    .walkjob-worker-shell {
+      padding-top: 24px;
+      padding-bottom: 40px;
+    }
     .walkjob-worker-page {
       padding: 18px 16px 22px;
       border-radius: 20px;
@@ -319,65 +332,80 @@
       flex-direction: column;
       align-items: flex-start;
     }
-    .walkjob-worker-page .pet-info-card {
-      padding: 12px 14px;
-    }
   }
 </style>
 
 <br>
-<div class="walkjob-worker-page">
-  <header class="walkjob-worker-header">
-    <div class="walkjob-worker-header-left">
-      <div class="badge">산책 알바 · 알바생 화면</div>
-      <h1>반려동물과 산책하기</h1>
-      <p>산책 시작을 누르면 이동 경로와 거리 정보가 반려인 화면으로 실시간 전송됩니다.</p>
-    </div>
-    <div class="walkjob-worker-header-right">
-      <div class="walkjob-worker-sublabel">
-        산책 전 반려동물 정보를 확인하고, 추천 거리 안에서 안전하게 산책해 주세요.
-      </div>
-    </div>
-  </header>
+<div class="walkjob-worker-shell">
+  <div class="walkjob-worker-inner">
+    <div class="walkjob-worker-page">
+      <div class="walkjob-worker-page-inner">
+        <header class="walkjob-worker-header">
+          <div class="walkjob-worker-header-left">
+            <div class="badge">산책 알바 · 알바생 화면</div>
+            <h1>반려동물과 산책하기</h1>
+            <p>
+              산책 시작을 누르면 이동 경로와 거리 정보가 반려인 화면으로 실시간 전송됩니다.<br>
+              GPS 반응이 느리면 잠시만 기다렸다가 이동을 시작해 주세요.
+            </p>
+          </div>
+          <div class="walkjob-worker-header-right">
+            <div class="walkjob-worker-sublabel">
+              산책 전 반려동물 정보를 확인하고, 추천 거리 안에서 안전하게 산책해 주세요.
+            </div>
+          </div>
+        </header>
 
-  <div class="map-wrap">
-    <div id="map"></div>
-  </div>
+        <!-- map.jsp 느낌의 안내 카드 -->
+        <div class="walkjob-worker-notice">
+          <div class="walkjob-worker-notice-icon">⚠️</div>
+          <div class="walkjob-worker-notice-text">
+            <strong>위치 권한과 GPS 상태를 꼭 확인해 주세요.</strong>
+            건물 사이·지하·터널에서는 거리 오차가 생길 수 있습니다.
+          </div>
+        </div>
 
-  <div class="controls-row">
-    <div class="controls">
-      <button id="startBtn" class="btn btn-primary">산책 시작</button>
-      <button id="stopBtn" class="btn btn-danger" disabled>산책 종료</button>
-    </div>
-    <div class="status-box">
-      <span class="status-label">상태</span>
-      <span id="statusText" class="status-pill status-waiting">대기 중...</span>
-    </div>
-  </div>
+        <div class="map-wrap">
+          <div id="map"></div>
+        </div>
 
-  <div class="walkjob-worker-footer">
-    <div class="stats">
-      <div class="stat-card dist">
-        <p class="stat-label"><span class="icon">📏</span>걸은 거리</p>
-        <p class="stat-value"><span id="distLabel">0.00 km</span></p>
-      </div>
-      <div class="stat-card time">
-        <p class="stat-label"><span class="icon">⏱</span>경과 시간</p>
-        <p class="stat-value"><span id="timeLabel">0초</span></p>
-      </div>
-      <div class="stat-card kcal">
-        <p class="stat-label"><span class="icon">🔥</span>소모 칼로리</p>
-        <p class="stat-value"><span id="kcalLabel">0 kcal</span></p>
-      </div>
-      <div class="stat-card pace">
-        <p class="stat-label"><span class="icon">🚶‍♂️</span>평균 페이스</p>
-        <p class="stat-value"><span id="paceLabel">0'00"/km</span></p>
+        <div class="controls-row">
+          <div class="controls">
+            <button id="startBtn" class="btn btn-primary">산책 시작</button>
+            <button id="stopBtn" class="btn btn-danger" disabled>산책 종료</button>
+          </div>
+          <div class="status-box">
+            <span class="status-label">상태</span>
+            <span id="statusText" class="status-pill status-waiting">대기 중...</span>
+          </div>
+        </div>
+
+        <div class="walkjob-worker-footer">
+          <div class="stats">
+            <div class="stat-card dist">
+              <p class="stat-label"><span class="icon">📏</span>걸은 거리</p>
+              <p class="stat-value"><span id="distLabel">0.00 km</span></p>
+            </div>
+            <div class="stat-card time">
+              <p class="stat-label"><span class="icon">⏱</span>경과 시간</p>
+              <p class="stat-value"><span id="timeLabel">0초</span></p>
+            </div>
+            <div class="stat-card kcal">
+              <p class="stat-label"><span class="icon">🔥</span>소모 칼로리</p>
+              <p class="stat-value"><span id="kcalLabel">0 kcal</span></p>
+            </div>
+            <div class="stat-card pace">
+              <p class="stat-label"><span class="icon">🚶‍♂️</span>평균 페이스</p>
+              <p class="stat-value"><span id="paceLabel">0'00"/km</span></p>
+            </div>
+          </div>
+
+          <p class="note">
+            위치 권한 허용이 필요합니다. GPS 상태에 따라 실제 거리와 일부 차이가 발생할 수 있습니다.
+          </p>
+        </div>
       </div>
     </div>
-
-    <p class="note">
-      위치 권한 허용이 필요합니다. GPS 상태에 따라 실제 거리와 일부 차이가 발생할 수 있습니다.
-    </p>
   </div>
 </div>
 
@@ -658,7 +686,7 @@
     }
 
     if (typeof OWNER_USER_ID === 'undefined' || OWNER_USER_ID <= 0) {
-      infoEl.textContent = '연결된 반려인 정보가 없어 반려동물 정보를 불러올 수 없습니다.';
+      infoEl.textContent = '연결된 반려인 정보가 없어 반려동물 정보를 불러 수 없습니다.';
       recommendEl.textContent = '- km';
       reasonEl.textContent = '';
       return;
