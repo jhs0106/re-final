@@ -73,6 +73,12 @@
             end_time,
             distance,
             route_data,
+            planned_distance,
+            walked_distance,
+            planned_route_data,
+            walked_route_data,
+            shape_type,
+            target_km,
             pet_id
         FROM walk_log
         WHERE user_id = #{userId}
@@ -90,6 +96,12 @@
             end_time,
             distance,
             route_data,
+            planned_distance,
+            walked_distance,
+            planned_route_data,
+            walked_route_data,
+            shape_type,
+            target_km,
             pet_id
         FROM walk_log
         WHERE walking_recode_id = #{id}
