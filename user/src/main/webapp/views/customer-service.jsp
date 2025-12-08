@@ -5,6 +5,11 @@
     <div class="text-center mb-5">
         <h2 class="font-weight-bold"><i class="fas fa-headset text-primary"></i> 고객센터</h2>
         <p class="text-muted">궁금한 점이나 불편한 사항을 남겨주세요.</p>
+        <c:if test="${not empty inquiryMessage}">
+            <div class="alert alert-success mt-3" role="alert">
+                ${inquiryMessage}
+            </div>
+        </c:if>
     </div>
 
     <div class="row justify-content-center">
@@ -92,6 +97,43 @@
                                     <button type="submit" class="btn btn-pet-primary">문의 등록</button>
                                 </div>
                             </form>
+
+                            <div class="mt-4">
+                                <h5 class="mb-3">최근 문의 내역</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>번호</th>
+                                            <th>제목</th>
+                                            <th>상태</th>
+                                            <th>작성자</th>
+                                            <th>등록일</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:choose>
+                                            <c:when test="${empty inquiries}">
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted">등록된 문의가 없습니다.</td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="inquiry" items="${inquiries}">
+                                                    <tr>
+                                                        <td>${inquiry.id}</td>
+                                                        <td>${inquiry.title}</td>
+                                                        <td><span class="badge ${inquiry.statusBadge}">${inquiry.statusLabel}</span></td>
+                                                        <td>${inquiry.username}</td>
+                                                        <td>${inquiry.formattedCreatedAt}</td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

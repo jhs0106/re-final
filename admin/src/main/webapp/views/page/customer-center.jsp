@@ -36,26 +36,27 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td class="table-plus">1</td>
-                        <td>로그인이 안됩니다.</td>
-                        <td>hong123</td>
-                        <td>2024-06-01</td>
-                        <td><span class="badge badge-warning">답변대기</span></td>
-                        <td>
-                            <a class="btn btn-sm btn-primary" href="#"><i class="dw dw-edit2"></i> 답변하기</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="table-plus">2</td>
-                        <td>CCTV 화면이 안나옵니다.</td>
-                        <td>admin_sub</td>
-                        <td>2024-05-28</td>
-                        <td><span class="badge badge-success">답변완료</span></td>
-                        <td>
-                            <a class="btn btn-sm btn-secondary" href="#"><i class="dw dw-eye"></i> 확인</a>
-                        </td>
-                    </tr>
+                    <c:choose>
+                        <c:when test="${empty inquiries}">
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">등록된 문의가 없습니다.</td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="inquiry" items="${inquiries}">
+                                <tr>
+                                    <td class="table-plus">${inquiry.id}</td>
+                                    <td>${inquiry.title}</td>
+                                    <td>${inquiry.username}</td>
+                                    <td>${inquiry.formattedCreatedAt}</td>
+                                    <td><span class="badge ${inquiry.statusBadge}">${inquiry.statusLabel}</span></td>
+                                    <td>
+                                        <a class="btn btn-sm btn-primary" href="/admin/customer/detail?id=${inquiry.id}"><i class="dw dw-eye"></i> 상세보기</a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                     </tbody>
                 </table>
             </div>

@@ -139,18 +139,16 @@
                             <div class="header-actions ml-3">
                                 <c:choose>
                                     <c:when test="${not empty sessionScope.user}">
-                                        <%-- <a href="<c:url value='/customer-service'/>"
-                                            class="btn btn-pet-outline btn-sm mr-2">--%>
-                                            <%-- <i class="fas fa-headset"></i> 고객센터--%>
-                                                <%-- </a>--%>
-                                                    <a href="<c:url value='/mypage'/>"
-                                                        class="btn btn-pet-outline btn-sm mr-2">
-                                                        <i class="fas fa-user-circle"></i> 마이페이지
-                                                    </a>
-                                                    <a href="<c:url value='/logout'/>"
-                                                        class="btn btn-pet-primary btn-sm">
-                                                        <i class="fas fa-sign-out-alt"></i> 로그아웃
-                                                    </a>
+                                        <a href="<c:url value='/customer-service'/>" class="btn btn-pet-outline btn-sm mr-2">
+                                            <i class="fas fa-headset"></i> 고객센터
+                                        </a>
+
+                                        <a href="<c:url value='/mypage'/>" class="btn btn-pet-outline btn-sm mr-2">
+                                            <i class="fas fa-user-circle"></i> 마이페이지
+                                        </a>
+                                        <a href="<c:url value='/logout'/>" class="btn btn-pet-primary btn-sm">
+                                            <i class="fas fa-sign-out-alt"></i> 로그아웃
+                                        </a>
                                     </c:when>
                                     <c:otherwise>
                                         <a href="<c:url value='/login'/>" class="btn btn-pet-outline btn-sm mr-2">
