@@ -4,6 +4,7 @@ import edu.sm.app.dto.Pet;
 import edu.sm.app.dto.User;
 import edu.sm.app.service.PetService;
 import edu.sm.app.service.UserService;
+import edu.sm.app.service.WalkLogService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import edu.sm.app.dto.WalkDetailView;
+import edu.sm.app.dto.WalkListView;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
@@ -21,6 +25,8 @@ public class MainController {
 
     private final UserService userService;
     private final PetService petService;
+    private final WalkLogService walkLogService;
+
 
     @RequestMapping("/")
     public String main(Model model) {
@@ -100,6 +106,31 @@ public class MainController {
     @RequestMapping("/map")
     public String map(Model model) {
         model.addAttribute("center", "map");
+        return "index";
+    }
+
+    // 산책 목록
+    @GetMapping("/walklist")
+    public String walklist(@RequestParam(name = "type", required = false, defaultValue = "all") String type,
+                           Model model) {
+
+        WalkListView view = walkLogService.buildWalkListView(type);
+
+        model.addAttribute("center", "walklist");
+        model.addAttribute("walkListView", view);
+
+        return "index";
+    }
+
+    // 산책 상세
+    @GetMapping("/walkdetail/{id}")
+    public String walkdetail(@PathVariable("id") long id, Model model) throws Exception {
+
+        WalkDetailView detail = walkLogService.buildWalkDetailView(id);
+
+        model.addAttribute("center", "walkdetail");
+        model.addAttribute("walkDetail", detail);
+
         return "index";
     }
 

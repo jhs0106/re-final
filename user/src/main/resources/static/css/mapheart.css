@@ -606,3 +606,206 @@ body {
         min-height: 320px;
     }
 }
+
+/* ===========================
+   🔹 map.jsp 스타일 느낌 추가
+   walk-map-theme 래퍼 + 카드 스타일 오버라이드
+   =========================== */
+
+.walk-map-theme {
+    /* map.jsp 느낌의 배경/테마 */
+    --primary-color: #6366f1;
+    --accent-pink: #ff7ab8;
+    --bg-soft: #f9fafb;
+    --card-radius: 24px;
+    --shadow-soft: 0 22px 50px rgba(15, 23, 42, 0.08);
+
+    background:
+            radial-gradient(circle at top left, #ffe4f3 0, transparent 55%),
+            radial-gradient(circle at top right, #e0f2fe 0, transparent 55%),
+            #f5f7fb;
+
+    padding-bottom: 80px;
+    /* 페이지 안 글꼴 살짝 통통하게 */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.walk-map-theme .walk-page-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px 0;
+}
+
+.walk-map-theme .walk-page-container {
+    width: min(1200px, 100%);
+}
+
+/* 상단 헤더 */
+.walk-map-theme .walk-page-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.walk-map-theme .walk-page-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 10px;
+    color: #6b7280;
+    box-shadow: 0 10px 24px rgba(148, 163, 184, 0.25);
+}
+
+.walk-map-theme .walk-page-badge span {
+    font-size: 18px;
+}
+
+.walk-map-theme .walk-page-header h1 {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    background: linear-gradient(120deg, #6366f1, #ec4899);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-family: 'Jua', system-ui, sans-serif;
+}
+
+.walk-map-theme .walk-page-subtitle {
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* HERO / 레이아웃 폭을 컨테이너 안으로 맞추기 */
+.walk-map-theme .map-hero,
+.walk-map-theme .map-layout {
+    width: 100%;
+    margin: 0 0 36px 0;
+}
+
+/* HERO를 카드처럼 (map-main-card 느낌) */
+.walk-map-theme .map-hero {
+    background: #ffffff;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-soft);
+    padding: 24px 26px 26px;
+    position: relative;
+    overflow: hidden;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    align-items: center;
+}
+
+.walk-map-theme .map-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right,
+    rgba(251, 207, 232, 0.7) 0,
+    transparent 60%);
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+.walk-map-theme .map-hero__content,
+.walk-map-theme .map-hero__illustration {
+    position: relative;
+    z-index: 1;
+}
+
+.walk-map-theme .map-hero__eyebrow {
+    letter-spacing: 0.26em;
+}
+
+.walk-map-theme .map-hero__title {
+    font-family: 'Jua', system-ui, sans-serif;
+}
+
+/* HERO 오른쪽 일러스트 카드 살짝 조정 */
+.walk-map-theme .map-hero__illustration {
+    min-height: 260px;
+    border-radius: 30px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    box-shadow: 0 18px 35px rgba(148, 163, 184, 0.35);
+}
+
+.walk-map-theme .hero-card {
+    backdrop-filter: blur(6px);
+}
+
+/* 카드들(map-panel, panel-card)을 map.jsp의 메인 카드 느낌으로 */
+.walk-map-theme .map-panel,
+.walk-map-theme .panel-card {
+    background: #ffffff;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+
+.walk-map-theme .map-panel::before,
+.walk-map-theme .panel-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right,
+    rgba(219, 234, 254, 0.7) 0,
+    transparent 60%);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.walk-map-theme .map-panel__header,
+.walk-map-theme .map-panel__body,
+.walk-map-theme .map-panel__footer,
+.walk-map-theme .panel-card header {
+    position: relative;
+    z-index: 1;
+}
+
+/* 사이드 패널은 살짝 투명한 유리 느낌 */
+.walk-map-theme .side-panel .panel-card {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* 버튼/컨트롤 pill 살짝 더 통통하게 */
+.walk-map-theme .btn,
+.walk-map-theme .control-pill {
+    font-size: 0.95rem;
+}
+
+/* 반려동물 박스도 조금 더 soft하게 */
+.walk-map-theme .pet-box {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 20px;
+}
+
+/* responsive - 컨테이너 기준으로 정리 */
+@media (max-width: 960px) {
+    .walk-map-theme .walk-page-wrapper {
+        padding-top: 24px;
+    }
+    .walk-map-theme .map-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .walk-map-theme .map-hero {
+        padding: 18px 16px 22px;
+    }
+    .walk-map-theme .map-page-header h1 {
+        font-size: 28px;
+    }
+}
+
+/* 이 페이지 안 요소만 box-sizing 통일 */
+.walk-map-theme .walk-page-container * {
+    box-sizing: border-box;
+}
