@@ -20,15 +20,13 @@ public class ClothesRecommendController {
 
     private final ClothesRecommendService clothesRecommendService;
 
-    // CORS 정책을 위해 @CrossOrigin 추가 (필요하다면)
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ClothesRecommendResult> analyzePhoto(
             @RequestParam("image") MultipartFile attach,
             // [수정] animalType 파라미터 추가
-            @RequestParam(value = "animalType", required = false) String animalType
-    ) throws IOException {
-        if (attach == null || attach.isEmpty() || attach.getContentType() == null || !attach.getContentType().startsWith("image/")) {
+            @RequestParam(value = "animalType", required = false) String animalType) throws IOException {
+        if (attach == null || attach.isEmpty() || attach.getContentType() == null
+                || !attach.getContentType().startsWith("image/")) {
             log.warn("Invalid attachment received for clothes recommendation.");
             ClothesRecommendResult invalidResult = ClothesRecommendResult.builder()
                     .animalType("이미지 필요")
