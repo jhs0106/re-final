@@ -47,6 +47,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: ENC(Y6NgbbcggJp06p9ZnpSSAQ==)
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/customer-center.sql
 
 mybatis:
   type-aliases-package: edu.sm.app.dto

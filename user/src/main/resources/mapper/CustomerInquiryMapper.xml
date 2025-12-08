@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.sm.app.customer.CustomerInquiryRepository">
+
+    <resultMap id="CustomerInquiryMap" type="edu.sm.app.customer.CustomerInquiry">
+        <id property="id" column="id" />
+        <result property="category" column="category" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="username" column="username" />
+        <result property="status" column="status" />
+        <result property="answer" column="answer" />
+        <result property="responder" column="responder" />
+        <result property="createdAt" column="created_at" />
+        <result property="answeredAt" column="answered_at" />
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, category, title, content, username, status, answer, responder, created_at, answered_at
+    </sql>
+
+    <select id="findAll" resultMap="CustomerInquiryMap">
+        SELECT
+        <include refid="BaseColumns" />
+        FROM customer_inquiry
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="CustomerInquiryMap">
+        SELECT
+        <include refid="BaseColumns" />
+        FROM customer_inquiry
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="edu.sm.app.customer.CustomerInquiry" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO customer_inquiry (category, title, content, username, status, created_at)
+        VALUES (#{category}, #{title}, #{content}, #{username}, #{status}, #{createdAt})
+    </insert>
+
+    <update id="updateAnswer">
+        UPDATE customer_inquiry
+        SET answer = #{answer},
+            responder = #{responder},
+            status = 'ANSWERED',
+            answered_at = #{answeredAt}
+        WHERE id = #{id}
+    </update>
+</mapper>
