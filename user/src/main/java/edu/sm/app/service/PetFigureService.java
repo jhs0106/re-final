@@ -97,6 +97,14 @@ public class PetFigureService {
             requestBody.put("contents", List.of(content));
             requestBody.put("generationConfig", generationConfig);
 
+            // Add Safety Settings
+            List<Map<String, String>> safetySettings = List.of(
+                    Map.of("category", "HARM_CATEGORY_HARASSMENT", "threshold", "BLOCK_NONE"),
+                    Map.of("category", "HARM_CATEGORY_HATE_SPEECH", "threshold", "BLOCK_NONE"),
+                    Map.of("category", "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold", "BLOCK_NONE"),
+                    Map.of("category", "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold", "BLOCK_NONE"));
+            requestBody.put("safetySettings", safetySettings);
+
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
             ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
 
@@ -125,6 +133,11 @@ public class PetFigureService {
                                         }
                                     }
                                 }
+                            }
+                        } else {
+                            if (candidate.containsKey("finishReason")) {
+                                String reason = (String) candidate.get("finishReason");
+                                return "ERROR: AI Generation Refused. Reason: " + reason;
                             }
                         }
                     }
@@ -197,7 +210,8 @@ public class PetFigureService {
             // Let's fail open (allow) to not block users if validation fails technically,
             // or fail closed (deny) to be strict.
             // Given the requirement is to save tokens, failing closed might be safer,
-            // but for UX, maybe fail open? Let's assume fail closed for now to strictly follow "filtering".
+            // but for UX, maybe fail open? Let's assume fail closed for now to strictly
+            // follow "filtering".
             // Actually, if validation fails, we can't be sure. Let's return false.
             return false;
         }

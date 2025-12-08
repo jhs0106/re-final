@@ -19,12 +19,10 @@ public class PetFigureController {
 
     private final PetFigureService petFigureService;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/generate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> generateFigure(
             @RequestParam("image") MultipartFile attach,
-            @RequestParam(value = "customPrompt", required = false) String customPrompt
-    ) {
+            @RequestParam(value = "customPrompt", required = false) String customPrompt) {
         String imageUrl = petFigureService.generateFigure(attach, customPrompt);
         Map<String, String> response = new HashMap<>();
         if (imageUrl.startsWith("ERROR")) {
