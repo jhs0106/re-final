@@ -2,8 +2,14 @@
 
 /* 페이지 컨테이너 */
 .health-check-container {
-    min-height: calc(100vh - 200px);
-    padding: var(--space-8) 0;
+    min-height: calc(100vh - 200px); /* 높이 통일 */
+    padding: 2rem 0; /* 상하 여백 추가 */
+}
+
+.health-check-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
 }
 
 .health-check-header {
@@ -647,8 +653,16 @@
     font-weight: var(--font-semibold);
 }
 
-/* 반응형 */
+/* 모바일 반응형 */
 @media (max-width: 768px) {
+    .health-check-container {
+        padding: 1.5rem 0;
+    }
+
+    .health-check-wrapper {
+        padding: 0 1rem;
+    }
+
     .health-check-header h1 {
         font-size: var(--font-3xl);
     }
@@ -669,6 +683,10 @@
 }
 
 @media (max-width: 576px) {
+    .health-check-container {
+        padding: 1rem 0;
+    }
+
     .health-check-header h1 {
         font-size: var(--font-2xl);
     }

@@ -49,57 +49,145 @@
 </div>
 
 <style>
+    /* ========== 페이지 컨테이너 ========== */
+    .main-container {
+        min-height: calc(100vh - 200px); /* ✅ 높이 통일 */
+        padding: 2rem 0; /* ✅ 상하 여백 추가 */
+        background: linear-gradient(135deg, #ffeaea 0%, #e3fff9 100%);
+    }
+
+    .pd-ltr-20 {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .pd-ltr-20.xs-pd-20-10 {
+        padding: 0 1.5rem;
+    }
+
+    /* ========== AI 분석 카드 ========== */
     .ai-analysis-card {
         background: #101322;
-        border-radius: 20px; padding: 24px; color: #f7f9ff;
-        box-shadow: 0 20px 45px rgba(10, 12, 24, 0.45); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;
-    }
-    .ai-analysis-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 15px;
-    }
-    .ai-analysis-history { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .ai-analysis-history.placeholder { color: rgba(255,255,255,0.5); }
-    .ai-analysis-history li { background: rgba(255,255,255,0.08); border-radius: 14px;
-        padding: 8px 14px; font-size: 0.85rem; display: flex; gap: 10px; }
-    .ai-analysis-history li .time { font-weight: 600;
-        color: rgba(255,255,255,0.9); }
-
-    .status { font-size: 0.9rem; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,0.08); font-weight: 600;
-        color: #fff; }
-    .status.waiting { background: rgba(255,255,255,0.12);
-    }
-    .status.safe { background: rgba(62, 201, 144, 0.2); color: #85f0c0;
-    }
-    .status.alert { background: rgba(255, 94, 94, 0.2); color: #ff9494;
+        border-radius: 20px;
+        padding: 24px;
+        color: #f7f9ff;
+        box-shadow: 0 20px 45px rgba(10, 12, 24, 0.45);
+        border: 1px solid rgba(255,255,255,0.05);
+        margin-bottom: 20px;
     }
 
-    .text-danger { color: #ff9494 !important; }
-    .text-success { color: #85f0c0 !important;
+    .ai-analysis-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 15px;
     }
 
-    .cctv-col { margin-bottom: 30px; }
+    .ai-analysis-history {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .ai-analysis-history.placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
+    .ai-analysis-history li {
+        background: rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        display: flex;
+        gap: 10px;
+    }
+
+    .ai-analysis-history li .time {
+        font-weight: 600;
+        color: rgba(255,255,255,0.9);
+    }
+
+    /* ========== 상태 뱃지 ========== */
+    .status {
+        font-size: 0.9rem;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .status.waiting {
+        background: rgba(255,255,255,0.12);
+    }
+
+    .status.safe {
+        background: rgba(62, 201, 144, 0.2);
+        color: #85f0c0;
+    }
+
+    .status.alert {
+        background: rgba(255, 94, 94, 0.2);
+        color: #ff9494;
+    }
+
+    .text-danger {
+        color: #ff9494 !important;
+    }
+
+    .text-success {
+        color: #85f0c0 !important;
+    }
+
+    /* ========== CCTV 그리드 ========== */
+    .cctv-col {
+        margin-bottom: 30px;
+    }
+
     .cctv-card {
         background: #000;
-        border-radius: 12px; overflow: hidden; position: relative;
-        border: 2px solid #444; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid #444;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         aspect-ratio: 16 / 9;
     }
-    .cctv-card video { width: 100%; height: 100%; object-fit: contain;
+
+    .cctv-card video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
     .cctv-label {
-        position: absolute; top: 15px; left: 15px;
-        background: rgba(0, 0, 0, 0.6); color: white;
-        padding: 5px 10px; border-radius: 4px;
-        font-weight: bold; font-size: 14px; z-index: 10;
-    }
-    .loading-msg {
-        position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        color: #aaa; font-size: 1rem;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+        z-index: 10;
     }
 
-    /* 마이크 버튼 스타일 */
+    .loading-msg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #aaa;
+        font-size: 1rem;
+    }
+
+    /* ========== 마이크 버튼 ========== */
     .cctv-btn-mic {
         position: absolute;
         bottom: 20px;
@@ -118,13 +206,91 @@
         justify-content: center;
         transition: all 0.3s ease;
     }
+
     .cctv-btn-mic:hover {
         background: rgba(255, 255, 255, 0.2);
     }
+
     .cctv-btn-mic.active {
-        background: #ef476f; /* 활성화 시 붉은색 */
+        background: #ef476f;
         color: white;
         box-shadow: 0 0 15px rgba(239, 71, 111, 0.5);
+    }
+
+    /* ========== 모바일 반응형 ========== */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 1.5rem 0;
+        }
+
+        .pd-ltr-20,
+        .pd-ltr-20.xs-pd-20-10 {
+            padding: 0 1rem;
+        }
+
+        .ai-analysis-card {
+            padding: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .ai-analysis-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .ai-analysis-history li {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+        }
+
+        .cctv-col {
+            margin-bottom: 20px;
+        }
+
+        #cctv-grid-container .col-xl-4,
+        #cctv-grid-container .col-lg-4,
+        #cctv-grid-container .col-md-6 {
+            padding: 0 0.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-container {
+            padding: 1rem 0;
+        }
+
+        .ai-analysis-card {
+            padding: 1.25rem;
+        }
+
+        .page-header .title h4 {
+            font-size: 1.5rem;
+        }
+
+        .cctv-label {
+            font-size: 12px;
+            padding: 4px 8px;
+            top: 10px;
+            left: 10px;
+        }
+
+        .cctv-btn-mic {
+            width: 38px;
+            height: 38px;
+            bottom: 15px;
+            right: 15px;
+            font-size: 1rem;
+        }
+
+        .ai-analysis-history {
+            gap: 6px;
+        }
+
+        .status {
+            font-size: 0.85rem;
+            padding: 5px 12px;
+        }
     }
 </style>
 

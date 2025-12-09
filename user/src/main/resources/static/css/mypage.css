@@ -824,6 +824,10 @@
         gap: 1.5rem;
     }
 
+    .info-card[style*="grid-column: span 2"] {
+        grid-column: span 1 !important;
+    }
+
     .pet-grid {
         grid-template-columns: 1fr;
     }

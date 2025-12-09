@@ -5,9 +5,17 @@
     --figure-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 243, 250, 0.9) 100%);
 }
 
+/* 페이지 컨테이너만 통일 - 높이 일관성 */
 .figure-container {
+    min-height: calc(100vh - 200px); /* ✅ 높이만 통일 */
     max-width: 1000px;
     margin: 4rem auto;
+    padding: 2rem 1.5rem;
+}
+
+.figure-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 0 1.5rem;
 }
 
@@ -227,4 +235,74 @@
     width: 1.5rem;
     height: 1.5rem;
     border-width: 0.2em;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .figure-container {
+        margin: 2rem auto;
+        padding: 1.5rem 1rem; /* ✅ 상하 패딩 추가 (기존: 0 1rem) */
+    }
+
+    .figure-header {
+        margin-top: 0; /* 컨테이너 패딩으로 해결되므로 추가 여백 불필요 */
+    }
+
+    .figure-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .figure-header p {
+        font-size: 0.95rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    .upload-area {
+        padding: 2rem 1rem;
+    }
+
+    .upload-icon {
+        font-size: 2.8rem;
+    }
+
+    .btn-figure-primary {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .figure-image-card img {
+        max-height: 350px;
+    }
+
+    .gallery-grid {
+        gap: 0.75rem;
+    }
+
+    .gallery-item {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 576px) {
+    .figure-container {
+        margin: 1.5rem auto;
+        padding: 1rem; /* ✅ 상하 패딩 포함 */
+    }
+
+    .figure-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .gallery-item {
+        width: 70px;
+        height: 70px;
+    }
 }
