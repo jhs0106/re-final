@@ -19,7 +19,7 @@
 }
 
 .pet-header .navbar {
-    padding: 0.5rem 0;
+    padding: 0.5rem 1.5rem; /* 기존 0.5rem 0에서 좌우 패딩 추가 */
     min-height: 70px;
 }
 
@@ -261,6 +261,7 @@ main {
 @media (max-width: 768px) {
     .pet-header .navbar {
         min-height: 60px;
+        padding: 0.5rem 1rem; /* 모바일에서도 좌우 패딩 추가 */
     }
 
     main {
@@ -294,13 +295,20 @@ main {
     }
 
     .header-actions {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 1rem;
+        display: flex;
+        flex-direction: row; /* 세로(column)에서 가로(row)로 변경 */
+        gap: 10px; /* 버튼 사이 간격 */
+        align-items: center;
+        justify-content: center;
+        margin-top: 1rem; /* 상단 여백 추가 */
+        padding-top: 1rem; /* 추가 패딩 */
     }
 
-    .header-btn {
-        width: 100%;
+    .header-actions .btn {
+        width: auto; /* 전체 너비(100%)에서 자동으로 변경 */
+        min-width: 100px; /* 최소 너비 설정 */
+        padding: 8px 16px; /* 패딩 조정 */
+        font-size: 14px; /* 폰트 크기 조정 */
     }
 }
 

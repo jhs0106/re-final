@@ -8,7 +8,7 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <title>PetTopia AI - 스마트한 반려동물 생활</title>
+            <title>PATnPET - 스마트한 반려동물 생활</title>
 
             <meta name="description" content="더 편리한 반려동물과의 생활">
             <meta name="keywords" content="반려동물, AI 산책, 가상진단, 홈캠, 건강진단, 산책알바, 펫다이어리">
@@ -66,7 +66,7 @@
                                 <i class="fas fa-paw"></i>
                             </div>
                             <div class="pet-logo-text">
-                                <span class="pet-logo-title">Pettopia</span>
+                                <span class="pet-logo-title">PATnPET</span>
                                 <span class="pet-logo-subtitle">스마트 반려 생활</span>
                             </div>
                         </a>
@@ -90,9 +90,6 @@
                                         <a class="dropdown-item" href="<c:url value='/ai-walk'/>">
                                             <i class="fas fa-route"></i> AI 산책 제시
                                         </a>
-                                        <a class="dropdown-item" href="<c:url value='/walk-matching'/>">
-                                            <i class="fas fa-handshake"></i> 산책 매칭
-                                        </a>
                                         <a class="dropdown-item" href="<c:url value='/walkpt'/>">
                                             <i class="fas fa-handshake"></i> 산책 알바
                                         </a>
@@ -113,6 +110,9 @@
                                         </a>
                                         <a class="dropdown-item" href="<c:url value='/clothes-recommend'/>">
                                             <i class="fas fa-tshirt"></i> 옷 사이즈 추천
+                                        </a>
+                                        <a class="dropdown-item" href="<c:url value='/pet-figure'/>">
+                                            <i class="fas fa-tshirt"></i> 반려동물 피규어
                                         </a>
                                         <a class="dropdown-item" href="<c:url value='/diary'/>">
                                             <i class="fas fa-book-open"></i> 펫 다이어리
