@@ -18,7 +18,7 @@ public class CctvAnalysisController {
 
     private final CctvAnalysisService cctvAnalysisService;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+//    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/analysis", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<String> analyzeSnapshot(
             @RequestParam("question") String question,
