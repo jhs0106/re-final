@@ -155,7 +155,9 @@
     <div class="recommend-container">
         <div class="recommend-header">
             <h2 class="section-title-custom">AI 옷 사이즈 추천</h2>
-            <p class="text-secondary">전신 사진 한 장으로 AI가 신체 치수를 추정하고 맞춤 사이즈를 추천합니다.</p>
+            <p class="text-secondary">전신 사진 한 장으로 AI가 신체 치수를 추정하고 맞춤 사이즈를 추천합니다.<br>
+                정확한 측정을 위해 500ml 물병과 같은 물체와 함께 찍어주세요.</p>
+
         </div>
 
         <div class="pet-card">

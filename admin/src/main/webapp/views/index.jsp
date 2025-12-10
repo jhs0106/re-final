@@ -7,7 +7,7 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Mun'cok - Admin</title>
+	<title>Pat n Pet</title>
 
 
 	<link
@@ -65,6 +65,9 @@
 			src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2973766580778258"
 			crossorigin="anonymous"
 	></script>
+	<!-- Kakao Map SDK55e3779d3a4e94654971764756e0a939 -->
+	<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=SDK55e3779d3a4e94654971764756e0a939&libraries=services&autoload=false"></script>
+
 	<script>
 		window.dataLayer = window.dataLayer || [];
 		function gtag() {
@@ -183,38 +186,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="user-info-dropdown">
-			<div class="dropdown">
-				<%--						로그인 들어갈 자리 시작--%>
-				<a
-						class="dropdown-toggle"
-						href="#"
-						role="button"
-						data-toggle="dropdown"
-				>
-							<span class="user-icon">
-								<img src="/vendors/images/photo1.jpg" alt="" />
-							</span>
-					<span class="user-name">Ross C. Lopez</span>
-				</a>
-				<div
-						class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
-				>
-					<a class="dropdown-item" href="profile.html"
-					><i class="dw dw-user1"></i> Profile</a
-					>
-					<a class="dropdown-item" href="profile.html"
-					><i class="dw dw-settings2"></i> Setting</a
-					>
-					<a class="dropdown-item" href="faq.html"
-					><i class="dw dw-help"></i> Help</a
-					>
-					<a class="dropdown-item" href="login.html"
-					><i class="dw dw-logout"></i> Log Out</a
-					>
+		<%-- 예: header 오른쪽 영역에 넣기 --%>
+		<c:choose>
+			<%-- 로그인된 상태 --%>
+			<c:when test="${not empty sessionScope.adminId}">
+				<div class="admin-login-box" style="padding-top: 20px;">
+            <span class="user-name">
+                ${sessionScope.adminName != null ? sessionScope.adminName : sessionScope.adminId} 님
+            </span>
+					&nbsp;|&nbsp;
+					<a href="<c:url value='/admin/mypage'/>">Super</a>
+					&nbsp;|&nbsp;
+					<a href="<c:url value='/admin/logout'/>">Logout</a>
 				</div>
-				<%--						로그인 들어갈 자리 끝--%>
-			</div>
+			</c:when>
+
+			<%-- 비로그인 상태 --%>
+			<c:otherwise>
+				<div class="admin-login-box" style="padding-top: 20px;">
+					<a href="<c:url value='/admin/login'/>">Login</a>
+				</div>
+			</c:otherwise>
+		</c:choose>
 		</div>
 	</div>
 </div>
@@ -390,85 +383,32 @@
 </div>
 <%--left var start--%>
 <div class="left-side-bar">
-	<br>
-	<div class="brand-logo">
-		<a href="/">
-			<img src="/vendors/images/MunCokLogo.jpg"
-				 alt="문콕 로고"
-				 style="display:block;width:120px;max-width:80%;height:auto;margin:16px auto
-12px;object-fit:contain;">
-		</a>
+	<a href="/">
+		<img src="/src/images/petlogo.png"
+			 alt="로고"
+			 style="display:block;width:80px;max-width:80%;height:auto;margin:16px auto 12px;object-fit:contain;">
+
 		<div class="close-sidebar" data-toggle="left-sidebar-close">
 			<i class="ion-close-round"></i>
 		</div>
-	</div>
+	</a>
+
 	<div class="menu-block customscroll">
 		<div class="sidebar-menu">
 			<ul id="accordion-menu">
 				<hr>
-				<li class="dropdown">
-					<a href="javascript:;"
-					   class="dropdown-toggle">
-								<span class="micon bi bi-house"></span
-								><span class="mtext">데이터 로그 확인</span>
-					</a>
-					<ul class="submenu">
-						<li><a href="<c:url value="/page/page1"/>">page1</a></li>
-						<li><a href="index2.html">Dashboard style 2</a></li>
-						<li><a href="index3.html">Dashboard style 3</a></li>
-					</ul>
-				</li>
 				<br>
 				<li class="dropdown">
-					<a href="javascript:;"
-					   class="dropdown-toggle">
+					<a href="/admin/cust" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-textarea-resize"></span
-								><span class="mtext">시설 상태 확인</span>
+								><span class="mtext">고객 관리</span>
 					</a>
-					<ul class="submenu">
-						<li><a href="form-basic.html">Form Basic</a></li>
-						<li>
-							<a href="advanced-components.html">Advanced Components</a>
-						</li>
-						<li><a href="form-wizard.html">Form Wizard</a></li>
-						<li><a href="html5-editor.html">HTML5 Editor</a></li>
-						<li><a href="form-pickers.html">Form Pickers</a></li>
-						<li>
-							<a href="<c:url value='/page/cctv'/>">CCTV 모니터링</a>
-						</li>
-					</ul>
 				</li>
 				<br>
 				<li class="dropdown">
-					<a href="javascript:;"
-					   class="dropdown-toggle">
-								<span class="micon bi bi-table"></span
-								><span class="mtext">시설별 장비 조작</span>
-					</a>
-					<ul class="submenu">
-						<li><a href="basic-table.html">Basic Tables</a></li>
-						<li><a href="datatable.html">DataTables</a></li>
-					</ul>
-				</li>
-				<br>
-				<li class="dropdown">
-					<a href="javascript:;"
-					   class="dropdown-toggle">
-								<span class="micon bi bi-table"></span
-								><span class="mtext">시설별 파일 적재</span>
-					</a>
-					<ul class="submenu">
-						<li><a href="<c:url value="/page/page1"/>">page1</a></li>
-						<li><a href="<c:url value="/page/culture-ingest"/>">문화 데이터 적재</a></li>
-						<li><a href="index2.html">Dashboard style 2</a></li>
-						<li><a href="index3.html">Dashboard style 3</a></li>
-					</ul>
-				</li>
-				<br>
-				<li>
-					<a href="calendar.html" class="dropdown-toggle no-arrow">
-								<span class="micon bi bi-calendar4-week"></span
-								><span class="mtext">관리자 가이드</span>
+					<a href="/admin/pet" class="dropdown-toggle no-arrow">
+								<span class="micon bi bi-textarea-resize"></span
+								><span class="mtext">반려동물 관리</span>
 					</a>
 				</li>
 				<br>
@@ -480,9 +420,6 @@
 				</li>
 				<%-- // 고객 센터 메뉴 수정 부분 끝 --%>
 
-				<li>
-					<div class="dropdown-divider"></div>
-				</li>
 				<li>
 					<div class="sidebar-small-cap"></div>
 				</li>
@@ -514,7 +451,7 @@
 <script src="/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
 <script src="/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
 <script src="/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
-<script src="/vendors/scripts/dashboard3.js"></script>
+<%--<script src="/vendors/scripts/dashboard3.js"></script>--%>
 <noscript
 ><iframe
 		src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS"

@@ -90,6 +90,9 @@
                                         <a class="dropdown-item" href="<c:url value='/ai-walk'/>">
                                             <i class="fas fa-route"></i> AI 산책 제시
                                         </a>
+                                        <a class="dropdown-item" href="<c:url value='/walklist'/>">
+                                            <i class="fas fa-route"></i> 산책 리스트 보기
+                                        </a>
                                         <a class="dropdown-item" href="<c:url value='/walkpt'/>">
                                             <i class="fas fa-handshake"></i> 산책 알바
                                         </a>
@@ -117,8 +120,14 @@
                                         <a class="dropdown-item" href="<c:url value='/diary'/>">
                                             <i class="fas fa-book-open"></i> 펫 다이어리
                                         </a>
+                                        <a class="dropdown-item" href="<c:url value='/report'/>">
+                                            <i class="fas fa-book-open"></i> 리포트
+                                        </a>
                                     </div>
                                 </li>
+                                <a class="" href="<c:url value='/map'/>" style="padding-top: 5px; padding-bottom: 4px; color: #000000; padding-left:15px;">
+                                    <i class="fas fa-map-marked-alt"></i> 펫 시설
+                                </a>
 
                                 <c:if test="${sessionScope.user != null}">
                                     <li class="nav-item">

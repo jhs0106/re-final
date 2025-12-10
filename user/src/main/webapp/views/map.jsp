@@ -414,6 +414,38 @@
       padding: 16px 14px 18px;
     }
   }
+  /* ===========================
+   ✅ 모바일 탭 보이게 하는 핵심 수정
+   =========================== */
+  @media (max-width: 900px) {
+
+    /* info-panel이 확실히 보이도록 */
+    .pet-map-theme .info-panel {
+      max-height: none;          /* 기존 제한 해제 */
+      height: auto;
+      overflow: hidden;
+    }
+
+    /* 탭 영역을 항상 위에 고정 */
+    .pet-map-theme .tab-head {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #eef2ff;
+    }
+
+    /* 리스트 영역만 스크롤 */
+    .pet-map-theme #infoList {
+      max-height: 260px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 검색박스가 탭 아래로 밀리지 않게 */
+    .pet-map-theme #searchBox {
+      margin-bottom: 6px;
+    }
+  }
 
   /* 이 페이지 안 요소만 박스사이징統一 */
   .pet-map-theme .map-page-container * {
@@ -486,7 +518,7 @@
 
 <!-- Kakao Map SDK -->
 <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55e3779d3a4e94654971764756e0a939&libraries=services"></script>
-
+<%--<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55e3779d3a4e94654971764756e0a939"></script>--%>
 <script>
   /* ==== 여기부터는 네가 올린 '기능 코드 원본' 그대로 ==== */
 
@@ -575,14 +607,40 @@
     const place = placesData[index];
     if (!place) return;
 
-    const url =
+    const destLat = place.y;
+    const destLng = place.x;
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // 모바일이면 카카오맵 앱 열기 스킴 사용
+    if (isMobile) {
+      const appUrl =
+              `kakaomap://route?sp=${userLat},${userLng}&ep=${destLat},${destLng}&by=FOOT`;
+
+      // 앱이 없으면 m.map.kakao.com 경로로 이동
+      const mobileWebUrl =
+              `https://m.map.kakao.com/actions/route?sp=${userLng},${userLat}&ep=${destLng},${destLat}&by=FOOT`;
+
+      // 1) 앱 실행 시도
+      window.location.href = appUrl;
+
+      // 2) 앱이 없으면 웹으로 fallback
+      setTimeout(() => {
+        window.location.href = mobileWebUrl;
+      }, 500);
+
+      return;
+    }
+
+    // PC 웹 브라우저는 기존 방식 그대로
+    const pcUrl =
             "https://map.kakao.com/?" +
-            "sName=" + encodeURIComponent(originName || "내 위치") +
+            "sName=" + encodeURIComponent(originName) +
             "&eName=" + encodeURIComponent(place.place_name);
 
-    console.log("[ROUTE]", originName, "→", place.place_name);
-    window.open(url, "_blank");
+    window.open(pcUrl, "_blank");
   }
+
   window.goRoute = goRoute;
 
   function showMarkerInfo(index) {
@@ -668,7 +726,7 @@
       });
       markers.push(marker);
 
-      kakao.maps.event.addListener(marker, () => {
+      kakao.maps.event.addListener(marker, "click", () => {
         deactivateCards();
         const card = document.getElementById("place-" + idx);
         if (card) {
@@ -711,7 +769,16 @@
             (tabId === "search" ? "block" : "none");
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+
+  // Kakao Maps SDK 로드 후 초기화
+  kakao.maps.load(function() {
+    console.log("[KAKAO] Maps SDK 로드 완료");
+    initializeMap();
+  });
+
+  // 모든 함수 정의 후 마지막에 추가
+  function initializeMap() {
+    console.log("[MAP] Kakao Maps SDK 로드 완료, 지도 초기화 시작");
 
     map = new kakao.maps.Map(document.getElementById('map'), {
       center: new kakao.maps.LatLng(DEFAULT_LAT, DEFAULT_LNG),
@@ -800,5 +867,7 @@
       }
       searchKeyword(keyword, false);
     };
-  });
+  }
+
+
 </script>

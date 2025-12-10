@@ -1,8 +1,52 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="true" %>
-<!DOCTYPE html>
-<html lang="ko">
+<style>
+    /* 공통 모달 스타일 수정 */
+    .modal-overlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    /* 기본 모달 크기 줄이기 */
+    .modal-content {
+        width: 100%;
+        max-width: 420px; /* 데스크탑 */
+        max-height: 85vh; /* 화면 높이 제한 */
+        overflow-y: auto; /* 내부 스크롤 */
+        border-radius: 12px;
+    }
+
+    /* 모바일 최적화 */
+    @media (max-width: 480px) {
+        .modal-content {
+            max-width: 90vw; /* 좌우 여백 자동 확보 */
+            max-height: 80vh; /* 화면 안에서 스크롤 형태로 보임 */
+            padding: 12px;
+        }
+
+        #photoVideo {
+            height: auto;
+            max-height: 45vh; /* 화면 절반 넘지 않도록 제한 */
+        }
+
+        #photoPreview {
+            max-height: 45vh;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column; /* 버튼 세로 정렬 */
+            gap: 8px;
+        }
+
+        .modal-actions button {
+            width: 100%;
+        }
+    }
+</style>
 <head>
 
     <meta charset="UTF-8">
@@ -30,11 +74,6 @@
 
             <!-- 상단 공통 헤더 (map.jsp 스타일 참고) -->
             <header class="walk-page-header">
-                <button type="button"
-                        class="btn btn-primary btn-lg"
-                        onclick="location.href='<c:url value='/walklist'/>'">
-                    산책 리스트 보기
-                </button>
                 <div class="walk-page-badge">
                     <span>🐾</span> 내 반려동물 맞춤 산책 맵
                 </div>
@@ -376,11 +415,10 @@
             </div>
 
             <!-- ★ 산책 사진 촬영 모달 (일반/모양 공통) -->
-            <div id="photoModal" class="modal-overlay">
-                <div class="modal-content" style="max-width:480px;">
+            <div id="photoModal" class="modal-overlay" >
+                <div class="modal-content" style="max-width:480px; ">
                     <h3>산책 사진 찍기</h3>
                     <p style="font-size:13px; color:#555; margin-bottom:8px;">
-                        산책 중에 반려동물 사진을 남겨보세요. 산책 종료 후 해당 산책 기록과 함께 저장됩니다.
                     </p>
 
                     <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
@@ -520,6 +558,32 @@
         }).addTo(map);
     }
 
+    let userCenterLat = DEFAULT_CENTER_LAT;
+    let userCenterLon = DEFAULT_CENTER_LON;
+
+    function detectUserLocation() {
+        if (!navigator.geolocation) {
+            console.log("Geolocation 지원 안함");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                userCenterLat = pos.coords.latitude;
+                userCenterLon = pos.coords.longitude;
+
+                console.log("🧭 사용자 위치 감지됨:", userCenterLat, userCenterLon);
+
+                // 도형 새로 생성
+                reloadRoute();
+            },
+            (err) => {
+                console.warn("위치 조회 실패 → 기본 위치 사용:", err);
+            },
+            { enableHighAccuracy: true }
+        );
+    }
+
     function applyRouteData(data) {
         if (!data || !data.points || data.points.length === 0) return;
 
@@ -574,8 +638,8 @@
 
         const url =
             '/api/map/shape-route?type=' + encodeURIComponent(currentShapeType) +
-            '&centerLat=' + DEFAULT_CENTER_LAT +
-            '&centerLon=' + DEFAULT_CENTER_LON +
+            '&centerLat=' + userCenterLat +
+            '&centerLon=' + userCenterLon +
             '&targetKm=' + targetKm;
 
         fetch(url)
@@ -1461,6 +1525,11 @@
 
 <!-- 산책 사진 모달 + 업로드 공통 로직 -->
 <script>
+    const constraints = {
+        video: {
+            facingMode: { exact: "environment" }
+        }
+    };
     function hasActiveGeneralWalk() {
         return !!freeWalkingStartedAt;
     }
@@ -1468,6 +1537,8 @@
     function hasActiveShapeWalk() {
         return !!walkingStartedAt;
     }
+
+
 
     async function openPhotoModalBase() {
         const modal = document.getElementById('photoModal');
@@ -1480,10 +1551,11 @@
         photoBlob = null;
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({video: true});
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
             photoStream = stream;
             video.srcObject = stream;
-            modal.style.display = 'flex';
+            modal.style.display = 'flex';2
         } catch (e) {
             console.error(e);
             alert('카메라 접근 권한이 필요합니다.');
@@ -1587,6 +1659,11 @@
         const captureBtn = document.getElementById('photoCaptureBtn');
         const saveBtn = document.getElementById('photoSaveBtn');
         const video = document.getElementById('photoVideo');
+        const constraints = {
+            video: {
+                facingMode: { exact: "environment" }
+            }
+        };
         const canvas = document.getElementById('photoCanvas');
         const preview = document.getElementById('photoPreview');
 
@@ -1698,6 +1775,7 @@
         reloadRoute();          // 기본 도형 코스 생성
         loadPetWalkRecommendation();
         enterSetupMode();
+        // detectUserLocation();  // ★ 추가: geolocation 사용
     });
 </script>
 
