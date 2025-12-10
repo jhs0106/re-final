@@ -143,9 +143,9 @@
                                     <button class="btn btn-pet-primary btn-block" onclick="startChat()">
                                         <i class="fas fa-comments"></i> 채팅으로 문의하기
                                     </button>
-                                    <button class="btn btn-pet-secondary btn-block" onclick="applyJob()">
-                                        <i class="fas fa-check-circle"></i> 지원하기
-                                    </button>
+<%--                                    <button class="btn btn-pet-secondary btn-block" onclick="applyJob()">--%>
+<%--                                        <i class="fas fa-check-circle"></i> 지원하기--%>
+<%--                                    </button>--%>
                                 </c:if>
 
                                 <a href="<c:url value='/walkpt/worker/job-list'/>" class="btn btn-pet-outline btn-block">

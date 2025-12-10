@@ -328,3 +328,172 @@
     box-shadow: 0 4px 16px rgba(116, 192, 252, 0.3);
     text-decoration: none;
 }
+
+/* ========== 모바일 전용 스타일 ========== */
+
+/* 기본적으로 모바일 버튼 숨김 */
+.mobile-action-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .walkpt-container {
+        padding: 1.5rem 0;
+    }
+
+    /* AI 검색 섹션 */
+    .ai-search-section {
+        padding: 2rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .ai-search-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .ai-search-input {
+        font-size: 1rem;
+        padding: 0.875rem 1.25rem;
+    }
+
+    /* ✅ 탭 네비게이션 - 가로 배치 유지 */
+    .walkpt-tabs .nav-link {
+        padding: 1rem;
+        font-size: 1rem;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ✅ 기존 우측 액션 버튼들 숨김 */
+    .action-buttons {
+        display: none !important;
+    }
+
+    /* ✅ 모바일 전용 버튼 표시 */
+    .mobile-action-btn {
+        display: block !important;
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        min-height: 52px;
+        border-radius: 12px;
+        border: none;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .mobile-action-btn.btn-danger {
+        background: linear-gradient(135deg, #FF6B6B, #FA5252);
+        color: white;
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    }
+
+    .mobile-action-btn.btn-success {
+        background: linear-gradient(135deg, #4ECDC4, #38D9A9);
+        color: white;
+        box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+    }
+
+    .mobile-action-btn.btn-info {
+        background: linear-gradient(135deg, #74C0FC, #5BA3E0);
+        color: white;
+        box-shadow: 0 4px 12px rgba(116, 192, 252, 0.3);
+    }
+
+    .mobile-action-btn:hover,
+    .mobile-action-btn:focus,
+    .mobile-action-btn:active {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* 카드 */
+    .walkpt-card {
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .walkpt-card-title {
+        font-size: 1.1rem;
+    }
+
+    .walkpt-card-info {
+        font-size: 0.9rem;
+    }
+
+    /* 채팅 패널 */
+    .chat-panel {
+        width: 100%;
+        right: -100%;
+    }
+
+    .chat-panel.active {
+        right: 0;
+    }
+
+    /* 모니터링 UI */
+    .monitor-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 1rem;
+    }
+
+    .map-placeholder {
+        min-height: 300px;
+    }
+
+    .monitor-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .walkpt-container {
+        padding: 1rem 0;
+    }
+
+    .ai-search-section {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .ai-search-title {
+        font-size: 1.1rem;
+    }
+
+    .walkpt-tabs .nav-link {
+        padding: 0.875rem;
+        font-size: 0.95rem;
+        min-height: 52px;
+    }
+
+    /* 모바일 버튼 */
+    .mobile-action-btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.95rem;
+        min-height: 50px;
+    }
+
+    .walkpt-card {
+        padding: 1rem;
+    }
+
+    .walkpt-card-title {
+        font-size: 1rem;
+    }
+
+    .walkpt-badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    .monitor-stats {
+        grid-template-columns: 1fr;
+    }
+}

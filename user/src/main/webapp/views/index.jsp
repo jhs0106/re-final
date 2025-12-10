@@ -184,7 +184,7 @@
                                 <div class="pet-logo-icon mb-3">
                                     <i class="fas fa-paw"></i>
                                 </div>
-                                <h5 class="pet-logo-title">Pettopia</h5>
+                                <h5 class="pet-logo-title">PATnPET</h5>
                                 <p class="footer-desc">
                                     반려동물과 스마트한 일상<br>
                                 </p>
