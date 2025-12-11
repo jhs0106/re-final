@@ -5,13 +5,13 @@
 <c:set var="view" value="${walkListView}" />
 
 <style>
-  /* ===== 공통 팔레트 (owner.jsp / walkdetail.jsp 톤 맞추기) ===== */
+
   .walk-shell {
     padding: 40px 16px 80px;
     display: flex;
     justify-content: center;
 
-    /* ✅ 바깥 배경: 좌 → 우 그라데이션 */
+
     background:
             linear-gradient(
                     90deg,
@@ -51,7 +51,7 @@
     padding: 24px 26px 28px;
     border-radius: 28px;
 
-    /* ✅ 안쪽 전체 영역도 좌 → 우 그라데이션 */
+
     background:
             linear-gradient(
                     90deg,
@@ -65,7 +65,7 @@
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
-  /* 안쪽에 덮는 before 효과 제거 */
+
   .walk-page::before {
     display: none;
   }
@@ -74,7 +74,7 @@
     position: relative;
   }
 
-  /* ===== 헤더 ===== */
+
   .walk-header {
     display: flex;
     justify-content: space-between;
@@ -267,7 +267,7 @@
     color: var(--wj-muted);
   }
 
-  /* ===== 카드 내 메트릭 (실제 km / 시간 / 속도 강조) ===== */
+
   .walk-card-metrics {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

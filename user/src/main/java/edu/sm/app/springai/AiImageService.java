@@ -29,6 +29,7 @@ public class AiImageService {
                     "level": "caution" | "observation" | "hospital-recommended",
                     "findings": "진단 소견 (HTML 태그 사용 가능, <ul><li> 등)",
                     "recommendations": "권장 조치사항 (HTML 태그 사용 가능)",
+                    "firstAid": "응급처치 방법 (집에서 할 수 있는 조치, HTML 태그 사용 가능)",
                     "confidence": 0~100 사이의 정수,
                     "costs": {
                         "initial": "예상 초진 진료비 (예: 30,000원)",
