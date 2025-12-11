@@ -125,9 +125,12 @@
                                         </a>
                                     </div>
                                 </li>
-                                <a class="" href="<c:url value='/map'/>" style="padding-top: 5px; padding-bottom: 4px; color: #000000; padding-left:15px;">
-                                    <i class="fas fa-map-marked-alt"></i> 펫 시설
-                                </a>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<c:url value='/map'/>">
+                                        <i class="fas fa-map-marked-alt"></i>
+                                        <span>펫 시설</span>
+                                    </a>
+                                </li>
 
                                 <c:if test="${sessionScope.user != null}">
                                     <li class="nav-item">
