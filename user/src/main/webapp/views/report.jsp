@@ -44,9 +44,6 @@
                             <div class="report-stat-content">
                                 <h5>평균 산책 시간</h5>
                                 <p class="report-stat-value" id="avgWalkTime">38분</p>
-                                <span class="report-stat-change positive">
-                                    <i class="fas fa-arrow-up"></i> 전주대비 15% 증가
-                                </span>
                             </div>
                         </div>
                     </div>
@@ -59,9 +56,6 @@
                             <div class="report-stat-content">
                                 <h5>평균 산책 거리</h5>
                                 <p class="report-stat-value" id="avgWalkDistance">1.97km</p>
-                                <span class="report-stat-change positive">
-                                    <i class="fas fa-arrow-up"></i> 전주대비 10% 증가
-                                </span>
                             </div>
                         </div>
                     </div>
@@ -110,7 +104,7 @@
                             <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                                 <span class="sr-only">Loading...</span>
                             </div>
-                            <h5 class="mt-3">AI가 뽀삐의 일주일 데이터를 정밀 분석 중입니다...</h5>
+                            <h5 class="mt-3">AI가 qwer의 일주일 데이터를 정밀 분석 중입니다...</h5>
                             <p class="text-muted">산책 통계 · 영양 상태 · 행동 패턴 분석 중</p>
                         </div>
                     </div>
@@ -227,16 +221,23 @@
                 weekly: {
                     period: '2025.12.05 - 2025.12.11 (7일간)',
                     walks: [
-                        { date: '2025-12-05', distance: 2.3, duration: 45, route: '산책 통계 저장' },
-                        { date: '2025-12-08', distance: 2.1, duration: 40, route: '산책 통계 저장' },
-                        { date: '2025-12-10', distance: 0.4, duration: 15, route: '밤 산책' },
-                        { date: '2025-12-11', distance: 3.2, duration: 41, route: '일일 합계' }
+                        { date: '2025-12-05', distance: 0, duration: 0 },
+                        { date: '2025-12-06', distance: 0, duration: 0 },
+                        { date: '2025-12-07', distance: 0, duration: 0 },
+                        { date: '2025-12-08', distance: 0, duration: 0 },
+                        { date: '2025-12-09', distance: 0, duration: 0 },
+                        { date: '2025-12-10', distance: 0.4, duration: 15 },
+                        { date: '2025-12-11', distance: 3.2, duration: 41 }
                     ],
                     healthChecks: [
-                        { date: '2025-12-10', severity: '병원권장', findings: '농피증 의심 (신뢰도 98%)' }
+                        { date: '2025-12-10', severity: '병원권장', findings: '농피증 의심 (신뢰도 98%)' },
+                        { date: '2025-12-11', severity: '병원권장', findings: '안검염 및 눈 상처 (신뢰도 90%)' }
                     ],
                     behaviors: [
-                        { date: '2025-12-09', eventCount: 3, type: '분리불안 감지 (위험)' }
+                        { date: '2025-12-09', eventCount: 1, type: '분리불안 (위험)' },
+                        { date: '2025-12-09', eventCount: 1, type: '놀이 활동 (정상)' },
+                        { date: '2025-12-11', eventCount: 1, type: '테이블 등반 (위험)' },
+                        { date: '2025-12-11', eventCount: 1, type: '식사 활동 (정상)' }
                     ]
                 },
                 daily: {
@@ -245,25 +246,34 @@
                         { date: '2025-12-11', distance: 3.2, duration: 41, route: '총 6회 산책' }
                     ],
                     healthChecks: [
-                        { date: '2025-12-11', severity: '주의', findings: '호전 중 (신뢰도 85%)' }
+                        { date: '2025-12-11', severity: '병원권장', findings: '안검염 및 눈 상처 (신뢰도 90%)' }
                     ],
-                    behaviors: []
+                    behaviors: [
+                        { date: '2025-12-11', eventCount: 1, type: '낙상 주의 (위험)' },
+                        { date: '2025-12-11', eventCount: 2, type: '식사 활동 (정상)' }
+                    ]
                 },
                 monthly: {
                     period: '2025.12.01 - 2025.12.31 (31일간)',
                     walks: [
-                        { date: '2025-12-01', distance: 2.5, duration: 50, route: '산책 통계 저장' },
-                        { date: '2025-12-05', distance: 2.3, duration: 45, route: '산책 통계 저장' },
-                        { date: '2025-12-10', distance: 0.4, duration: 15, route: '밤 산책' },
-                        { date: '2025-12-11', distance: 3.2, duration: 41, route: '일일 합계' }
+                        { date: '2025-12-01', distance: 2.5, duration: 50 },
+                        { date: '2025-12-05', distance: 2.1, duration: 30 },
+                        { date: '2025-12-09', distance: 0.0, duration: 0 },
+                        { date: '2025-12-10', distance: 0.4, duration: 15 },
+                        { date: '2025-12-11', distance: 3.2, duration: 41 }
                     ],
                     healthChecks: [
-                        { date: '2025-12-10', severity: '병원권장', findings: '농피증 의심 (신뢰도 98%)' }
+                        { date: '2025-12-10', severity: '병원권장', findings: '농피증 의심 (98%)' },
+                        { date: '2025-12-11', severity: '병원권장', findings: '안검염 및 눈 상처 (90%)' }
                     ],
                     behaviors: [
-                        { date: '2025-12-09', eventCount: 3, type: '분리불안 감지 (위험)' }
+                        { date: '12월', eventCount: 1, type: '분리불안 (위험)' },
+                        { date: '12월', eventCount: 1, type: '놀이 활동 (정상)' },
+                        { date: '12월', eventCount: 1, type: '테이블 등반 (위험)' },
+                        { date: '12월', eventCount: 2, type: '식사 활동 (정상)' }
                     ]
                 }
+
             };
             let currentPeriod = 'daily'; // 기본값을 Daily로 변경하여 바로 보이게 함
 
@@ -386,7 +396,7 @@
                         datasets: [{
                             data: bData,
                             backgroundColor: data.behaviors && data.behaviors.length > 0
-                                ? ['#FF6B6B', '#FFD93D', '#4ECDC4']
+                                ? ['#FF6B6B', '#FFD93D', '#4ECDC4', '#1A535C', '#FF9F1C']
                                 : ['#e9ecef']
                         }]
                     },
@@ -409,8 +419,26 @@
             <tr>
                 <td>2025-12-11 18:10</td>
                 <td><span class="badge badge-info">산책</span></td>
-                <td>동네 마실 (0.8km / 10분)</td>
+                <td>일일 산책 합계 (3.2km / 41분)</td>
                 <td><span class="text-success"><i class="fas fa-check-circle"></i> 완료</span></td>
+            </tr>
+            <tr>
+                <td>2025-12-11 17:00</td>
+                <td><span class="badge badge-danger">건강</span></td>
+                <td>AI 정밀 진단 - 안검염 (눈 상처/90%)</td>
+                <td><span class="text-danger"><i class="fas fa-hospital"></i> 병원권장</span></td>
+            </tr>
+            <tr>
+                <td>2025-12-11 14:46</td>
+                <td><span class="badge badge-danger">행동(위험)</span></td>
+                <td>테이블 등반 감지 - 낙상 주의</td>
+                <td><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> 위험</span></td>
+            </tr>
+            <tr>
+                <td>2025-12-11 13:53</td>
+                <td><span class="badge badge-success">행동(정상)</span></td>
+                <td>사료 섭취 중 (건강 양호)</td>
+                <td><span class="text-success"><i class="fas fa-check-circle"></i> 정상</span></td>
             </tr>
             <tr>
                 <td>2025-12-11 15:00</td>
@@ -443,22 +471,28 @@
                 <td><span class="text-success"><i class="fas fa-check-circle"></i> 완료</span></td>
             </tr>
             <tr>
-                <td>2025-12-10</td>
-                <td><span class="badge badge-warning">건강</span></td>
-                <td>AI 진단 - 농피증 의심 (98%)</td>
-                <td><span class="text-danger"><i class="fas fa-hospital"></i> 병원권장</span></td>
-            </tr>
-            <tr>
-                <td>2025-12-10</td>
-                <td><span class="badge badge-info">산책</span></td>
+                <td>2025-12-10 20:30</td>
+                <td><span class="badge badge-primary">산책</span></td>
                 <td>밤 산책 (0.4km / 15분)</td>
                 <td><span class="text-success"><i class="fas fa-check-circle"></i> 완료</span></td>
             </tr>
              <tr>
-                <td>2025-12-09</td>
-                <td><span class="badge badge-success">행동</span></td>
-                <td>홈캠 분리불안 감지 (위험 이벤트)</td>
-                <td><span class="text-success"><i class="fas fa-check-circle"></i> 기록됨</span></td>
+                <td>2025-12-10</td>
+                <td><span class="badge badge-danger">건강</span></td>
+                <td>AI 정밀 진단 - 농피증 (발바닥/98%)</td>
+                <td><span class="text-danger"><i class="fas fa-hospital"></i> 병원권장</span></td>
+            </tr>
+            <tr>
+                <td>2025-12-09 14:30</td>
+                <td><span class="badge badge-danger">행동(위험)</span></td>
+                <td>홈캠 분석 - 하울링 감지 (분리불안)</td>
+                <td><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> 주의</span></td>
+            </tr>
+            <tr>
+                <td>2025-12-09 14:15</td>
+                <td><span class="badge badge-success">행동(정상)</span></td>
+                <td>홈캠 분석 - 장난감 놀이</td>
+                <td><span class="text-success"><i class="fas fa-check-circle"></i> 양호</span></td>
             </tr>
         `; // 기존 하드코딩 테이블 덮어쓰기
 
