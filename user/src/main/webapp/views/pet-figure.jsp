@@ -3,6 +3,29 @@
 
         <!-- Link to external CSS -->
         <link rel="stylesheet" href="<c:url value='/css/pet-figure.css'/>">
+        <style>
+            .upload-area,
+            .feature-card {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            @media (max-width: 480px) {
+                .feature-card {
+                    padding: 16px !important;
+                }
+
+                .upload-area {
+                    padding: 20px !important;
+                    max-width: 100%;
+                }
+
+                #image-preview {
+                    max-height: 280px;
+                }
+            }
+        </style>
 
         <div class="main-container">
             <div class="figure-container">

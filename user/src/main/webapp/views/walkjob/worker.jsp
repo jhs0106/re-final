@@ -373,6 +373,9 @@
           <div class="controls">
             <button id="startBtn" class="btn btn-primary">산책 시작</button>
             <button id="stopBtn" class="btn btn-danger" disabled>산책 종료</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openGeneralPhotoModal()">
+              산책 사진 찍기
+            </button>
           </div>
           <div class="status-box">
             <span class="status-label">상태</span>

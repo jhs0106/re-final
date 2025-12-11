@@ -311,7 +311,7 @@
                                 <div class="metric-value">
                                     <fmt:formatNumber value="${detail.distanceKm}" type="number" maxFractionDigits="2"/> km
                                 </div>
-                                <div class="metric-sub">shape/일반/알바 모두 공통 기준</div>
+                                <div class="metric-sub"></div>
                             </div>
                             <div class="metric time">
                                 <div class="metric-label">산책 시간</div>
@@ -323,7 +323,7 @@
                                 <div class="metric-value">
                                     <fmt:formatNumber value="${detail.kcal}" type="number" maxFractionDigits="0"/> kcal
                                 </div>
-                                <div class="metric-sub">반려동물 체중 기반 단순 추정</div>
+                                <div class="metric-sub"></div>
                             </div>
                             <div class="metric pace">
                                 <div class="metric-label">평균 속도</div>
@@ -335,7 +335,7 @@
                                         <c:otherwise>-</c:otherwise>
                                     </c:choose>
                                 </div>
-                                <div class="metric-sub">실제 기록 기준</div>
+                                <div class="metric-sub"></div>
                             </div>
                         </div>
                     </article>
@@ -401,7 +401,9 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
-
+<script>
+    const walkType = "${detail.typeKey}";
+</script>
 <script>
     (function () {
         const map = L.map('walkMap');
@@ -442,15 +444,20 @@
                 poly.addTo(map);
                 map.fitBounds(poly.getBounds(), {padding: [20, 20]});
 
+                // 마지막 위치
                 const last = latlngs[latlngs.length - 1];
+// 산책 알바("job")가 아니면 마커 표시
+                if (walkType !== "job") {
 
-                const popupHtml =
-                    '<div style="text-align:center;">' +
-                    '<div style="margin-bottom:4px; font-size:0.8rem;">산책중에 직접 촬영한 사진입니다.</div>' +
-                    '<img src="${photoUrl}" alt="walk-photo" style="max-width:160px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.15);" />' +
-                    '</div>';
+                    const popupHtml =
+                        `<div style="text-align:center;">
+            <div style="margin-bottom:4px; font-size:0.8rem;">산책중에 직접 촬영한 사진입니다.</div>
+            <img src="${photoUrl}" alt="walk-photo"
+                 style="max-width:160px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.15);" />
+         </div>`;
 
-                L.marker(last).addTo(map).bindPopup(popupHtml).openPopup();
+                    L.marker(last).addTo(map).bindPopup(popupHtml).openPopup();
+                }
             })
             .catch(err => {
                 console.error('경로 로드 실패', err);

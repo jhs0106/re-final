@@ -48,11 +48,11 @@ public class MapRouteService {
         // 2) 그 점이 정확히 centerLat/centerLon 에 오도록 전체 평행이동
         GeoPoint bottom = points.get(bottomIdx);
         double dLat = centerLat - bottom.lat;
-        double dLon = centerLon - bottom.lon;
+        double dLon = centerLon - bottom.lng;
 
         List<GeoPoint> shifted = new ArrayList<>();
         for (GeoPoint p : points) {
-            shifted.add(new GeoPoint(p.lat + dLat, p.lon + dLon));
+            shifted.add(new GeoPoint(p.lat + dLat, p.lng + dLon));
         }
 
         // 3) 시작 인덱스를 bottomIdx 로 회전 (0번이 모양 맨 아래)
@@ -180,7 +180,7 @@ public class MapRouteService {
             GeoPoint a = basePoints.get(i);
             GeoPoint b = basePoints.get((i + 1) % basePoints.size()); // 마지막→처음
 
-            GHRequest req = new GHRequest(a.lat, a.lon, b.lat, b.lon)
+            GHRequest req = new GHRequest(a.lat, a.lng, b.lat, b.lng)
                     .setProfile("foot");
 
             GHResponse res = hopper.route(req);
@@ -322,18 +322,25 @@ public class MapRouteService {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class LatLon {
+    public static class GeoPoint {
         private double lat;
-        private double lon;
+        private double lng;   // ← 이제 시스템 전체가 이것만 사용
+
+        // 기존 DB에 "lon" 으로 저장된 경우 자동 매핑
+        @com.fasterxml.jackson.annotation.JsonAlias("lon")
+        public void setLon(double lon) {
+            this.lng = lon;
+        }
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class GeoPoint {
+    public static class LatLon {
         private double lat;
         private double lon;
     }
+
 
     @Data
     @AllArgsConstructor
