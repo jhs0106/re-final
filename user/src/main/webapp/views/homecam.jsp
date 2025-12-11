@@ -51,8 +51,8 @@
 <style>
     /* ========== 페이지 컨테이너 ========== */
     .main-container {
-        min-height: calc(100vh - 200px); /* ✅ 높이 통일 */
-        padding: 2rem 0; /* ✅ 상하 여백 추가 */
+        min-height: calc(100vh - 200px); /*  높이 통일 */
+        padding: 2rem 0; /*  상하 여백 추가 */
         background: linear-gradient(135deg, #ffeaea 0%, #e3fff9 100%);
     }
 
