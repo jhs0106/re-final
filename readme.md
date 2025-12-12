@@ -80,8 +80,6 @@ AI가 반려동물의 **행동 · 건강 · 산책 기록**을 통합 분석하�
 ## ✨프로젝트 개요
 ### WBS
 ![img_1.png](image/img_1.png)
-### ERD(추후 수정)
-![img_2.png](image/img_2.png)
 ### 시스템 구성
 ![img_3.png](image/img_3.png)
 
@@ -106,6 +104,8 @@ AI가 반려동물의 **행동 · 건강 · 산책 기록**을 통합 분석하�
 - 이상 징후 탐지 및 긴급 알림
 - 다이어리 자동 연동
 - (집에서 반려동물 영상으로 홈캠 시연 사진 추가)
+
+![img_8.png](user/src/main/resources/static/images/img_8.png)
 ---
 
 ### AI 산책
@@ -113,17 +113,16 @@ AI가 반려동물의 **행동 · 건강 · 산책 기록**을 통합 분석하�
 - AI 러닝 코스 제안 (OSM 기반)
 - 경로·거리·시간 자동 저장
 - (실제 산책, 저장시 산책 목록 사진)
----
-
-### 산책 알바 매칭
+  <img src="img_7.png" style="width: 100%;">
+![img_7.png](user/src/main/resources/static/images/img_7.png)
+### 산책 알바
 - 구인/구직 게시글
 - AI 알바생 제안
 - 채팅·영상통화
 - 실시간 산책 로그 공유
 - 평점 및 후기 시스템
-![img_3.png](img_3.png)
- 
-- (채팅, 영상통화 추가)
+
+![img_5.png](user/src/main/resources/static/images/img_5.png)
 ---
 
 ### 행동 분석 리포트
@@ -158,16 +157,18 @@ AI가 반려동물의 **행동 · 건강 · 산책 기록**을 통합 분석하�
 - 가상 피팅 이미지 생성
 - 추후 쇼핑몰 연계 확장 가능
 
+![img_6.png](user/src/main/resources/static/images/img_6.png)
 ---
 ### 나만의 펫 피규어 만들기
 - 반려동물 전신 이미지 업로드
 - 추가 요청사항을 통해 사용자화
 - 자신의 반려동물로 피규어 생성
 ![img_6.png](image/img_6.png)
+- <img src="image/img_6.png" style="width: 100%;">
 ---
 
 ## 🛠 관리자 기능
-
+![img_9.png](user/src/main/resources/static/images/img_9.png)
 ### 관리자 대시보드
 - 서비스 운영 통계
 - 실시간 알림 (문의/신고/위급)
@@ -214,12 +215,6 @@ AI가 반려동물의 **행동 · 건강 · 산책 기록**을 통합 분석하�
 - 산책 서비스 고도화
 - 글로벌 다국어 서비스 (i18n)
 
----
-
-## 🌍 다국어 지원
-- Spring Boot i18n 기반
-- 브라우저 자동 감지
-- 메뉴/버튼/알림 전체 적용
 
 ---
 

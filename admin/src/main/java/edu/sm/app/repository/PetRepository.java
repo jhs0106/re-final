@@ -22,4 +22,5 @@ public interface PetRepository {
     int delete(@Param("petId") int petId);
 
     int countByUserId(@Param("userId") int userId);
+    
 }

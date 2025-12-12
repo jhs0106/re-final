@@ -401,14 +401,14 @@
 				<li class="dropdown">
 					<a href="/admin/cust" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-textarea-resize"></span
-								><span class="mtext">고객 관리</span>
+								><span class="mtext">고객 확인</span>
 					</a>
 				</li>
 				<br>
 				<li class="dropdown">
 					<a href="/admin/pet" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-textarea-resize"></span
-								><span class="mtext">반려동물 관리</span>
+								><span class="mtext">반려동물 확인</span>
 					</a>
 				</li>
 				<br>

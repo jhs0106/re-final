@@ -108,8 +108,8 @@
                    name="username"
                    type="text"
                    class="form-control"
-                   placeholder="id01"
-                   value="id01"/>
+                   placeholder="아이디를 입력하세요"
+                   />
           </div>
 
           <div class="form-group mb-1">
@@ -118,7 +118,7 @@
                    name="password"
                    type="password"
                    class="form-control"
-                   placeholder="임의 값 입력 가능"/>
+                   placeholder="비밀번호를 입력하세요"/>
           </div>
 
           <c:if test="${not empty loginError}">
@@ -129,8 +129,7 @@
         </form>
 
         <p class="demo-tip">
-          현재는 데모용으로 <strong>아이디 id01</strong>로만 로그인 가능하며,
-          비밀번호는 아무 값이나 입력해도 됩니다.
+
         </p>
       </div>
     </div>
