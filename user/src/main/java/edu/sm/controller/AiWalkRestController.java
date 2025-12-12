@@ -62,7 +62,7 @@ public class AiWalkRestController {
      *  - POST /api/map/voice-route  (multipart form, 키 이름 speech)
      */
 
-    @PostMapping("/voice-route")
+    @PostMapping("/api/map/voice-route")
     public VoiceRouteResponse voiceRoute(
             @RequestParam("speech") MultipartFile speech,
             @RequestParam(value = "centerLat", required = false) Double centerLat,

@@ -378,7 +378,7 @@ public class WalkLogService {
                 title = "동네 마실";
                 typeLabel = "일반 산책";
                 subtitle = "동네 한 바퀴, 가벼운 마실 산책";
-                photoFile = "ong.jpg";
+                photoFile = "배경.jpg";
             }
             default -> {
                 title = "나의 산책";

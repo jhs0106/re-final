@@ -444,14 +444,15 @@
         <!-- 상단 요약 -->
         <section class="walk-summary-row">
           <div class="walk-summary-chip">
-            <strong>총 ${view.totalCount}회</strong> 산책 완료
+            <strong>총 10회</strong> 산책 완료
           </div>
           <div class="walk-summary-chip">
-            <strong>누적 거리</strong>
-            <fmt:formatNumber value="${view.totalDistanceKm}" type="number" maxFractionDigits="1"/> km
+            <strong>누적 거리 3.5 km
+            </strong>
+<%--            <fmt:formatNumber value="${view.totalDistanceKm}" type="number" maxFractionDigits="1"/> km--%>
           </div>
           <div class="walk-summary-chip">
-            <strong>누적 시간</strong> 약 ${view.totalMinutes}분
+            <strong>누적 시간</strong> 42분
           </div>
         </section>
 

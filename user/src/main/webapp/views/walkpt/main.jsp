@@ -245,7 +245,7 @@
                                             </p>
                                         </div>
                                         <div class="walkpt-card-footer">
-                                            <a href="<c:url value='/walkpt/togetherwalk/detail?id=${post.postId}'/>"
+                                            <a href="<c:url value='/walkpt/togetherwalk/d etail?id=${post.postId}'/>"
                                                class="btn btn-pet-outline btn-sm btn-block">
                                                 <i class="fas fa-eye"></i> 상세보기
                                             </a>
